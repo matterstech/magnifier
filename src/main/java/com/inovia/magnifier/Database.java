@@ -94,19 +94,20 @@ public class Database {
 				final String TABLE_NAME_FIELD = "table_name";
 				final String COLUMN_NAME_FIELD = "column_name";
 				
-				Table t = null;
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					t = new Table(results.getString(TABLE_NAME_FIELD));
-					t.addColumn(results.getString(COLUMN_NAME_FIELD));
+					String tableName = results.getString(TABLE_NAME_FIELD);
+					ArrayList<String> columns = new ArrayList<String>();
+					
+					columns.add(results.getString(COLUMN_NAME_FIELD));
 					
 					exitLoop = results.next();
-					while(exitLoop && results.getString(TABLE_NAME_FIELD).equals(t.getName())) {
-						t.addColumn(results.getString(COLUMN_NAME_FIELD));
+					while(exitLoop && results.getString(TABLE_NAME_FIELD).equals(tableName)) {
+						columns.add(results.getString(COLUMN_NAME_FIELD));
 						exitLoop = results.next();
 					}
 					
-					tables.add(t);
+					tables.add(new Table(tableName, columns));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
