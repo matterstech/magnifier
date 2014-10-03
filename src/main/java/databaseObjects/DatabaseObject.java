@@ -3,11 +3,15 @@ package databaseObjects;
 public abstract class DatabaseObject {
 	protected String name;
 	
-	public DatabaseObject(String p_name) {
-		name = p_name;
+	public DatabaseObject(String name) {
+		this.name = name;
 	}
 	
 	public String toString() {
+		return name;
+	}
+	
+	public String getName() {
 		return name;
 	}
 }

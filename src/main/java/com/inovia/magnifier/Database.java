@@ -12,8 +12,8 @@ public class Database {
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
 
-	public Database(Configuration conf) {
-		configuration = conf;
+	public Database(Configuration configuration) {
+		this.configuration = configuration;
 
 		try {
 			// Register JDBC driver
@@ -51,7 +51,7 @@ public class Database {
 
 	public ArrayList<Index> getIndexes() {
 		if(indexes == null) {
-			final String SQL = "SELECT indexrelname FROM pg_stat_user_indexes;";
+			final String SQL = "SELECT tablename, indexname FROM pg_indexes WHERE schemaname = '" + configuration.getSchema() + "';";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -61,7 +61,7 @@ public class Database {
 
 				indexes = new ArrayList<Index>();
 				while(results.next()) {
-					indexes.add(new Index(results.getString("indexrelname")));
+					indexes.add(new Index(results.getString("indexname"), results.getString("tablename")));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -81,7 +81,7 @@ public class Database {
 
 	public ArrayList<Table> getTables() {
 		if(tables == null) {
-			final String SQL = "SELECT relname FROM pg_stat_user_tables";
+			final String SQL = "SELECT table_name, column_name FROM information_schema.tables NATURAL JOIN information_schema.columns WHERE table_schema = '" + configuration.getSchema() + "' ORDER BY table_name ASC;";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -90,8 +90,23 @@ public class Database {
 				results = statement.executeQuery(SQL);
 
 				tables = new ArrayList<Table>();
-				while(results.next()) {
-					tables.add(new Table(results.getString("relname")));
+				
+				final String TABLE_NAME_FIELD = "table_name";
+				final String COLUMN_NAME_FIELD = "column_name";
+				
+				Table t = null;
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					t = new Table(results.getString(TABLE_NAME_FIELD));
+					t.addColumn(results.getString(COLUMN_NAME_FIELD));
+					
+					exitLoop = results.next();
+					while(exitLoop && results.getString(TABLE_NAME_FIELD).equals(t.getName())) {
+						t.addColumn(results.getString(COLUMN_NAME_FIELD));
+						exitLoop = results.next();
+					}
+					
+					tables.add(t);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

@@ -9,7 +9,7 @@ public class Magnifier {
 		Configuration conf = null;
 		Database database = null;
 		try { // This is for testing
-			/*
+			
 			conf = new Configuration(args);
 			database = new Database(conf);
 
@@ -18,7 +18,7 @@ public class Magnifier {
 				System.out.println(t);
 			}
 			System.out.println();
-			
+			/*
 			System.out.println("Indexes");
 			for(Index i : database.getIndexes()) {
 				System.out.println(i);
