@@ -1,14 +1,9 @@
 package databaseObjects;
 
 
-public class Table {
-	private String name;
+public class Table extends DatabaseObject {
 	
 	public Table(String p_name) {
-		name = p_name;
-	}
-	
-	public String toString() {
-		return name;
+		super(p_name);
 	}
 }

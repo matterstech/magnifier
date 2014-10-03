@@ -3,7 +3,7 @@ package com.inovia.magnifier;
 import org.apache.commons.cli.*;
 
 public class Configuration {
-	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "u", "pw", "o"};
+	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
 
 	private String connectionURL;
@@ -82,7 +82,7 @@ public class Configuration {
 	public String getPort() {
 		return port;
 	}
-
+	
 	public String getDatabaseName() {
 		return databaseName;
 	}
