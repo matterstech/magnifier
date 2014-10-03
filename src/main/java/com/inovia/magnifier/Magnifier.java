@@ -1,7 +1,7 @@
 package com.inovia.magnifier;
 
-import databaseObjects.Index;
-import databaseObjects.Table;
+import com.inovia.magnifier.databaseObjects.Index;
+import com.inovia.magnifier.databaseObjects.Table;
 
 
 public class Magnifier {

@@ -3,7 +3,7 @@ package com.inovia.magnifier;
 import java.sql.*;
 import java.util.ArrayList;
 
-import databaseObjects.*;
+import com.inovia.magnifier.databaseObjects.*;
 
 public class Database {
 	private Configuration configuration;

@@ -1,4 +1,4 @@
-package databaseObjects;
+package com.inovia.magnifier.databaseObjects;
 
 import java.util.ArrayList;
 
