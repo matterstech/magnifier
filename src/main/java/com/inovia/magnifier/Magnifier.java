@@ -1,8 +1,6 @@
 package com.inovia.magnifier;
 
-import java.sql.*;
-
-import com.inovia.magnifier.Configuration;
+import databaseObjects.Table;
 
 
 public class Magnifier {
@@ -13,25 +11,8 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
-			Statement statement;
-			try {
-				statement = database.getConnection().createStatement();
-				ResultSet results = statement.executeQuery("SELECT id, nickname FROM person");
-
-				while(results.next()){
-					//Retrieve by column name
-					int id  = results.getInt("id");
-					String nickname = results.getString("nickname");
-
-					//Display values
-					System.out.print("ID: " + id);
-					System.out.println(", Nickname: " + nickname);
-				}
-
-				results.close();
-				statement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			for(Table t : database.getTables()) {
+				System.out.println(t);
 			}
 
 			System.out.println("Alright");
