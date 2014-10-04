@@ -18,6 +18,7 @@ public class ConfigurationTest extends TestCase {
 				"-t",  "postgresql",
 				"-dp", "TODO",
 				"-d",  "magnifier_dev",
+				"-s",  "public",
 				"-u",  "postgres",
 				"-pw", "postgres",
 				"-o",  "TODO"
