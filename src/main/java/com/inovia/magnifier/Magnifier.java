@@ -1,7 +1,6 @@
 package com.inovia.magnifier;
 
-import com.inovia.magnifier.databaseObjects.Index;
-import com.inovia.magnifier.databaseObjects.Table;
+import com.inovia.magnifier.databaseObjects.*;
 
 
 public class Magnifier {
@@ -13,20 +12,13 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
-			System.out.println("Tables");
-			for(Table t : database.getTables()) {
-				System.out.println(t);
-			}
-			System.out.println();
-			/*
-			System.out.println("Indexes");
-			for(Index i : database.getIndexes()) {
-				System.out.println(i);
+			System.out.println("Functions");
+			for(Function f : database.getFunctions()) {
+				System.out.println(f);
 			}
 			System.out.println();
 
 			System.out.println("Alright");
-			*/
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);
