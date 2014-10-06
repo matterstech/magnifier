@@ -16,6 +16,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<View> views = null;
 
 	public Database(Configuration configuration) {
 		this.configuration = configuration;
@@ -55,6 +56,10 @@ public class Database {
 		}
 	}
 
+	/**
+	 * 
+	 * @return The list of indexes found in the database
+	 */
 	public ArrayList<Index> getIndexes() {
 		if(indexes == null) {
 			final String SQL = "SELECT tablename, indexname FROM pg_indexes WHERE schemaname = '" + configuration.getSchema() + "';";
@@ -85,6 +90,10 @@ public class Database {
 		return indexes;
 	}
 
+	/**
+	 * 
+	 * @return The list of tables found in the database
+	 */
 	public ArrayList<Table> getTables() {
 		if(tables == null) {
 			final String SQL = "SELECT table_name, column_name FROM information_schema.tables NATURAL JOIN information_schema.columns WHERE table_schema = '" + configuration.getSchema() + "' ORDER BY table_name ASC;";
@@ -129,5 +138,39 @@ public class Database {
 		}
 
 		return tables;
+	}
+	
+	/**
+	 * 
+	 * @return The list of views found in the database
+	 */
+	public ArrayList<View> getViews() {
+		if(views == null) {
+			final String SQL = "SELECT table_name FROM information_schema.views WHERE table_schema = '" + configuration.getSchema() + "';";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				views = new ArrayList<View>();
+				while(results.next()) {
+					views.add(new View(results.getString("table_name")));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return views;
 	}
 }

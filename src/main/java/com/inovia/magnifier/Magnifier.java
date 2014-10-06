@@ -27,6 +27,12 @@ public class Magnifier {
 				System.out.println(i);
 			}
 			System.out.println();
+			
+			System.out.println("Views");
+			for(View v : database.getViews()) {
+				System.out.println(v);
+			}
+			System.out.println();
 
 			System.out.println("Alright");
 
