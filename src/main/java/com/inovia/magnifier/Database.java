@@ -5,12 +5,18 @@ import java.util.ArrayList;
 
 import com.inovia.magnifier.databaseObjects.*;
 
+/**
+ * 
+ * @author joeyrogues
+ *
+ */
 public class Database {
 	private Configuration configuration;
 	private Connection connection = null;
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<Trigger> triggers = null;
 
 	public Database(Configuration configuration) {
 		this.configuration = configuration;
@@ -123,5 +129,35 @@ public class Database {
 		}
 
 		return tables;
+	}
+	
+	public ArrayList<Trigger> getTriggers() {
+		if(triggers == null) {
+			final String SQL = "SELECT trigger_name, event_object_table, event_manipulation, action_timing FROM information_schema.triggers WHERE trigger_schema = '" + configuration.getSchema() + "';";
+			
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				triggers = new ArrayList<Trigger>();
+				while(results.next()) {
+					triggers.add(new Trigger(results.getString("trigger_name"), results.getString("action_timing"), results.getString("event_object_table"), results.getString("event_manipulation")));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return triggers;
 	}
 }

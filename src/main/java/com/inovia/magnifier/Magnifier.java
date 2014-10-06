@@ -2,6 +2,7 @@ package com.inovia.magnifier;
 
 import com.inovia.magnifier.databaseObjects.Index;
 import com.inovia.magnifier.databaseObjects.Table;
+import com.inovia.magnifier.databaseObjects.Trigger;
 
 
 public class Magnifier {
@@ -13,8 +14,8 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
-			System.out.println("Tables");
-			for(Table t : database.getTables()) {
+			System.out.println("Triggers");
+			for(Trigger t : database.getTriggers()) {
 				System.out.println(t);
 			}
 			System.out.println();
