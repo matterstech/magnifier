@@ -11,6 +11,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<Unique> uniques = null;
 
 	public Database(Configuration configuration) {
 		this.configuration = configuration;
@@ -123,5 +124,53 @@ public class Database {
 		}
 
 		return tables;
+	}
+	
+	public ArrayList<Unique> getUniques() {
+		if(uniques == null) {
+			final String SQL = "SELECT constraint_name, table_name, column_name FROM information_schema.key_column_usage WHERE constraint_schema = '" + configuration.getSchema() + "'";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				uniques = new ArrayList<Unique>();
+				
+				final String CONSTRAINT_NAME_FIELD = "constraint_name";
+				final String TABLE_NAME_FIELD = "table_name";
+				final String COLUMN_NAME_FIELD = "column_name";
+				
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					String constraintName = results.getString(CONSTRAINT_NAME_FIELD);
+					String tableName = results.getString(TABLE_NAME_FIELD);
+					ArrayList<String> columns = new ArrayList<String>();
+					
+					columns.add(results.getString(COLUMN_NAME_FIELD));
+					
+					exitLoop = results.next();
+					while(exitLoop && results.getString(CONSTRAINT_NAME_FIELD).equals(constraintName)) {
+						columns.add(results.getString(COLUMN_NAME_FIELD));
+						exitLoop = results.next();
+					}
+					
+					uniques.add(new Unique(constraintName, tableName, columns));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return uniques;
 	}
 }
