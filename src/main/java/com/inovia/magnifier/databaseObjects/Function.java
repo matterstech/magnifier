@@ -12,6 +12,10 @@ public class Function extends DatabaseObject {
 	public Function(String name, ArrayList<FunctionParameter> parameters) {
 		super(name);
 		
+		if(parameters == null) {
+			throw new IllegalArgumentException("a function should have parameters list, even if empty");
+		}
+		
 		this.parameters = parameters;
 	}
 	

@@ -132,7 +132,7 @@ public class Database {
 	 */
 	public ArrayList<Function> getFunctions() {
 		if(functions == null) {
-			final String SQL = "SELECT routines.routine_name, parameters.data_type, parameters.parameter_mode, parameters.parameter_name, parameters.data_type FROM information_schema.routines JOIN information_schema.parameters ON routines.specific_name = parameters.specific_name WHERE routines.specific_schema='public' ORDER BY routines.routine_name ASC, parameters.ordinal_position ASC;";
+			final String SQL = "SELECT routines.routine_name, parameters.data_type, parameters.parameter_mode, parameters.parameter_name, parameters.data_type FROM information_schema.routines JOIN information_schema.parameters ON routines.specific_name = parameters.specific_name WHERE routines.specific_schema not in ('pg_catalog', 'information_schema') ORDER BY routines.routine_name ASC, parameters.ordinal_position ASC;";
 
 			Statement statement = null;
 			ResultSet results = null;

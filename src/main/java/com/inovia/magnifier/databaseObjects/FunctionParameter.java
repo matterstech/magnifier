@@ -17,6 +17,15 @@ public class FunctionParameter extends DatabaseObject {
 	 */
 	public FunctionParameter(String name, String type, Boolean isIn) {
 		super(name);
+		
+		if(type == null || type.isEmpty()) {
+			throw new IllegalArgumentException("a function parameter should have a type");
+		}
+		
+		if(isIn == null) {
+			throw new IllegalArgumentException("a function parameter should be INPUT or OUTPUT");
+		}
+		
 		this.type = type;
 		this.isIn = isIn;
 	}
@@ -39,5 +48,9 @@ public class FunctionParameter extends DatabaseObject {
 	 */
 	public Boolean isOut() {
 		return !isIn;
+	}
+	
+	public String getType() {
+		return type;
 	}
 }
