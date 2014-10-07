@@ -146,7 +146,7 @@ public class Database {
 	 */
 	public ArrayList<View> getViews() {
 		if(views == null) {
-			final String SQL = "SELECT table_name FROM information_schema.views WHERE table_schema = '" + configuration.getSchema() + "';";
+			final String SQL = "SELECT table_schema, table_name FROM information_schema.views WHERE table_schema not in ('pg_catalog', 'information_schema') ORDER BY table_schema ASC";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -156,7 +156,7 @@ public class Database {
 
 				views = new ArrayList<View>();
 				while(results.next()) {
-					views.add(new View(results.getString("table_name")));
+					views.add(new View(results.getString("table_schema"), results.getString("table_name")));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

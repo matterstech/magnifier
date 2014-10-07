@@ -16,18 +16,6 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
-			System.out.println("Tables");
-			for(Table t : database.getTables()) {
-				System.out.println(t);
-			}
-			System.out.println();
-
-			System.out.println("Indexes");
-			for(Index i : database.getIndexes()) {
-				System.out.println(i);
-			}
-			System.out.println();
-			
 			System.out.println("Views");
 			for(View v : database.getViews()) {
 				System.out.println(v);
