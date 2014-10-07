@@ -133,7 +133,7 @@ public class Database {
 	
 	public ArrayList<Trigger> getTriggers() {
 		if(triggers == null) {
-			final String SQL = "SELECT trigger_name, event_object_table, event_manipulation, action_timing FROM information_schema.triggers WHERE trigger_schema = '" + configuration.getSchema() + "';";
+			final String SQL = "SELECT trigger_name, event_object_table, event_manipulation, action_timing FROM information_schema.triggers WHERE trigger_schema NOT IN ('pg_catalog', 'information_schema');";
 			
 			Statement statement = null;
 			ResultSet results = null;
