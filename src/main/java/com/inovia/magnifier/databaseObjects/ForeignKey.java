@@ -9,16 +9,19 @@ public class ForeignKey extends DatabaseObject {
 	private String tableName;
 	private String referencedTableName;
 	private String referencedColumnName;
+	private String schemaName;
 	
 	/**
 	 * 
+	 * @param schemaName The name of the schema which contains the foreign key table
 	 * @param name The name of the foreign key
 	 * @param tableName The name of the table that contains the foreign key
 	 * @param referencedTableName The name off the referenced table
 	 * @param referencedColumnName The name of the referenced key
 	 */
-	public ForeignKey(String name, String tableName, String referencedTableName, String referencedColumnName) {
+	public ForeignKey(String schemaName, String name, String tableName, String referencedTableName, String referencedColumnName) {
 		super(name);
+		this.schemaName = schemaName;
 		this.tableName = tableName;
 		this.referencedTableName = referencedTableName;
 		this.referencedColumnName = referencedColumnName;
@@ -46,6 +49,14 @@ public class ForeignKey extends DatabaseObject {
 	 */
 	public String getReferencedColumnName() {
 		return referencedColumnName;
+	}
+	
+	/**
+	 * 
+	 * @return The name of the schema which contains the foreign key table
+	 */
+	public String getSchemaName() {
+		return schemaName;
 	}
 
 	public String toString() {
