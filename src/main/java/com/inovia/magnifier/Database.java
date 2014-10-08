@@ -128,7 +128,7 @@ public class Database {
 	
 	public ArrayList<Unique> getUniques() {
 		if(uniques == null) {
-			final String SQL = "SELECT constraint_name, table_name, column_name FROM information_schema.key_column_usage WHERE constraint_schema = '" + configuration.getSchema() + "'";
+			final String SQL = "SELECT constraint_schema, constraint_name, table_name, column_name FROM information_schema.key_column_usage WHERE constraint_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY constraint_schema ASC, constraint_name ASC";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -139,11 +139,13 @@ public class Database {
 				uniques = new ArrayList<Unique>();
 				
 				final String CONSTRAINT_NAME_FIELD = "constraint_name";
+				final String SCHEMA_NAME_FIELD = "constraint_schema";
 				final String TABLE_NAME_FIELD = "table_name";
 				final String COLUMN_NAME_FIELD = "column_name";
 				
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
+					String schemaName = results.getString(SCHEMA_NAME_FIELD);
 					String constraintName = results.getString(CONSTRAINT_NAME_FIELD);
 					String tableName = results.getString(TABLE_NAME_FIELD);
 					ArrayList<String> columns = new ArrayList<String>();
@@ -151,12 +153,12 @@ public class Database {
 					columns.add(results.getString(COLUMN_NAME_FIELD));
 					
 					exitLoop = results.next();
-					while(exitLoop && results.getString(CONSTRAINT_NAME_FIELD).equals(constraintName)) {
+					while(exitLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(CONSTRAINT_NAME_FIELD).equals(constraintName)) {
 						columns.add(results.getString(COLUMN_NAME_FIELD));
 						exitLoop = results.next();
 					}
 					
-					uniques.add(new Unique(constraintName, tableName, columns));
+					uniques.add(new Unique(schemaName, constraintName, tableName, columns));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
