@@ -2,8 +2,6 @@ package com.inovia.magnifier.database;
 
 public class DatabaseFactory {
 	public static Database getDatabase(String type, String host, String port, String database, String user, String password) {
-		System.out.println(type);
-		
 		if(type != null && !type.isEmpty()) {
 			
 			// If PostgreSql

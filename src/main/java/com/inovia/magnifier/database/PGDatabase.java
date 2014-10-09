@@ -15,7 +15,7 @@ public class PGDatabase implements Database {
 	private String port;
 	private String user;
 	private String password;
-	
+
 	private Vector<Schema> schemas;
 	private Vector<Function> functions;
 	private Vector<Comment> comments;
@@ -26,7 +26,7 @@ public class PGDatabase implements Database {
 		this.port = port;
 		this.user = user;
 		this.password = password;
-		
+
 		try {
 			// Register JDBC driver
 			Class.forName("org.postgresql.Driver");
@@ -35,7 +35,7 @@ public class PGDatabase implements Database {
 			System.exit(1);
 		}
 	}
-	
+
 	public void connect() {
 		if(connection == null) {
 			try {
@@ -52,7 +52,7 @@ public class PGDatabase implements Database {
 		loadFunctions();
 		loadFunctionComments();
 	}
-	
+
 	private void loadSchemas() {
 		if(schemas == null) {
 			final String SQL = "SELECT schema_name FROM information_schema.schemata";
@@ -88,13 +88,25 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-	
+
 	private void loadFunctions() {
 		if(functions == null) {
-			final String SQL = "SELECT routines.routine_schema, routines.routine_name"
+			// Previous One
+			/* final String SQL = "SELECT routines.routine_schema, routines.routine_name"
 					+ " FROM information_schema.routines"
 					+ " WHERE routine_schema NOT IN ('pg_catalog', 'information_schema')"
-					+ " ORDER BY routines.routine_schema ASC, routines.routine_name ASC";
+					+ " ORDER BY routines.routine_schema ASC, routines.routine_name ASC"; */
+
+			final String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
+					+ " FROM information_schema.routines r"
+					+ " LEFT OUTER JOIN information_schema.parameters p"
+					+ " ON r.specific_name   = p.specific_name"
+					+ " AND r.specific_schema = r.specific_schema"
+					+ " WHERE routine_schema"
+					+ " NOT IN ('pg_catalog', 'information_schema')"
+					+ " ORDER BY r.routine_schema ASC, r.routine_name ASC, p.parameter_name ASC";
+
+
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -103,14 +115,37 @@ public class PGDatabase implements Database {
 				results = statement.executeQuery(SQL);
 
 				functions = new Vector<Function>();
+				final String SCHEMA_NAME_FIELD = "routine_schema";
+				final String ROUTINE_NAME_FIELD = "routine_name";
+				final String PARAMETER_NAME_FIELD = "parameter_name";
+				final String PARAMETER_TYPE_FIELD = "parameter_mode";
 
-				Boolean exitLoop = results.next();
-				while(exitLoop) {
-					Function f = new PGFunction(results.getString("routine_schema"), results.getString("routine_name"));
+				Boolean doLoop = results.next();
+				while(doLoop) {
+					PGFunction function = new PGFunction(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD));
 					
-					functions.add(f);
-
-					exitLoop = results.next();
+					Vector<PGFunctionParameter> parameters = new Vector<PGFunctionParameter>();
+					
+					// TODO: don't add blank parameters
+					PGFunctionParameter parameter = new PGFunctionParameter(function, results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD));
+					parameters.add(parameter);
+					
+					String schemaName = results.getString(SCHEMA_NAME_FIELD);
+					String routineName = results.getString(ROUTINE_NAME_FIELD);
+					
+					function.addParameter(parameter);
+					
+					doLoop = results.next();
+					while(doLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(ROUTINE_NAME_FIELD).equals(routineName)) {
+						schemaName = results.getString(SCHEMA_NAME_FIELD);
+						routineName = results.getString(ROUTINE_NAME_FIELD);
+						
+						parameter = new PGFunctionParameter(function, results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD));
+						function.addParameter(parameter);
+						doLoop = results.next();
+					}
+					
+					functions.add(function);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -129,7 +164,7 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-	
+
 	private void loadFunctionComments() {
 		if(comments == null) {
 			final String SQL = "SELECT nspname, proname, description"
@@ -152,7 +187,7 @@ public class PGDatabase implements Database {
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
 					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"));
-					
+
 					comments.add(f);
 
 					exitLoop = results.next();
@@ -174,7 +209,7 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-	
+
 	public void disconnect() {
 		try {
 			if(connection != null) {

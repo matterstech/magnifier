@@ -1,26 +1,35 @@
 package com.inovia.magnifier.database.postgresql;
 
-import com.inovia.magnifier.database.objects.Function;
-import com.inovia.magnifier.database.objects.FunctionParameter;
+import com.inovia.magnifier.database.objects.*;
 
 public class PGFunctionParameter implements FunctionParameter {
+	private PGFunction function;
 	private String name;
-	private String type;
-	private String inOut;
+	private String mode;
 	
-	public PGFunctionParameter(String name, String type, String inOut) {
+	public PGFunctionParameter(PGFunction function, String name, String mode) {
+		this.function = function;
 		this.name = name;
-		this.type = type;
-		this.inOut = inOut;
+		this.mode = mode;
 	}
 
 	public Function getFunction() {
-		// TODO Auto-generated method stub
-		return null;
+		return function;
 	}
 
 	public String getEntityDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "PARAMETER " + name + " " + mode;
+	}
+	
+	public String toString() {
+		return name + " " + mode;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getMode() {
+		return mode;
 	}
 }

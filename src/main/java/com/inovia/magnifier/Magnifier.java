@@ -1,8 +1,9 @@
 package com.inovia.magnifier;
 
 import com.inovia.magnifier.database.*;
-import com.inovia.magnifier.reports.Report;
-import com.inovia.magnifier.rules.FunctionHasComment;
+import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rules.*;
 
 public class Magnifier {
 	public static void main(String[] args) {
@@ -23,9 +24,12 @@ public class Magnifier {
 			database.load();
 			
 			Report r = FunctionHasComment.runOn(database.getFunctions(), database.getComments());
+//			System.out.println(r.getEntries());
+			
+			r = FunctionParameterName.runOn(database.getFunctions());
 			System.out.println(r.getEntries());
 			
-			r.generateHtml(configuration.getReportPath());
+			// r.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);
