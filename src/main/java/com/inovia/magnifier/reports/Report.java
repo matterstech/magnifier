@@ -40,10 +40,12 @@ public class Report {
 		return entries;
 	}
 	
-	public void generateHtml() {
+	public void generateHtml(String path) {
+		
+		
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("/tmp/report.html", "UTF-8");
+			writer = new PrintWriter(path, "UTF-8");
 			
 			writer.println("<html>");
 			writer.println("  <body>");

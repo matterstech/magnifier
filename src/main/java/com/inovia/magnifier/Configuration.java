@@ -1,10 +1,13 @@
 package com.inovia.magnifier;
 
+import java.io.File;
+
 import org.apache.commons.cli.*;
 
 public class Configuration {
 	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "s", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
+	private static final String REPORT_DEFAULT_NAME = "report.html";
 
 	private String connectionURL;
 	private String host;
@@ -54,6 +57,17 @@ public class Configuration {
 			user         = commandLine.getOptionValue("u");
 			password     = commandLine.getOptionValue("pw");
 			reportPath   = commandLine.getOptionValue("o");
+			
+			// Check if report file already exists
+			File f = new File(reportPath);
+			
+			// Report path is a directory
+			if(f.exists()) {
+				 if(f.isDirectory()) {
+					 reportPath = reportPath + "/" + REPORT_DEFAULT_NAME;
+					 System.err.println("The report will be called " + REPORT_DEFAULT_NAME);
+				 }
+			}
 			
 			// We check if the DBMS is acceptable
 			Boolean is_expected_dbms = false;
