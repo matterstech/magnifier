@@ -1,9 +1,13 @@
 package com.inovia.magnifier.database;
 
-import java.sql.*;
+import java.util.Vector;
 
 
 public interface Database {
-	public Connection connect();
+	public void connect();
 	public void disconnect();
+	public void load();
+	
+	public Vector<? extends Schema> getSchemas();
+	public Vector<? extends Function> getFunctions();
 }

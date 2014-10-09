@@ -1,7 +1,6 @@
 package com.inovia.magnifier;
 
-import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.database.DatabaseFactory;
+import com.inovia.magnifier.database.*;
 
 public class Magnifier {
 	public static void main(String[] args) {
@@ -9,9 +8,21 @@ public class Magnifier {
 		Database database = null;
 		try {
 			configuration = new Configuration(args);
-			DatabaseFactory.getDatabase(configuration);
+			database = DatabaseFactory.getDatabase(
+					configuration.getDatabaseType(),
+					configuration.getHost(),
+					configuration.getPort(),
+					configuration.getDatabaseName(),
+					configuration.getUser(),
+					configuration.getPassword());
 			
+			// Bootstrap
+			database.connect();
+			database.load();
 			
+			for(Function f : database.getFunctions()) {
+				System.out.println(f);
+			}
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);
