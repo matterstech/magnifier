@@ -1,6 +1,6 @@
 package com.inovia.magnifier.database.postgresql;
 
-import com.inovia.magnifier.database.FunctionParameter;
+import com.inovia.magnifier.database.objects.FunctionParameter;
 
 public class PGFunctionParameter extends FunctionParameter {
 	private String name;

@@ -8,7 +8,7 @@ public class DatabaseFactory {
 			
 			// If PostgreSql
 			if(type.equals("postgresql")) {
-				return (Database) new PostgresqlDatabase(database, host, port, user, password);
+				return (Database) new PGDatabase(database, host, port, user, password);
 			}
 			
 			throw new IllegalArgumentException("args[type]");

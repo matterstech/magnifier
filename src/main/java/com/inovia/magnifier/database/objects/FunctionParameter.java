@@ -1,4 +1,6 @@
-package com.inovia.magnifier.database;
+package com.inovia.magnifier.database.objects;
+
+import com.inovia.magnifier.database.postgresql.*;
 
 
 public abstract class FunctionParameter {
