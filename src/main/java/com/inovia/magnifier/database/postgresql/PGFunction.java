@@ -23,4 +23,8 @@ public class PGFunction implements Function {
 	public String toString() {
 		return "schema: "+ schemaName + ", name: "+ name;
 	}
+
+	public String getEntityDescription() {
+		return "FUNCTION " + name;
+	}
 }

@@ -11,7 +11,7 @@ public abstract class FunctionHasComment {
 		
 		for(Function f : functions) {
 			Boolean isSuccess = assertion(f, comments);
-			report.addEntry(new ReportEntry((Object) f, isSuccess));
+			report.addEntry(new ReportEntry(f, isSuccess));
 		}
 		
 		return report;

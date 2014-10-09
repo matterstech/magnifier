@@ -24,4 +24,8 @@ public class PGComment implements Comment {
 	public String toString() {
 		return "schema: " + schemaName + ", entity: " + entityName + ", content: \"" + content + "\"";
 	}
+
+	public String getEntityDescription() {
+		return "COMMENT ON " + entityName;
+	}
 }

@@ -44,6 +44,8 @@ public class Magnifier {
 			
 			Report r = FunctionHasComment.runOn(database.getFunctions(), database.getComments());
 			System.out.println(r.getEntries());
+			
+			r.generateHtml();
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);

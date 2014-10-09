@@ -1,8 +1,9 @@
 package com.inovia.magnifier.database.postgresql;
 
+import com.inovia.magnifier.database.objects.Function;
 import com.inovia.magnifier.database.objects.FunctionParameter;
 
-public class PGFunctionParameter extends FunctionParameter {
+public class PGFunctionParameter implements FunctionParameter {
 	private String name;
 	private String type;
 	private String inOut;
@@ -11,5 +12,15 @@ public class PGFunctionParameter extends FunctionParameter {
 		this.name = name;
 		this.type = type;
 		this.inOut = inOut;
+	}
+
+	public Function getFunction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getEntityDescription() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

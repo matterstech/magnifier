@@ -33,4 +33,8 @@ public class PGSchema implements Schema {
 		
 		return res;
 	}
+
+	public String getEntityDescription() {
+		return "SCHEMA " + name;
+	}
 }
