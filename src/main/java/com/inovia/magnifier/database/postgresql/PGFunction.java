@@ -42,6 +42,13 @@ public class PGFunction implements Function {
 	}
 
 	public String getEntityDescription() {
-		return "FUNCTION " + name;
+		
+		String result = schemaName + "." + name + "(";
+		for(FunctionParameter fp : parameters) {
+			result = result + (fp.getName() != null ? fp.getName() : "<noname>") + " " + fp.getMode();
+		}
+		result = result + ")";
+		
+		return result;
 	}
 }

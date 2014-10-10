@@ -18,7 +18,13 @@ public class PGFunctionParameter implements FunctionParameter {
 	}
 
 	public String getEntityDescription() {
-		return "PARAMETER " + name + " " + mode;
+		String result = function.getSchemaName() + "." + function.getName() + "(";
+		for(FunctionParameter fp : function.getParameters()) {
+			result = result + (fp.getName() != null ? fp.getName() : "<noname>") + " " + fp.getMode();
+		}
+		result = result + ")";
+		
+		return result;
 	}
 	
 	public String toString() {

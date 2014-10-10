@@ -1,67 +1,43 @@
 package com.inovia.magnifier.reports;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
 public class Report {
-	private Vector<ReportEntry> entries;
-	private Integer score;
-	
+	private Vector<RuleReport> ruleReports;
+
 	public Report() {
-		entries = new Vector<ReportEntry>();
+		ruleReports = new Vector<RuleReport>();
 	}
-	
-	public void addEntry(ReportEntry entry) {
-		entries.add(entry);
-	}
-	
-	public Integer getScore() {
-		if(score == null) {
-			Integer successCount = 0;
-			for(ReportEntry entry : entries) {
-				if(entry.isSuccess()) {
-					successCount++;
-				}
-			}
-			
-			score = successCount * 100 / entries.size(); 
-		}
-		
-		return score;
-	}
-	
-	public String toString() {
-		return getScore() + "%";
-	}
-	
-	public Vector<ReportEntry> getEntries() {
-		return entries;
-	}
-	
+
 	public void generateHtml(String path) {
-		
-		
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(path, "UTF-8");
-			
+
 			writer.println("<html>");
 			writer.println("  <body>");
-			writer.println("    <table>");
+			writer.println("    <table width=\"100%\" border=\"1\" style=\"text-align: left;\">");
 			writer.println("      <thead>");
 			writer.println("        <tr>");
-			writer.println("          <th>Entity name</th>");
-			writer.println("          <th>Passed the test</th>");
+			writer.println("          <th>Rule</th>");
+			writer.println("          <th>Score</th>");
+			writer.println("          <th>Entity</th>");
+			writer.println("          <th>Suggestions</th>");
+			writer.println("          <th>Technical debt</th>");
 			writer.println("        </tr>");
 			writer.println("      </thead>");
 			writer.println("      <tbody>");
-			for(ReportEntry e : entries) {
-				writer.println("        <tr>");
-				writer.println("          <td>" + e.getEntity().getEntityDescription() + "</td>");
-				writer.println("          <td>" + e.isSuccess() + "</td>");
-				writer.println("        </tr>");
+			for(RuleReport rr : ruleReports) {
+				for(ReportEntry e : rr.getEntries()) {
+					writer.println("        <tr>");
+					writer.println("          <td>" + rr.getRuleName() + "</td>");
+					writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
+					writer.println("          <td>" + e.getEntityDescription() + "</td>");
+					writer.println("          <td>" + rr.getSuggestion() + "</td>");
+					writer.println("          <td>" + rr.getDebt() + "</td>");
+					writer.println("        </tr>");
+				}
 			}
 			writer.println("      </tbody>");
 			writer.println("    </table>");
@@ -76,5 +52,9 @@ public class Report {
 				writer.close();
 			}
 		}
+	}
+	
+	public void addRuleReport(RuleReport ruleReport) {
+		ruleReports.add(ruleReport);
 	}
 }

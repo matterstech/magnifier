@@ -6,17 +6,21 @@ import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
 public class FunctionParameterName {
-	public static Report runOn(Vector<Function> functions) {
-		Report report = new Report();
+	public static final String RULE_NAME = "FunctionParameterName";
+	public static final String SUGGESTION = "Each parameters should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
+	public static final Float DEBT = 1F;
+	
+	public static RuleReport runOn(Vector<Function> functions) {
+		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
 		for(Function f : functions) {
 			for(FunctionParameter p : f.getParameters()) {
 				Boolean isSuccess = assertion(p);
-				report.addEntry(new ReportEntry(p, isSuccess));
+				ruleReport.addEntry(new ReportEntry(p.getEntityDescription(), isSuccess));
 			}
 		}
 		
-		return report;
+		return ruleReport;
 	}
 	
 	private static Boolean assertion(FunctionParameter p) {

@@ -126,14 +126,20 @@ public class PGDatabase implements Database {
 					
 					Vector<PGFunctionParameter> parameters = new Vector<PGFunctionParameter>();
 					
-					// TODO: don't add blank parameters
-					PGFunctionParameter parameter = new PGFunctionParameter(function, results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD));
-					parameters.add(parameter);
+					PGFunctionParameter parameter = null;
+					String parameterName = results.getString(PARAMETER_NAME_FIELD);
+					String parameterMode = results.getString(PARAMETER_TYPE_FIELD);
+
+					if(parameterName != null && parameterMode != null) {
+						parameter = new PGFunctionParameter(function, parameterName, parameterMode);
+						parameters.add(parameter);
+						
+						function.addParameter(parameter);
+					}
+					
 					
 					String schemaName = results.getString(SCHEMA_NAME_FIELD);
 					String routineName = results.getString(ROUTINE_NAME_FIELD);
-					
-					function.addParameter(parameter);
 					
 					doLoop = results.next();
 					while(doLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(ROUTINE_NAME_FIELD).equals(routineName)) {

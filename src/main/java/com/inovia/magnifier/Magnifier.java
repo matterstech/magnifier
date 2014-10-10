@@ -23,13 +23,11 @@ public class Magnifier {
 			database.connect();
 			database.load();
 			
-			Report r = FunctionHasComment.runOn(database.getFunctions(), database.getComments());
-//			System.out.println(r.getEntries());
+			Report report = new Report();
+			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
+			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			
-			r = FunctionParameterName.runOn(database.getFunctions());
-			System.out.println(r.getEntries());
-			
-			// r.generateHtml(configuration.getReportPath());
+			report.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);

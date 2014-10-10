@@ -1,25 +1,33 @@
 package com.inovia.magnifier.reports;
 
-import com.inovia.magnifier.database.objects.Entity;
 
 public class ReportEntry {
-	private Entity entity;
+	private String entityDescription;
+	private Integer technicalDebt;
 	private Boolean isSuccess;
 	
-	public ReportEntry(Entity entity, Boolean isSuccess) {
-		this.entity = entity;
+	public ReportEntry(String entityDescription, Boolean isSuccess) {
+		this.entityDescription = entityDescription;
 		this.isSuccess = isSuccess;
+	}
+
+	public Integer getTechnicalDebt() {
+		return technicalDebt;
+	}
+
+	public Boolean getIsSuccess() {
+		return isSuccess;
 	}
 	
 	public Boolean isSuccess() {
 		return isSuccess;
 	}
 	
-	public Entity getEntity() {
-		return entity;
-	}
-	
 	public String toString() {
-		return "{ entity: {" + entity.toString() + "}, success: " + isSuccess + "}";
+		return "{ " + entityDescription + ", success: " + isSuccess + "}";
+	}
+
+	public String getEntityDescription() {
+		return entityDescription;
 	}
 }
