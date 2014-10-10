@@ -22,7 +22,7 @@ public class RuleReport {
 		
 		if(score == null) {
 			for(ReportEntry e : entries) {
-				if(e.getIsSuccess()) {
+				if(e.isSuccess()) {
 					tmp++;
 				}
 			}
@@ -50,6 +50,14 @@ public class RuleReport {
 	}
 	
 	public Float getDebt() {
-		return debt;
+		Integer failingEntityCount = 0;
+		
+		for(ReportEntry e : entries) {
+			if(!e.isSuccess()) {
+				failingEntityCount++;
+			}
+		}
+		
+		return debt * failingEntityCount;
 	}
 }

@@ -30,13 +30,15 @@ public class Report {
 			writer.println("      <tbody>");
 			for(RuleReport rr : ruleReports) {
 				for(ReportEntry e : rr.getEntries()) {
-					writer.println("        <tr>");
-					writer.println("          <td>" + rr.getRuleName() + "</td>");
-					writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
-					writer.println("          <td>" + e.getEntityDescription() + "</td>");
-					writer.println("          <td>" + rr.getSuggestion() + "</td>");
-					writer.println("          <td>" + rr.getDebt() + "</td>");
-					writer.println("        </tr>");
+					if(!e.isSuccess()) {
+						writer.println("        <tr>");
+						writer.println("          <td>" + rr.getRuleName() + "</td>");
+						writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
+						writer.println("          <td>" + e.getEntityDescription() + "</td>");
+						writer.println("          <td>" + rr.getSuggestion() + "</td>");
+						writer.println("          <td>" + rr.getDebt() + "</td>");
+						writer.println("        </tr>");
+					}
 				}
 			}
 			writer.println("      </tbody>");

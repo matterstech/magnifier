@@ -14,10 +14,6 @@ public class ReportEntry {
 	public Integer getTechnicalDebt() {
 		return technicalDebt;
 	}
-
-	public Boolean getIsSuccess() {
-		return isSuccess;
-	}
 	
 	public Boolean isSuccess() {
 		return isSuccess;
