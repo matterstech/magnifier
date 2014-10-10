@@ -23,7 +23,7 @@ public class Magnifier {
 			database.connect();
 			database.load();
 			
-			Report report = new Report();
+			Report report = new Report(database.getName());
 			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			

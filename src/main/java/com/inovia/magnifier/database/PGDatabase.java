@@ -238,4 +238,8 @@ public class PGDatabase implements Database {
 	public Vector<Comment> getComments() {
 		return comments;
 	}
+
+	public String getName() {
+		return name;
+	}
 }

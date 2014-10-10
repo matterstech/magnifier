@@ -10,6 +10,8 @@ public interface Database {
 	public void disconnect();
 	public void load();
 	
+	public String getName();
+	
 	public Vector<Schema> getSchemas();
 	public Vector<Function> getFunctions();
 	public Vector<Comment> getComments();
