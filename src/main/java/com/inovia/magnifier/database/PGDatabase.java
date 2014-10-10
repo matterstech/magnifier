@@ -3,9 +3,7 @@ package com.inovia.magnifier.database;
 import java.sql.*;
 import java.util.Vector;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.Function;
-import com.inovia.magnifier.database.objects.Schema;
+import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 
 public class PGDatabase implements Database {
@@ -18,7 +16,9 @@ public class PGDatabase implements Database {
 
 	private Vector<Schema> schemas;
 	private Vector<Function> functions;
-	private Vector<Comment> comments;
+	private Vector<View> views;
+	private Vector<Comment> functionComments;
+	private Vector<Comment> viewComments;
 
 	public PGDatabase(String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -51,6 +51,9 @@ public class PGDatabase implements Database {
 		loadSchemas();
 		loadFunctions();
 		loadFunctionComments();
+		
+		loadViews();
+		loadViewComments();
 	}
 
 	private void loadSchemas() {
@@ -170,17 +173,13 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-
-	private void loadFunctionComments() {
-		if(comments == null) {
-			final String SQL = "SELECT nspname, proname, description"
-					+ " FROM pg_description"
-					+ " JOIN pg_proc"
-					+ " ON pg_description.objoid = pg_proc.oid"
-					+ " JOIN pg_namespace"
-					+ " ON pg_proc.pronamespace = pg_namespace.oid"
-					+ " WHERE nspname"
-					+ " NOT IN ('pg_catalog', 'pg_catalog')";
+	
+	private void loadViews() {
+		if(views == null) {
+			final String SQL = "SELECT table_schema, table_name"
+					+ " FROM information_schema.views"
+					+ " WHERE table_schema"
+					+ " NOT IN ('pg_catalog', 'information_schema')";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -188,13 +187,58 @@ public class PGDatabase implements Database {
 				statement = connection.createStatement();
 				results = statement.executeQuery(SQL);
 
-				comments = new Vector<Comment>();
+				views = new Vector<View>();
+				final String SCHEMA_NAME_FIELD = "table_schema";
+				final String ROUTINE_NAME_FIELD = "table_name";
+
+				Boolean doLoop = results.next();
+				while(doLoop) {
+					views.add(new PGView(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD)));
+					
+					doLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+
+	private void loadFunctionComments() {
+		if(functionComments == null) {
+			final String SQL = "SELECT nspname, proname, description"
+					+ " FROM pg_description"
+					+ " JOIN pg_proc"
+					+ " ON pg_description.objoid = pg_proc.oid"
+					+ " JOIN pg_namespace"
+					+ " ON pg_proc.pronamespace = pg_namespace.oid"
+					+ " WHERE nspname"
+					+ " NOT IN ('pg_catalog', 'information_schema')";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				functionComments = new Vector<Comment>();
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
 					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"));
 
-					comments.add(f);
+					functionComments.add(f);
 
 					exitLoop = results.next();
 				}
@@ -214,6 +258,50 @@ public class PGDatabase implements Database {
 				}
 			}
 		}
+	}
+	
+	private void loadViewComments() {
+			if(viewComments == null) {
+				final String SQL = "SELECT nspname, relname, description"
+						+ " FROM pg_class c"
+						+ " JOIN pg_namespace n ON n.oid = c.relnamespace"
+						+ " JOIN pg_description d ON relfilenode = d.objoid"
+						+ " WHERE relkind = 'v'"
+						+ " AND n.nspname"
+						+ " NOT IN ('pg_catalog', 'information_schema')";
+
+				Statement statement = null;
+				ResultSet results = null;
+				try {
+					statement = connection.createStatement();
+					results = statement.executeQuery(SQL);
+
+					viewComments = new Vector<Comment>();
+
+					Boolean exitLoop = results.next();
+					while(exitLoop) {
+						Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"));
+
+						viewComments.add(f);
+
+						exitLoop = results.next();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						if(results != null) {
+							results.close();
+						}
+						if(statement != null) {
+							statement.close();						
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+						System.exit(1);
+					}
+				}
+			}
 	}
 
 	public void disconnect() {
@@ -236,7 +324,14 @@ public class PGDatabase implements Database {
 	}
 
 	public Vector<Comment> getComments() {
-		return comments;
+		Vector<Comment> res = new Vector<Comment>();
+		res.addAll(functionComments);
+		res.addAll(viewComments);
+		return res;
+	}
+	
+	public Vector<View> getViews() {
+		return views;
 	}
 
 	public String getName() {

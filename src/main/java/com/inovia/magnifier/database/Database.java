@@ -15,4 +15,5 @@ public interface Database {
 	public Vector<Schema> getSchemas();
 	public Vector<Function> getFunctions();
 	public Vector<Comment> getComments();
+	public Vector<View> getViews();
 }
