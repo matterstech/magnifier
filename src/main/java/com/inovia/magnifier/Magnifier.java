@@ -26,6 +26,7 @@ public class Magnifier {
 			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			
+			report.addRuleReport(ViewName.runOn(database.getViews()));
 			report.addRuleReport(ViewHasComment.runOn(database.getViews(), database.getComments()));
 			
 			report.generateHtml(configuration.getReportPath());
