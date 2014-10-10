@@ -6,6 +6,7 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.Comment;
 import com.inovia.magnifier.database.objects.Function;
 import com.inovia.magnifier.database.objects.Schema;
+import com.inovia.magnifier.database.objects.Table;
 import com.inovia.magnifier.database.postgresql.*;
 
 public class PGDatabase implements Database {
@@ -18,7 +19,9 @@ public class PGDatabase implements Database {
 
 	private Vector<Schema> schemas;
 	private Vector<Function> functions;
-	private Vector<Comment> comments;
+	private Vector<Table> tables;
+	private Vector<Comment> functionComments;
+	private Vector<Comment> tableComments;
 
 	public PGDatabase(String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -49,8 +52,12 @@ public class PGDatabase implements Database {
 
 	public void load() {
 		loadSchemas();
+		
 		loadFunctions();
 		loadFunctionComments();
+		
+		loadTables();
+		loadTableComments();
 	}
 
 	private void loadSchemas() {
@@ -91,12 +98,6 @@ public class PGDatabase implements Database {
 
 	private void loadFunctions() {
 		if(functions == null) {
-			// Previous One
-			/* final String SQL = "SELECT routines.routine_schema, routines.routine_name"
-					+ " FROM information_schema.routines"
-					+ " WHERE routine_schema NOT IN ('pg_catalog', 'information_schema')"
-					+ " ORDER BY routines.routine_schema ASC, routines.routine_name ASC"; */
-
 			final String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
 					+ " FROM information_schema.routines r"
 					+ " LEFT OUTER JOIN information_schema.parameters p"
@@ -172,7 +173,7 @@ public class PGDatabase implements Database {
 	}
 
 	private void loadFunctionComments() {
-		if(comments == null) {
+		if(functionComments == null) {
 			final String SQL = "SELECT nspname, proname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_proc"
@@ -188,15 +189,101 @@ public class PGDatabase implements Database {
 				statement = connection.createStatement();
 				results = statement.executeQuery(SQL);
 
-				comments = new Vector<Comment>();
+				functionComments = new Vector<Comment>();
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
 					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"));
 
-					comments.add(f);
+					functionComments.add(f);
 
 					exitLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
+	private void loadTableComments() {
+		if(tableComments == null) {
+			final String SQL = "SELECT nspname, relname, description"
+					+ " FROM pg_description"
+					+ " JOIN pg_class"
+					+ " ON pg_description.objoid = pg_class.oid"
+					+ " JOIN pg_namespace"
+					+ " ON pg_class.relnamespace = pg_namespace.oid"
+					+ " WHERE nspname"
+					+ " NOT IN ('pg_catalog', 'pg_catalog')";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				tableComments = new Vector<Comment>();
+
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"));
+
+					tableComments.add(f);
+
+					exitLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
+	private void loadTables() {
+		if(tables == null) {
+			final String SQL = "SELECT table_schema, table_name"
+					+ " FROM information_schema.tables t"
+					+ " WHERE table_schema"
+					+ " NOT IN ('pg_catalog', 'information_schema')"
+					+ " ORDER BY t.table_schema ASC";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				tables = new Vector<Table>();
+				final String SCHEMA_NAME_FIELD = "table_schema";
+				final String TABLE_NAME_FIELD = "table_name";
+
+				Boolean doLoop = results.next();
+				while(doLoop) {
+					tables.add(new PGTable(results.getString(SCHEMA_NAME_FIELD), results.getString(TABLE_NAME_FIELD)));
+					doLoop = results.next();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -234,9 +321,16 @@ public class PGDatabase implements Database {
 	public Vector<Schema> getSchemas() {
 		return schemas;
 	}
+	
+	public Vector<Table> getTables() {
+		return tables;
+	}
 
 	public Vector<Comment> getComments() {
-		return comments;
+		Vector<Comment> res = new Vector<Comment>();
+		res.addAll(tableComments);
+		res.addAll(functionComments);
+		return res;
 	}
 
 	public String getName() {
