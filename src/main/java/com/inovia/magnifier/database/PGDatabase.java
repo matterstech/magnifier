@@ -264,11 +264,13 @@ public class PGDatabase implements Database {
 	
 	private void loadTables() {
 		if(tables == null) {
-			final String SQL = "SELECT table_schema, table_name"
-					+ " FROM information_schema.tables t"
-					+ " WHERE table_schema"
-					+ " NOT IN ('pg_catalog', 'information_schema')"
-					+ " ORDER BY t.table_schema ASC";
+			final String SQL = "SELECT t.schemaname, t.tablename, ccu.column_name"
+					+ " FROM pg_tables t"
+					+ " LEFT OUTER JOIN information_schema.constraint_column_usage ccu"
+					+ " ON t.schemaname = ccu.table_schema"
+					+ " AND t.tablename = ccu.table_name"
+					+ " WHERE t.schemaname NOT IN ('pg_catalog', 'information_schema')"
+					+ " ORDER BY schemaname ASC, tablename ASC";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -277,13 +279,26 @@ public class PGDatabase implements Database {
 				results = statement.executeQuery(SQL);
 
 				tables = new Vector<Table>();
-				final String SCHEMA_NAME_FIELD = "table_schema";
-				final String TABLE_NAME_FIELD = "table_name";
+				final String SCHEMA_NAME_FIELD = "schemaname";
+				final String TABLE_NAME_FIELD = "tablename";
+				final String COLUMN_NAME_FIELD = "column_name";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
-					tables.add(new PGTable(results.getString(SCHEMA_NAME_FIELD), results.getString(TABLE_NAME_FIELD)));
-					doLoop = results.next();
+					String schemaName = results.getString(SCHEMA_NAME_FIELD);
+					String tableName = results.getString(TABLE_NAME_FIELD);
+					
+					PGTable table = new PGTable(schemaName, tableName);
+					
+					while(doLoop && schemaName.equals(results.getString(SCHEMA_NAME_FIELD)) && tableName.equals(results.getString(TABLE_NAME_FIELD))) {
+						if(results.getString(COLUMN_NAME_FIELD) != null) {
+							table.addPrimaryKey(results.getString(COLUMN_NAME_FIELD));
+						}
+						
+						doLoop = results.next();
+					}
+					
+					tables.add(table);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -300,6 +315,10 @@ public class PGDatabase implements Database {
 					System.exit(1);
 				}
 			}
+		}
+		
+		for(Table t : tables) {
+			System.out.println(t.getName() + ": " + t.getPrimaryKey());
 		}
 	}
 

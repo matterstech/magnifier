@@ -1,7 +1,6 @@
 package com.inovia.magnifier;
 
 import com.inovia.magnifier.database.*;
-import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 import com.inovia.magnifier.rules.*;
 
@@ -27,6 +26,7 @@ public class Magnifier {
 			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			report.addRuleReport(TableHasComment.runOn(database.getTables(), database.getComments()));
+			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables(), database.getComments()));
 			
 			report.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
