@@ -52,10 +52,10 @@ public class PGDatabase implements Database {
 
 	public void load() {
 		loadSchemas();
-		
+
 		loadFunctions();
 		loadFunctionComments();
-		
+
 		loadTables();
 		loadTableComments();
 	}
@@ -124,9 +124,9 @@ public class PGDatabase implements Database {
 				Boolean doLoop = results.next();
 				while(doLoop) {
 					PGFunction function = new PGFunction(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD));
-					
+
 					Vector<PGFunctionParameter> parameters = new Vector<PGFunctionParameter>();
-					
+
 					PGFunctionParameter parameter = null;
 					String parameterName = results.getString(PARAMETER_NAME_FIELD);
 					String parameterMode = results.getString(PARAMETER_TYPE_FIELD);
@@ -134,24 +134,24 @@ public class PGDatabase implements Database {
 					if(parameterName != null && parameterMode != null) {
 						parameter = new PGFunctionParameter(function, parameterName, parameterMode);
 						parameters.add(parameter);
-						
+
 						function.addParameter(parameter);
 					}
-					
-					
+
+
 					String schemaName = results.getString(SCHEMA_NAME_FIELD);
 					String routineName = results.getString(ROUTINE_NAME_FIELD);
-					
+
 					doLoop = results.next();
 					while(doLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(ROUTINE_NAME_FIELD).equals(routineName)) {
 						schemaName = results.getString(SCHEMA_NAME_FIELD);
 						routineName = results.getString(ROUTINE_NAME_FIELD);
-						
+
 						parameter = new PGFunctionParameter(function, results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD));
 						function.addParameter(parameter);
 						doLoop = results.next();
 					}
-					
+
 					functions.add(function);
 				}
 			} catch (SQLException e) {
@@ -216,7 +216,7 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-	
+
 	private void loadTableComments() {
 		if(tableComments == null) {
 			final String SQL = "SELECT nspname, relname, description"
@@ -261,9 +261,10 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
-	
+
 	private void loadTables() {
 		if(tables == null) {
+			/* Previous query
 			final String SQL = "SELECT t.schemaname, t.tablename, ccu.column_name"
 					+ " FROM pg_tables t"
 					+ " LEFT OUTER JOIN information_schema.constraint_column_usage ccu"
@@ -271,33 +272,72 @@ public class PGDatabase implements Database {
 					+ " AND t.tablename = ccu.table_name"
 					+ " WHERE t.schemaname NOT IN ('pg_catalog', 'information_schema')"
 					+ " ORDER BY schemaname ASC, tablename ASC";
+			 */
+
+			// Retrieve every primary and foreign key for each tables, not every columns
+			final String SQL = "select distinct"
+					+ "   tc.table_schema    as local_schema,"
+					+ "   tc.table_name      as local_table,"
+					+ "   kcu.column_name    as local_column,"
+					+ "   tc.constraint_type as key_type,"
+					+ "   ccu.table_schema   as foreign_schema,"
+					+ "   ccu.table_name     as foreign_table,"
+					+ "   ccu.column_name    as foreign_column"
+					+ " from information_schema.key_column_usage kcu"
+					+ " join information_schema.table_constraints tc"
+					+ "      on kcu.constraint_schema = tc.constraint_schema"
+					+ "     and kcu.constraint_name = tc.constraint_name"
+					+ " join information_schema.constraint_column_usage ccu"
+					+ "      on tc.constraint_schema = ccu.constraint_schema"
+					+ "     and tc.constraint_name = ccu.constraint_name"
+					+ " where constraint_type in ('FOREIGN KEY', 'PRIMARY KEY')"
+					+ " order by"
+					+ "   local_schema asc,"
+					+ "   local_table  asc,"
+					+ "   local_column asc,"
+					+ "   key_type asc,"
+					+ "   foreign_schema asc,"
+					+ "   foreign_table asc";
 
 			Statement statement = null;
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
 				results = statement.executeQuery(SQL);
-
 				tables = new Vector<Table>();
-				final String SCHEMA_NAME_FIELD = "schemaname";
-				final String TABLE_NAME_FIELD = "tablename";
-				final String COLUMN_NAME_FIELD = "column_name";
+				final String LOCAL_SCHEMA_FIELD   = "local_schema";
+				final String LOCAL_TABLE_FIELD    = "local_table";
+				final String LOCAL_COLUMN_FIELD   = "local_column";
+				final String FOREIGN_SCHEMA_FIELD = "foreign_schema";
+				final String FOREIGN_TABLE_FIELD  = "foreign_table";
+				final String FOREIGN_COLUMN_FIELD = "foreign_column";
+				final String KEY_TYPE_FIELD       = "key_type";
 
 				Boolean doLoop = results.next();
+				// Loop on tables
 				while(doLoop) {
-					String schemaName = results.getString(SCHEMA_NAME_FIELD);
-					String tableName = results.getString(TABLE_NAME_FIELD);
-					
-					PGTable table = new PGTable(schemaName, tableName);
-					
-					while(doLoop && schemaName.equals(results.getString(SCHEMA_NAME_FIELD)) && tableName.equals(results.getString(TABLE_NAME_FIELD))) {
-						if(results.getString(COLUMN_NAME_FIELD) != null) {
-							table.addPrimaryKey(results.getString(COLUMN_NAME_FIELD));
-						}
+					String localSchemaName  = results.getString(LOCAL_SCHEMA_FIELD);
+					String localTableName   = results.getString(LOCAL_TABLE_FIELD);
+
+					PGTable table = new PGTable(localSchemaName, localTableName);
+
+					// Loop on columns
+					while(doLoop && localSchemaName.equals(results.getString(LOCAL_SCHEMA_FIELD)) && localTableName.equals(results.getString(LOCAL_TABLE_FIELD))) {
+						String keyType           = results.getString(KEY_TYPE_FIELD);
+						String localColumn       = results.getString(LOCAL_COLUMN_FIELD);
+						String foreignSchemaName = results.getString(FOREIGN_SCHEMA_FIELD);
+						String foreignTableName  = results.getString(FOREIGN_TABLE_FIELD);
+						String foreignColumnName = results.getString(FOREIGN_COLUMN_FIELD);
 						
+						if(keyType.equals("PRIMARY KEY")) {
+							table.addPrimaryKey(localColumn);
+						} else if(keyType.equals("FOREIGN KEY")) {
+							table.addForeignKey(new PGForeignKey(table, localColumn, foreignSchemaName, foreignTableName, foreignColumnName));
+						}
+
 						doLoop = results.next();
 					}
-					
+
 					tables.add(table);
 				}
 			} catch (SQLException e) {
@@ -315,10 +355,6 @@ public class PGDatabase implements Database {
 					System.exit(1);
 				}
 			}
-		}
-		
-		for(Table t : tables) {
-			System.out.println(t.getName() + ": " + t.getPrimaryKey());
 		}
 	}
 
@@ -340,7 +376,7 @@ public class PGDatabase implements Database {
 	public Vector<Schema> getSchemas() {
 		return schemas;
 	}
-	
+
 	public Vector<Table> getTables() {
 		return tables;
 	}

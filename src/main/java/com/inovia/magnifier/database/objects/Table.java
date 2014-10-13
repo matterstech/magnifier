@@ -6,5 +6,6 @@ public interface Table extends Entity {
 	public String getSchemaName();
 	public String getName();
 	public Vector<String> getPrimaryKey();
+	public Vector<ForeignKey> getForeignKeys();
 	public Boolean hasPrimaryKey();
 }
