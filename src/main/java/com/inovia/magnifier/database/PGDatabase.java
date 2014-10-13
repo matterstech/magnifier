@@ -3,10 +3,7 @@ package com.inovia.magnifier.database;
 import java.sql.*;
 import java.util.Vector;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.Function;
-import com.inovia.magnifier.database.objects.Schema;
-import com.inovia.magnifier.database.objects.Table;
+import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 
 public class PGDatabase implements Database {
@@ -22,6 +19,7 @@ public class PGDatabase implements Database {
 	private Vector<Table> tables;
 	private Vector<Comment> functionComments;
 	private Vector<Comment> tableComments;
+	private Vector<Index> indexes;
 
 	public PGDatabase(String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -58,6 +56,8 @@ public class PGDatabase implements Database {
 
 		loadTables();
 		loadTableComments();
+		
+		loadIndexes();
 	}
 
 	private void loadSchemas() {
@@ -358,6 +358,44 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	private void loadIndexes() {
+		if(indexes == null) {
+			final String SQL = "SELECT schemaname, tablename, indexname"
+					+ " FROM pg_indexes"
+					+ " WHERE schemaname NOT IN ('pg_catalog', 'information_schema')";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				indexes = new Vector<Index>();
+
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					indexes.add(new PGIndex(results.getString("schemaname"), results.getString("tablename"), results.getString("indexname")));
+
+					exitLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
 	public void disconnect() {
 		try {
 			if(connection != null) {
@@ -379,6 +417,10 @@ public class PGDatabase implements Database {
 
 	public Vector<Table> getTables() {
 		return tables;
+	}
+	
+	public Vector<Index> getIndexes() {
+		return indexes;
 	}
 
 	public Vector<Comment> getComments() {
