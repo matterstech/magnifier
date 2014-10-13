@@ -27,6 +27,8 @@ public class ForeignKeyName {
 		// TODO: What if different schema ?
 		if(fk.getColumnName().equals(fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
 			return true;
+		} else if(fk.getColumnName().endsWith("_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
+			return true;
 		}
 
 		return false;
