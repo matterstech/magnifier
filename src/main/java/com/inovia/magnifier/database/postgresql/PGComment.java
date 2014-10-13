@@ -5,12 +5,14 @@ import com.inovia.magnifier.database.objects.Comment;
 public class PGComment implements Comment {
 	private String schemaName;
 	private String entityName;
+	private String entityType;
 	private String content;
 	
-	public PGComment(String schemaName, String entityName, String content) {
+	public PGComment(String schemaName, String entityName, String content, String entityType) {
 		this.schemaName = schemaName;
 		this.entityName = entityName;
 		this.content = content;
+		this.entityType = entityType;
 	}
 	
 	public String getSchemaName() {
@@ -27,5 +29,9 @@ public class PGComment implements Comment {
 
 	public String getEntityDescription() {
 		return "COMMENT ON " + entityName;
+	}
+
+	public String getEntityType() {
+		return entityType;
 	}
 }

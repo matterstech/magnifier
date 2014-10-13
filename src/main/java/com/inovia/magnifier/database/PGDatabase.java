@@ -20,6 +20,8 @@ public class PGDatabase implements Database {
 	private Vector<Comment> functionComments;
 	private Vector<Comment> tableComments;
 	private Vector<Index> indexes;
+	private Vector<Comment> triggerComments;
+	private Vector<Trigger> triggers;
 
 	public PGDatabase(String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -58,6 +60,9 @@ public class PGDatabase implements Database {
 		loadTableComments();
 		
 		loadIndexes();
+		
+		loadTriggers();
+		loadTriggerComments();
 	}
 
 	private void loadSchemas() {
@@ -75,6 +80,56 @@ public class PGDatabase implements Database {
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
 					schemas.add(new PGSchema(results.getString("schema_name")));
+
+					exitLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
+	private void loadTriggers() {
+		if(triggers == null) {
+			final String SQL = "select"
+					+ " trigger_schema,"
+					+ " trigger_name,"
+					+ " event_manipulation,"
+					+ " event_object_schema AS table_schema,"
+					+ " event_object_table  AS table_name,"
+					+ " event_manipulation as action,"
+					+ " action_timing as timing"
+					+ " FROM information_schema.triggers";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				triggers = new Vector<Trigger>();
+
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					String schemaName  = results.getString("trigger_schema");
+					String tableName   = results.getString("table_name");
+					String triggerName = results.getString("trigger_name");
+					String action      = results.getString("action");
+					String timing      = results.getString("timing");
+					
+					triggers.add(new PGTrigger(schemaName, tableName, triggerName, action, timing));
 
 					exitLoop = results.next();
 				}
@@ -193,7 +248,7 @@ public class PGDatabase implements Database {
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"));
+					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"), "function");
 
 					functionComments.add(f);
 
@@ -238,7 +293,7 @@ public class PGDatabase implements Database {
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"));
+					Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), "table");
 
 					tableComments.add(f);
 
@@ -264,16 +319,6 @@ public class PGDatabase implements Database {
 
 	private void loadTables() {
 		if(tables == null) {
-			/* Previous query
-			final String SQL = "SELECT t.schemaname, t.tablename, ccu.column_name"
-					+ " FROM pg_tables t"
-					+ " LEFT OUTER JOIN information_schema.constraint_column_usage ccu"
-					+ " ON t.schemaname = ccu.table_schema"
-					+ " AND t.tablename = ccu.table_name"
-					+ " WHERE t.schemaname NOT IN ('pg_catalog', 'information_schema')"
-					+ " ORDER BY schemaname ASC, tablename ASC";
-			 */
-
 			// Retrieve every primary and foreign key for each tables, not every columns
 			final String SQL = "select distinct"
 					+ "   tc.table_schema    as local_schema,"
@@ -358,6 +403,52 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	private void loadTriggerComments() {
+		if(triggerComments == null) {
+			final String SQL = "SELECT"
+					+ "   n.nspname     AS schema_name,"
+					+ "   c.relname     AS table_name,"
+					+ "   t.tgname      AS trigger_name,"
+					+ "   d.description AS description"
+					+ " FROM pg_description d"
+					+ " JOIN pg_trigger   t ON d.objoid = t.oid"
+					+ " JOIN pg_class     c ON t.tgrelid = c.oid"
+					+ " JOIN pg_namespace n ON n.oid = c.relnamespace";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				triggerComments = new Vector<Comment>();
+
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					Comment f = new PGComment(results.getString("schema_name"), results.getString("table_name"), results.getString("description"), "trigger");
+
+					triggerComments.add(f);
+
+					exitLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
+	
 	private void loadIndexes() {
 		if(indexes == null) {
 			final String SQL = "SELECT schemaname, tablename, indexname"
@@ -427,9 +518,14 @@ public class PGDatabase implements Database {
 		Vector<Comment> res = new Vector<Comment>();
 		res.addAll(tableComments);
 		res.addAll(functionComments);
+		res.addAll(triggerComments);
 		return res;
 	}
 
+	public Vector<Trigger> getTriggers() { 
+		return triggers;
+	}
+	
 	public String getName() {
 		return name;
 	}

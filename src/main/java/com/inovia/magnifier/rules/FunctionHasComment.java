@@ -23,7 +23,7 @@ public abstract class FunctionHasComment {
 	
 	private static Boolean assertion(Function function, Vector<Comment> comments) {
 		for(Comment c : comments) {
-			if(c.getSchemaName().equals(function.getSchemaName()) && c.getEntityName().equals(function.getName())) {
+			if(c.getEntityType().equals("function") && c.getSchemaName().equals(function.getSchemaName()) && c.getEntityName().equals(function.getName())) {
 				return true;
 			}
 		}
