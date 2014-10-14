@@ -6,9 +6,7 @@ import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 public class TableHasCommentTest extends TestCase {
 	public TableHasCommentTest(String testName) {
