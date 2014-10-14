@@ -23,8 +23,6 @@ public class TriggerName {
 
 	private static Boolean assertion(Trigger t) {
 		final String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
-		System.out.println(t.getName());
-		System.out.println(PATTERN);
 		return t.getName().equalsIgnoreCase(PATTERN);
 	}
 }
