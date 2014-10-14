@@ -18,6 +18,10 @@ public class RuleReport {
 	}
 	
 	public Float getScore() {
+		if(entries.size() == 0) {
+			return 100.0F;
+		}
+		
 		Float tmp = 0F;
 		
 		if(score == null) {
