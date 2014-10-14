@@ -5,6 +5,11 @@ import java.util.ArrayList;
 
 import com.inovia.magnifier.databaseObjects.*;
 
+/**
+ * 
+ * @author joeyrogues
+ *
+ */
 public class Database {
 	private Configuration configuration;
 	private Connection connection = null;
@@ -17,6 +22,7 @@ public class Database {
 
 		try {
 			// Register JDBC driver
+			// TODO: Load the provided JDBC Driver. No hardcode
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
