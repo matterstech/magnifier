@@ -2,6 +2,11 @@ package com.inovia.magnifier;
 
 import org.apache.commons.cli.*;
 
+/**
+ * 
+ * @author joeyrogues
+ *
+ */
 public class Configuration {
 	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "s", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
