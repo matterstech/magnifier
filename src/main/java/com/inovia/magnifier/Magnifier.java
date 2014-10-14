@@ -27,7 +27,7 @@ public class Magnifier {
 			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			report.addRuleReport(TableHasComment.runOn(database.getTables(), database.getComments()));
-			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables(), database.getComments()));
+			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables()));
 			
 			/*for(Table t : database.getTables()) {
 				System.out.println(t.getName() + ": " + t.getPrimaryKey());
