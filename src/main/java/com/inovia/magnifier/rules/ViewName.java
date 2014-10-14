@@ -2,10 +2,8 @@ package com.inovia.magnifier.rules;
 
 import java.util.Vector;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.View;
-import com.inovia.magnifier.reports.ReportEntry;
-import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.reports.*;
 
 public class ViewName {
 	public static final String RULE_NAME = "ViewName";
