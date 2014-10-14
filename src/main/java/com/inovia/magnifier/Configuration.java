@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.commons.cli.*;
 
 public class Configuration {
-	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "s", "u", "pw", "o"};
+	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
 	private static final String REPORT_DEFAULT_NAME = "report.html";
 
@@ -29,7 +29,6 @@ public class Configuration {
 		options.addOption("t", true, "DBMS");
 		options.addOption("dp", true, "The JDBC driver package");
 		options.addOption("d", true, "The database name");
-		options.addOption("s", true, "The database schema");
 		options.addOption("u", true, "The username");
 		options.addOption("pw", true, "The password");
 		options.addOption("o", true, "The report output path/name");
@@ -51,7 +50,6 @@ public class Configuration {
 			host         = commandLine.getOptionValue("h");
 			port         = commandLine.getOptionValue("p");
 			databaseName = commandLine.getOptionValue("d");
-			schema       = commandLine.getOptionValue("s");
 			databaseType = commandLine.getOptionValue("t");
 			driverPath   = commandLine.getOptionValue("dp");
 			user         = commandLine.getOptionValue("u");
