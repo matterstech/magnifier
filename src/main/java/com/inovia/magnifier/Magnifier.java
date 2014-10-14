@@ -26,7 +26,7 @@ public class Magnifier {
 			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			report.addRuleReport(TableHasComment.runOn(database.getTables(), database.getComments()));
-			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables(), database.getComments()));
+			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables()));
 			
 			report.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
