@@ -16,6 +16,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<Function> functions = null;
 	private ArrayList<Trigger> triggers = null;
 	private ArrayList<ForeignKey> foreignKeys = null;
 	private ArrayList<PrimaryKey> primaryKeys = null;
@@ -203,7 +204,6 @@ public class Database {
 			try {
 				statement = getConnection().createStatement();
 				results = statement.executeQuery(SQL);
-
 				uniques = new ArrayList<Unique>();
 				
 				final String CONSTRAINT_NAME_FIELD = "constraint_name";
@@ -307,5 +307,59 @@ public class Database {
 		}
 		
 		return triggers;
+	}
+	
+	/**
+	 * 
+	 * @return The list of functions in the database
+	 */
+	public ArrayList<Function> getFunctions() {
+		if(functions == null) {
+			final String SQL = "SELECT routines.routine_name, parameters.data_type, parameters.parameter_mode, parameters.parameter_name, parameters.data_type FROM information_schema.routines JOIN information_schema.parameters ON routines.specific_name = parameters.specific_name WHERE routines.specific_schema not in ('pg_catalog', 'information_schema') ORDER BY routines.routine_name ASC, parameters.ordinal_position ASC;";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				functions = new ArrayList<Function>();
+				
+				final String FUNCTION_NAME_FIELD = "routine_name";
+				final String PARAMETER_NAME_FIELD = "parameter_name";
+				final String PARAMETER_TYPE_FIELD = "data_type";
+				final String PARAMETER_IN_OUT_FIELD = "parameter_mode";
+				
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					String functionName = results.getString(FUNCTION_NAME_FIELD);
+					ArrayList<FunctionParameter> parameters = new ArrayList<FunctionParameter>();
+					
+					Boolean isIn = results.getString(PARAMETER_IN_OUT_FIELD).equals("IN");
+					parameters.add(new FunctionParameter(results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD), isIn));
+					
+					exitLoop = results.next();
+					while(exitLoop && results.getString(FUNCTION_NAME_FIELD).equals(functionName)) {
+						isIn = results.getString(PARAMETER_IN_OUT_FIELD).equals("IN");
+						parameters.add(new FunctionParameter(results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD), isIn));
+						exitLoop = results.next();
+					}
+					
+					functions.add(new Function(functionName, parameters));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return functions;
 	}
 }

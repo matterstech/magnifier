@@ -16,6 +16,10 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
+			System.out.println("Functions");
+			for(Function f : database.getFunctions()) {
+				System.out.println(f);
+			}
 			System.out.println("Triggers");
 			for(Trigger t : database.getTriggers()) {
 				System.out.println(t);
@@ -42,7 +46,6 @@ public class Magnifier {
 			System.out.println();
 
 			System.out.println("Alright");
-
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);
