@@ -20,8 +20,7 @@ public class TableHasPrimaryKeyTest extends TestCase {
 	
 	public void testRule() {
 		Vector<Table> tables = new Vector<Table>();
-		Vector<Comment> comments = new Vector<Comment>();
-		
+
 		PGTable t = new PGTable("public", "my_table");
 		tables.add(t);
 		
