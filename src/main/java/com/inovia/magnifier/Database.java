@@ -16,6 +16,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<ForeignKey> foreignKeys = null;
 	private ArrayList<PrimaryKey> primaryKeys = null;
 	private ArrayList<Unique> uniques = null;
 
@@ -151,7 +152,6 @@ public class Database {
 			try {
 				statement = getConnection().createStatement();
 				results = statement.executeQuery(SQL);
-
 				primaryKeys = new ArrayList<PrimaryKey>();
 				
 				final String CONSTRAINT_NAME_FIELD = "constraint_name";
@@ -241,5 +241,41 @@ public class Database {
 		}
 		
 		return uniques;
+	}
+	
+	public ArrayList<ForeignKey> getForeignKeys() {
+		if(foreignKeys == null) {
+			final String SQL =
+					"SELECT tc.constraint_name, tc.table_name, kcu.column_name, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name"
+					+ " FROM information_schema.table_constraints AS tc"
+					+ " JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name"
+					+ " JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name"
+					+ " WHERE constraint_type = 'FOREIGN KEY'"
+					+ " AND tc.constraint_schema = '" + configuration.getSchema() + "';";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				foreignKeys = new ArrayList<ForeignKey>();
+				while(results.next()) {
+					foreignKeys.add(new ForeignKey(results.getString("constraint_name"), results.getString("table_name"), results.getString("foreign_table_name"), results.getString("foreign_column_name"), SQL));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return foreignKeys;
 	}
 }
