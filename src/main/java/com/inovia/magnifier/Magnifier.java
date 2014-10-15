@@ -23,20 +23,17 @@ public class Magnifier {
 			database.load();
 			
 			Report report = new Report(database.getName());
-			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
-			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
 			
 			report.addRuleReport(TableHasComment.runOn(database.getTables(), database.getComments()));
-			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables(), database.getComments()));
-			report.addRuleReport(ForeignKeyName.runOn(database.getTables()));
-			
 			report.addRuleReport(IndexName.runOn(database.getIndexes()));
-			
-			report.addRuleReport(TriggerName.runOn(database.getTriggers()));
-			report.addRuleReport(TriggerHasComment.runOn(database.getTriggers(), database.getComments()));
-			
+			report.addRuleReport(ForeignKeyName.runOn(database.getTables()));
+			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables()));
+			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
+			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
 			report.addRuleReport(ViewName.runOn(database.getViews()));
 			report.addRuleReport(ViewHasComment.runOn(database.getViews(), database.getComments()));
+			report.addRuleReport(TriggerName.runOn(database.getTriggers()));
+			report.addRuleReport(TriggerHasComment.runOn(database.getTriggers(), database.getComments()));
 			
 			report.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
