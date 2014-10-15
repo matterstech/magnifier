@@ -7,7 +7,7 @@ import com.inovia.magnifier.reports.*;
 
 public class TriggerHasComment {
 	public static final String RULE_NAME = "TriggerHasComment";
-	public static final String SUGGESTION = "Each table should have a comment explaining what it contains";
+	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";
 	public static final Float DEBT = 1F;
 	
 	public static RuleReport runOn(Vector<Trigger> triggers, Vector<Comment> comments) {

@@ -32,44 +32,85 @@ public class Report {
 			html = html + "<html>"
 						+ "  <head>"
 						+ "    <style>"
-						+ "      table {"
-						+ "        width: 100%;"
+						+ "      body {"
+						+ "        font-family: sans-serif;"
+						+ "      }"
+						+ "      h1 {"
+						+ "        text-align: center;"
+						+ "      }"
+						+ "      table.rule-table {"
+						+ "        width: 98%;"
 						+ "        text-align: left;"
-						+ "        border: 1px black ridge"
+						+ "        border: 1px #CCC solid;"
+						+ "        padding: 1px;"
+						+ "        margin: auto;"
+						+ "        border-spacing: 0;"
+						+ "      }"
+						+ "      table.rule-table tr.rule-header td,"
+						+ "      table.rule-table th {"
+						+ "        border-bottom: 1px solid #CCC;"
+						+ "        padding: 3px;"
+						+ "      }"
+						+ "      table.rule-table th {"
+						+ "        background-color: rgb(179, 203, 255);"
+						+ "        color: rgb(0, 36, 116);"
+						+ "      }"
+						+ "      table td {"
+						+ "        color: rgb(35, 50, 83)"
+						+ "      }"
+						+ "      .good-metric {"
+						+ "        color: green;"
+						+ "      }"
+						+ "      .bad-metric {"
+						+ "        color: red;"
+						+ "      }"
+						+ "      .normal-metric {"
+						+ "        color: orange;"
+						+ "      }"
+						+ "      .metric {"
+						+ "        font-weight: bold;"
+						+ "      }"
+						+ "      .fold-button {"
+						+ "        background-color: white;"
+						+ "        -moz-border-radius: 10px;"
+                        + "        -webkit-border-radius: 10px;"
+                        + "        border-radius: 10px;"
+						+ "      }"
+						+ "      .description {"
+						+ "        font-style: italic;"
 						+ "      }"
 						+ "    </style>"
 						+ "  </head>"
 						+ "  <body>"
 						+ "    <h1>" + databaseName + "</h1>"
-						+ "    <table>"
+						+ "    <table class=\"rule-table\">"
 						+ "      <thead>"
 						+ "        <tr>"
 						+ "        <th></th>"
-						+ "        <th>Rule</th>"
 						+ "        <th>Score</th>"
+						+ "        <th>Debt</th>"
+						+ "        <th>Rule</th>"
 						+ "        <th>Suggestions</th>"
-						+ "        <th>Technical debt</th>"
-						+ "        <th>Entity</th>"
 						+ "      </tr>"
 						+ "    </thead>"
 						+ "  <tbody>";
 			for(RuleReport rr : ruleReports) {
-				html = html + "<tr id=\"" + rr.getRuleName() + "-plus\">";
+				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRuleName() + "-plus\">";
 				if(rr.getScore() < 100F) {
-					html = html + "<td><button class=\"fold-button\" id=\"" + rr.getRuleName() + "\"> +/- </button></td>";
+					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRuleName() + "\"> +/- </button></td>";
 				} else {
 				    html = html + "<td></td>";
 				}
-				html = html + "  <td>" + rr.getRuleName() + "</td>"
-						    + "  <td>" + rr.getScore().intValue() + "%</td>"
-							+ "  <td>" + rr.getSuggestion() + "</td>"
-							+ "  <td>" + rr.getDebt() + "</td>"
-							+ "  <td>" + "" + "</td>"
-							+ "</tr>"
-							+ "<tr id=\"" + rr.getRuleName() + "-plus\">"
-							+ "  <td colspan=\"5\">";
+				html = html + "  <td title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</td>"
+						    + "  <td title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
+							+ "  <td>" + rr.getRuleName() + "</td>"
+							+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
+							+ "</tr>";
 				if(rr.getScore() < 100F) {
-					html = html + "  <table id=\"" + rr.getRuleName() + "-table\" style=\"display: none\">"
+					html = html + "<tr id=\"" + rr.getRuleName() + "-plus\">"
+							    + "  <td colspan=\"3\">"
+							    + "  <td colspan=\"2\">"
+							    + "  <table id=\"" + rr.getRuleName() + "-table\" class=\"rule-entries\" style=\"display: none\">"
 							    + "<tbody>";
 				}
 				for(ReportEntry e : rr.getEntries()) {
@@ -81,10 +122,10 @@ public class Report {
 				}
 				if(rr.getScore() < 100F) {
 					html = html + "</tbody>"
-					            + "  </table>";
+					            + "  </table>"
+					            + "  </td>"
+					        	+ "</tr>";
 				}
-				html = html + "  </td>"
-				        	+ "</tr>";
 			}
 			html = html + "      </tbody>"
 				        + "    </table>"
