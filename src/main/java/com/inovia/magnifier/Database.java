@@ -16,6 +16,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<Trigger> triggers = null;
 	private ArrayList<ForeignKey> foreignKeys = null;
 	private ArrayList<PrimaryKey> primaryKeys = null;
 	private ArrayList<Unique> uniques = null;
@@ -133,7 +134,7 @@ public class Database {
 
 		return tables;
 	}
-	
+
 	public ArrayList<PrimaryKey> getPrimaryKeys() {
 		if(primaryKeys == null) {
 			final String SQL =
@@ -275,7 +276,36 @@ public class Database {
 				}
 			}
 		}
-		
 		return foreignKeys;
+	}
+	
+	public ArrayList<Trigger> getTriggers() {
+		if(triggers == null) {
+			final String SQL = "SELECT trigger_name, event_object_table, event_manipulation, action_timing FROM information_schema.triggers WHERE trigger_schema NOT IN ('pg_catalog', 'information_schema');";
+			
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				triggers = new ArrayList<Trigger>();
+				while(results.next()) {
+					triggers.add(new Trigger(results.getString("trigger_name"), results.getString("action_timing"), results.getString("event_object_table"), results.getString("event_manipulation")));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return triggers;
 	}
 }
