@@ -13,6 +13,18 @@ public class Report {
 	}
 
 	public void generateHtml(String path) {
+		Collections.sort(ruleReports, new Comparator<RuleReport>() {
+			public int compare(RuleReport r1, RuleReport r2) {
+				if(r1.getScore() > r2.getScore()) {
+					return 1;
+				} else if(r1.getScore() < r2.getScore()) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		});
+		
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(path, "UTF-8");
@@ -44,8 +56,9 @@ public class Report {
 				writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
 				if(rr.getScore() < 100F) {
 					writer.println("        <td><button class=\"fold-button\" id=\"" + rr.getRuleName() + "\">" + rr.getRuleName() + "</button></td>");
+				} else {
+				    writer.println("          <td>" + rr.getRuleName() + "</td>");
 				}
-				writer.println("          <td>" + rr.getRuleName() + "</td>");
 				writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
 				writer.println("          <td>" + rr.getSuggestion() + "</td>");
 				writer.println("          <td>" + rr.getDebt() + "</td>");
