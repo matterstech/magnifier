@@ -1,5 +1,6 @@
 package com.inovia.magnifier.database;
 
+import java.net.*;
 import java.sql.*;
 import java.util.Vector;
 
@@ -29,7 +30,7 @@ public class PGDatabase implements Database {
 	private Vector<View> views;
 	private Vector<Comment> viewComments;
 
-	public PGDatabase(String databaseName, String host, String port, String user, String password) {
+	public PGDatabase(String driverPath, String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
 		this.host = host;
 		this.port = port;
@@ -37,9 +38,29 @@ public class PGDatabase implements Database {
 		this.password = password;
 
 		try {
-			// Register JDBC driver
-			Class.forName("org.postgresql.Driver");
+			
+			// URL u = new URL("jar:file:/path/to/pgjdbc2.jar!/");
+			URL u = new URL("jar:file:" + driverPath + "!/");
+			String classname = "org.postgresql.Driver";
+			URLClassLoader ucl = new URLClassLoader(new URL[] { u });
+			Driver d = (Driver) Class.forName(classname, true, ucl).newInstance();
+			DriverManager.registerDriver((Driver) new DriverShim(d));
+			// DriverManager.getConnection("jdbc:postgresql://host/db", "user", "pw");
+			
+			// Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}

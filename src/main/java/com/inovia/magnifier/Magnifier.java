@@ -11,6 +11,7 @@ public class Magnifier {
 		try {
 			configuration = new Configuration(args);
 			database = DatabaseFactory.getDatabase(
+					configuration.getDriverPath(),
 					configuration.getDatabaseType(),
 					configuration.getHost(),
 					configuration.getPort(),
