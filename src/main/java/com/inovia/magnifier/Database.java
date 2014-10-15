@@ -16,6 +16,7 @@ public class Database {
 
 	private ArrayList<Table> tables = null;
 	private ArrayList<Index> indexes = null;
+	private ArrayList<PrimaryKey> primaryKeys = null;
 	private ArrayList<Unique> uniques = null;
 
 	public Database(Configuration configuration) {
@@ -132,6 +133,66 @@ public class Database {
 		return tables;
 	}
 	
+	public ArrayList<PrimaryKey> getPrimaryKeys() {
+		if(primaryKeys == null) {
+			final String SQL =
+					"SELECT c.constraint_schema, c.constraint_name, c.table_name, c.column_name"
+					+ " FROM information_schema.table_constraints t"
+					+ " JOIN information_schema.constraint_column_usage c"
+					+ " ON c.constraint_name = t.constraint_name"
+					+ " AND c.table_name = t.table_name"
+					+ " AND c.constraint_schema = t.table_schema"
+					+ " WHERE constraint_type = 'PRIMARY KEY'"
+					+ " AND t.constraint_schema NOT IN ('pg_catalog', 'information_schema')"
+					+ " ORDER BY c.constraint_schema, c.constraint_name ASC";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = getConnection().createStatement();
+				results = statement.executeQuery(SQL);
+
+				primaryKeys = new ArrayList<PrimaryKey>();
+				
+				final String CONSTRAINT_NAME_FIELD = "constraint_name";
+				final String TABLE_NAME_FIELD = "table_name";
+				final String COLUMN_NAME_FIELD = "column_name";
+				final String SCHEMA_NAME_FIELD = "constraint_schema";
+				
+				Boolean exitLoop = results.next();
+				while(exitLoop) {
+					String constraintName = results.getString(CONSTRAINT_NAME_FIELD);
+					String columnName = results.getString(TABLE_NAME_FIELD);
+					String schemaName = results.getString(SCHEMA_NAME_FIELD);
+					ArrayList<String> columns = new ArrayList<String>();
+					
+					columns.add(results.getString(COLUMN_NAME_FIELD));
+					
+					exitLoop = results.next();
+					while(exitLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(CONSTRAINT_NAME_FIELD).equals(constraintName)) {
+						columns.add(results.getString(COLUMN_NAME_FIELD));
+						exitLoop = results.next();
+					}
+					
+					primaryKeys.add(new PrimaryKey(schemaName, constraintName, columnName, columns));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					results.close();
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+		
+		return primaryKeys;
+	}
+	
+
 	public ArrayList<Unique> getUniques() {
 		if(uniques == null) {
 			final String SQL = "SELECT constraint_schema, constraint_name, table_name, column_name FROM information_schema.key_column_usage WHERE constraint_schema NOT IN ('pg_catalog', 'information_schema') ORDER BY constraint_schema ASC, constraint_name ASC";

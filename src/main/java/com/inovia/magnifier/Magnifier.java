@@ -16,6 +16,10 @@ public class Magnifier {
 			conf = new Configuration(args);
 			database = new Database(conf);
 
+			System.out.println("PrimaryKeys");
+			for(PrimaryKey pk : database.getPrimaryKeys()) {
+				System.out.println(pk);
+			}
 			System.out.println("Uniques");
 			for(Unique u : database.getUniques()) {
 				System.out.println(u);
