@@ -14,14 +14,20 @@ public class PGDatabase implements Database {
 	private String user;
 	private String password;
 
-	private Vector<Schema> schemas;
+	private Vector<Schema>   schemas;
+	private Vector<Index>    indexes;
+	
+	private Vector<Table>    tables;
+	private Vector<Comment>  tableComments;
+	
 	private Vector<Function> functions;
-	private Vector<Table> tables;
-	private Vector<Comment> functionComments;
-	private Vector<Comment> tableComments;
-	private Vector<Index> indexes;
-	private Vector<Comment> triggerComments;
-	private Vector<Trigger> triggers;
+	private Vector<Comment>  functionComments;
+	
+	private Vector<Trigger>  triggers;
+	private Vector<Comment>  triggerComments;
+	
+	private Vector<View> views;
+	private Vector<Comment> viewComments;
 
 	public PGDatabase(String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -63,6 +69,9 @@ public class PGDatabase implements Database {
 		
 		loadTriggers();
 		loadTriggerComments();
+
+		loadViews();
+		loadViewComments();
 	}
 
 	private void loadSchemas() {
@@ -226,6 +235,47 @@ public class PGDatabase implements Database {
 			}
 		}
 	}
+	
+	private void loadViews() {
+		if(views == null) {
+			final String SQL = "SELECT table_schema, table_name"
+					+ " FROM information_schema.views"
+					+ " WHERE table_schema"
+					+ " NOT IN ('pg_catalog', 'information_schema')";
+
+			Statement statement = null;
+			ResultSet results = null;
+			try {
+				statement = connection.createStatement();
+				results = statement.executeQuery(SQL);
+
+				views = new Vector<View>();
+				final String SCHEMA_NAME_FIELD = "table_schema";
+				final String ROUTINE_NAME_FIELD = "table_name";
+
+				Boolean doLoop = results.next();
+				while(doLoop) {
+					views.add(new PGView(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD)));
+					
+					doLoop = results.next();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(results != null) {
+						results.close();
+					}
+					if(statement != null) {
+						statement.close();						
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}
+	}
 
 	private void loadFunctionComments() {
 		if(functionComments == null) {
@@ -236,7 +286,7 @@ public class PGDatabase implements Database {
 					+ " JOIN pg_namespace"
 					+ " ON pg_proc.pronamespace = pg_namespace.oid"
 					+ " WHERE nspname"
-					+ " NOT IN ('pg_catalog', 'pg_catalog')";
+					+ " NOT IN ('pg_catalog', 'information_schema')";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -270,6 +320,50 @@ public class PGDatabase implements Database {
 				}
 			}
 		}
+	}
+	
+	private void loadViewComments() {
+			if(viewComments == null) {
+				final String SQL = "SELECT nspname, relname, description"
+						+ " FROM pg_class c"
+						+ " JOIN pg_namespace n ON n.oid = c.relnamespace"
+						+ " JOIN pg_description d ON relfilenode = d.objoid"
+						+ " WHERE relkind = 'v'"
+						+ " AND n.nspname"
+						+ " NOT IN ('pg_catalog', 'information_schema')";
+
+				Statement statement = null;
+				ResultSet results = null;
+				try {
+					statement = connection.createStatement();
+					results = statement.executeQuery(SQL);
+
+					viewComments = new Vector<Comment>();
+
+					Boolean exitLoop = results.next();
+					while(exitLoop) {
+						Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), "view");
+
+						viewComments.add(f);
+
+						exitLoop = results.next();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						if(results != null) {
+							results.close();
+						}
+						if(statement != null) {
+							statement.close();						
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+						System.exit(1);
+					}
+				}
+			}
 	}
 
 	private void loadTableComments() {
@@ -513,11 +607,16 @@ public class PGDatabase implements Database {
 	public Vector<Index> getIndexes() {
 		return indexes;
 	}
+	
+	public Vector<View> getViews() {
+		return views;
+	}
 
 	public Vector<Comment> getComments() {
 		Vector<Comment> res = new Vector<Comment>();
 		res.addAll(tableComments);
 		res.addAll(functionComments);
+		res.addAll(viewComments);
 		res.addAll(triggerComments);
 		return res;
 	}

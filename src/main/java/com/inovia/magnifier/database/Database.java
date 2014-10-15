@@ -18,4 +18,5 @@ public interface Database {
 	public Vector<Table> getTables();
 	public Vector<Index> getIndexes();
 	public Vector<Trigger> getTriggers();
+	public Vector<View> getViews();
 }
