@@ -5,7 +5,7 @@ import org.apache.commons.cli.*;
 public class Configuration {
 	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "s", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
-
+	
 	private String connectionURL;
 	private String host;
 	private String port;
@@ -21,15 +21,15 @@ public class Configuration {
 		Options options = new Options();
 
 		// We describe the parameters Magnifier can be given
-		options.addOption("h", true, "The database host");
-		options.addOption("p", true, "The database listening port");
+		options.addOption("h", true, "The database host, default is localhost");
+		options.addOption("p", true, "The database listening port, default is the specified DBMS default port");
 		options.addOption("t", true, "DBMS");
 		options.addOption("dp", true, "The JDBC driver package");
 		options.addOption("d", true, "The database name");
 		options.addOption("s", true, "The database schema");
 		options.addOption("u", true, "The username");
 		options.addOption("pw", true, "The password");
-		options.addOption("o", true, "The report output path/name");
+		options.addOption("o", true, "The report output path/name, default is ./report.html");
 
 		BasicParser parser = new BasicParser();
 		try {

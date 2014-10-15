@@ -4,29 +4,38 @@ Magnifier is a database analyzer able to perform convention validations. Its goa
 
 ## Development
 
-To develop on Magnifier you will need:
-1. [Maven](https://github.com/apache/maven).
-2. The JDBC Driver for your DBMS.
+To develop on Magnifier you need:
+
+- [Maven](https://github.com/apache/maven).
+- The JDBC Driver for your DBMS.
 
 ## Deployment
 
-1. Retrieve the magnifier.jar file
-2. Run Magnifier
+- Retrieve the magnifier.jar file
+- Download the JDBC driver for your database
+- Run Magnifier
 
-Usage
+## Usage
 
-Usage: OptionsTip
- -d <arg>    The database name
- -dp <arg>   The JDBC driver package
- -h <arg>    The database host
- -o <arg>    The report output path/name
- -p <arg>    The database listening port
- -pw <arg>   The password
- -t <arg>    DBMS
- -u <arg>    The username
+	Usage: OptionsTip
+	-d <arg>    The database name
+	-dp <arg>   The JDBC driver package
+	-h <arg>    The database host, default is localhost
+	-o <arg>    The report output path/name, default is ./report.html
+	-p <arg>    The database listening port, default is the specified DBMS default port
+	-pw <arg>   The password
+	-t <arg>    DBMS
+	-u <arg>    The username
 
-Example:
-java -jar magnifier.jar -h host -p 5432 -t postgresql -dp ./jdbc_pgsql.jar -d “myDatabase” -u john -p myPassword -o report.html
+## Examples
+
+Analyze the local "magnifier__dev" postgresql database with username "john" and password "john_password"
+
+	java -jar magnifier.jar -t postgresql -dp ./jdbc_pgsql.jar -d magnifier_dev -u john -pw john__password
+
+Analyze the distant "magnifier__dev" postgresql database, listening on port 5432, with username "john" and password "john_password"
+
+	java -jar magnifier.jar -h 192.168.0.15 -p 5432 -t postgresql -dp ./jdbc_pgsql.jar -d my__database -u john -pw john_password -o report.html
 
 
 ## Contributing
