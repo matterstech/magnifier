@@ -5,9 +5,10 @@ import java.io.File;
 import org.apache.commons.cli.*;
 
 public class Configuration {
-	private static final String[] EXPECTED_PARAMETERS = {"h", "p", "t", "dp", "d", "u", "pw", "o"};
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
 	private static final String REPORT_DEFAULT_NAME = "report.html";
+	private static final String ABORT_MESSAGE = "Cannot continue";
+	private static final String DEFAULT_HOST = "127.0.0.1";
 
 	private String connectionURL;
 	private String host;
@@ -36,25 +37,62 @@ public class Configuration {
 		BasicParser parser = new BasicParser();
 		try {
 			CommandLine commandLine = parser.parse(options, args);
-
-			// We check if all the necessary parameters are provided
-			// If not, we exit the program
-			for(String parameter : EXPECTED_PARAMETERS) {
-				if(!commandLine.hasOption(parameter)) {
+			
+			host = commandLine.getOptionValue("h");
+			if(host == null) {
+				host = DEFAULT_HOST;
+			}
+			
+			databaseName = commandLine.getOptionValue("d");
+			if(databaseName == null) {
+				System.out.println(ABORT_MESSAGE + ": you must specify a database name");
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
+			
+			databaseType = commandLine.getOptionValue("t");
+			if(databaseType == null) {
+				System.out.println(ABORT_MESSAGE + ": you must specify a database type");
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
+			
+			port = commandLine.getOptionValue("p");
+			if(port == null) {
+				port = getDefaultPort(databaseType);
+				if(port == null) {
+					System.out.println(ABORT_MESSAGE + ": you must specify a database");
 					new HelpFormatter().printHelp("OptionsTip", options);
-
-					throw new MissingOptionException(parameter);
+					System.exit(1);
 				}
 			}
 			
-			host         = commandLine.getOptionValue("h");
-			port         = commandLine.getOptionValue("p");
-			databaseName = commandLine.getOptionValue("d");
-			databaseType = commandLine.getOptionValue("t");
-			driverPath   = commandLine.getOptionValue("dp");
-			user         = commandLine.getOptionValue("u");
-			password     = commandLine.getOptionValue("pw");
-			reportPath   = commandLine.getOptionValue("o");
+			driverPath = commandLine.getOptionValue("dp");
+			if(driverPath == null || driverPath.isEmpty()) {
+				System.out.println(ABORT_MESSAGE + ": you must specify a driver");
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
+			
+			user = commandLine.getOptionValue("u");
+			if(user == null) {
+				System.out.println(ABORT_MESSAGE + ": you must specify a user");
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
+			
+			password = commandLine.getOptionValue("pw");
+			if(password == null) {
+				System.out.println(ABORT_MESSAGE + ": you must specify a password for the user");
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
+			
+			reportPath = commandLine.getOptionValue("o");
+			if(reportPath == null) {
+				reportPath = "./";
+			}
+			
 			
 			// Check if report file already exists
 			File f = new File(reportPath);
@@ -63,7 +101,7 @@ public class Configuration {
 			if(f.exists()) {
 				 if(f.isDirectory()) {
 					 reportPath = reportPath + "/" + REPORT_DEFAULT_NAME;
-					 System.err.println("The report will be called " + REPORT_DEFAULT_NAME);
+					 System.err.println("The report will be called: " + REPORT_DEFAULT_NAME);
 				 }
 			}
 			
@@ -88,6 +126,13 @@ public class Configuration {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	private String getDefaultPort(String type) {
+		if(type.equals("postgresql")) {
+			return "5432";
+		}
+		return null;
 	}
 
 	public String getHost() {
