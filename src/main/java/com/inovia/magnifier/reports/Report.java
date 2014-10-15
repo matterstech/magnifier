@@ -18,9 +18,18 @@ public class Report {
 			writer = new PrintWriter(path, "UTF-8");
 
 			writer.println("<html>");
+			writer.println("  <head>");
+			writer.println("    <style>");
+			writer.println("      table {");
+			writer.println("        width: 100%;");
+			writer.println("        text-align: left;");
+			writer.println("        border: 1px black ridge");
+			writer.println("      }");
+			writer.println("    </style>");
+			writer.println("  </head>");
 			writer.println("  <body>");
 			writer.println("  <h1>" + databaseName + "</h1>");
-			writer.println("    <table width=\"100%\" style=\"text-align: left; border: 1px black ridge\">");
+			writer.println("    <table>");
 			writer.println("      <thead>");
 			writer.println("        <tr>");
 			writer.println("          <th>Rule</th>");
@@ -32,20 +41,21 @@ public class Report {
 			writer.println("      </thead>");
 			writer.println("      <tbody>");
 			for(RuleReport rr : ruleReports) {
-				if(rr.getEntries().size() > 0) {
-					writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
-					writer.println("          <td>" + rr.getRuleName() + "</td>");
-					writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
-					writer.println("          <td>" + rr.getSuggestion() + "</td>");
-					writer.println("          <td>" + rr.getDebt() + "</td>");
-					writer.println("          <td>" + "" + "</td>");
-					writer.println("        </tr>");
-					writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
-					writer.println("          <td colspan=\"5\">");
-					if(rr.getScore() != 100F) {
-						writer.println("            <table width=\"100%\" style=\"text-align: left; border: 1px black ridge\">");
-						writer.println("              <tbody>");
-					}
+				writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
+				if(rr.getScore() < 100F) {
+					writer.println("        <td><button class=\"fold-button\" id=\"" + rr.getRuleName() + "\">" + rr.getRuleName() + "</button></td>");
+				}
+				writer.println("          <td>" + rr.getRuleName() + "</td>");
+				writer.println("          <td>" + rr.getScore().intValue() + "%</td>");
+				writer.println("          <td>" + rr.getSuggestion() + "</td>");
+				writer.println("          <td>" + rr.getDebt() + "</td>");
+				writer.println("          <td>" + "" + "</td>");
+				writer.println("        </tr>");
+				writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
+				writer.println("          <td colspan=\"5\">");
+				if(rr.getScore() < 100F) {
+					writer.println("            <table id=\"" + rr.getRuleName() + "-table\" style=\"display: none\">");
+					writer.println("              <tbody>");
 				}
 				for(ReportEntry e : rr.getEntries()) {
 					if(!e.isSuccess()) {
@@ -54,31 +64,44 @@ public class Report {
 						writer.println("            </tr>");
 					}
 				}
-				if(rr.getEntries().size() > 0 && rr.getScore() != 100F) {
-					if(rr.getScore() != 100F) {
-						writer.println("              </tbody>");
-						writer.println("            </table>");
-					}
-					writer.println("          </td>");
-					writer.println("        </tr>");
+				if(rr.getScore() < 100F) {
+					writer.println("              </tbody>");
+					writer.println("            </table>");
 				}
+				writer.println("          </td>");
+				writer.println("        </tr>");
 			}
 			writer.println("      </tbody>");
 			writer.println("    </table>");
-			writer.println("  </body>");
-			writer.println("</html>");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} finally {
-			if(writer != null) {
-				writer.close();
-			}
+
+			writer.println("    <script>");
+			writer.println(       "var t = document.getElementsByClassName('fold-button');");
+			writer.println(       "for(var i = t.length-1 ; i >= 0 ; i--) {");
+			writer.println("       t[i].addEventListener('click', function(e) {");
+			writer.println("       element_style = document.getElementById(e.target.id + '-table').style;");
+			writer.println("         if(element_style.display != 'none') {");
+			writer.println("           element_style.display = 'none'");
+			writer.println("         } else if(element_style.display == 'none') {");
+			writer.println("           element_style.display = ''");
+			writer.println("         }");
+			writer.println("       });");
+			writer.println("}");
+		writer.println("    </script>");
+
+		writer.println("  </body>");
+		writer.println("</html>");
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	} catch (UnsupportedEncodingException e) {
+		e.printStackTrace();
+	} finally {
+		if(writer != null) {
+			writer.close();
 		}
 	}
+}
 
-	public void addRuleReport(RuleReport ruleReport) {
-		ruleReports.add(ruleReport);
-	}
+public void addRuleReport(RuleReport ruleReport) {
+	ruleReports.add(ruleReport);
+}
 }
