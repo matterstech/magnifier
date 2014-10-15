@@ -1,6 +1,7 @@
 package com.inovia.magnifier.reports;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Report {
@@ -12,7 +13,7 @@ public class Report {
 		this.databaseName = databaseName;
 	}
 
-	public void generateHtml(String path) {
+	public void generateHtml(String path, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
 				if(r1.getScore() > r2.getScore()) {
@@ -28,6 +29,15 @@ public class Report {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(path, "UTF-8");
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			
+			Long timeDiff = endTime.getTime() - startTime.getTime();
+			Long seconds = timeDiff / 1000;
+			Long minutes = seconds / 60;
+			Long hours = minutes / 60;
+			Long days = hours / 24;
+			
 			String html = "";
 			html = html + "<html>"
 						+ "  <head>"
@@ -35,7 +45,7 @@ public class Report {
 						+ "      body {"
 						+ "        font-family: sans-serif;"
 						+ "      }"
-						+ "      h1 {"
+						+ "      h1, h4 {"
 						+ "        text-align: center;"
 						+ "      }"
 						+ "      table.rule-table {"
@@ -49,7 +59,7 @@ public class Report {
 						+ "      table.rule-table tr.rule-header td,"
 						+ "      table.rule-table th {"
 						+ "        border-bottom: 1px solid #CCC;"
-						+ "        padding: 3px;"
+						+ "        padding: 10px 10px 0px 0;"
 						+ "      }"
 						+ "      table.rule-table th {"
 						+ "        background-color: rgb(179, 203, 255);"
@@ -79,21 +89,30 @@ public class Report {
 						+ "      .description {"
 						+ "        font-style: italic;"
 						+ "      }"
+						+ "      .debt {"
+						+ "        text-align: right;"
+						+ "      }"
+						+ "      .debt-header {"
+						+ "        text-align: right;"
+						+ "      }"
 						+ "    </style>"
 						+ "  </head>"
 						+ "  <body>"
-						+ "    <h1>" + databaseName + "</h1>"
+						+ "    <h1>Magnifier Report on \"" + databaseName + "</h1>"
+						+ "    <h4>Started " + dateFormat.format(startTime) + "</h4>"
+						+ "    <h4>Execution time " + (days == 0 ? "" : (days+"d")) + (hours == 0 ? "" : (hours+"h")) + ((minutes == 0 ? "" : (minutes+"m"))) + seconds+"s" + "</h4>"
 						+ "    <table class=\"rule-table\">"
 						+ "      <thead>"
 						+ "        <tr>"
 						+ "        <th></th>"
 						+ "        <th>Score</th>"
-						+ "        <th>Debt</th>"
+						+ "        <th class=\"debt-header\">Debt</th>"
 						+ "        <th>Rule</th>"
 						+ "        <th>Suggestions</th>"
 						+ "      </tr>"
 						+ "    </thead>"
 						+ "  <tbody>";
+			
 			for(RuleReport rr : ruleReports) {
 				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRuleName() + "-plus\">";
 				if(rr.getScore() < 100F) {
@@ -102,7 +121,7 @@ public class Report {
 				    html = html + "<td></td>";
 				}
 				html = html + "  <td title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</td>"
-						    + "  <td title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
+						    + "  <td class=\"debt\" title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
 							+ "  <td>" + rr.getRuleName() + "</td>"
 							+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
 							+ "</tr>";
@@ -116,7 +135,7 @@ public class Report {
 				for(ReportEntry e : rr.getEntries()) {
 					if(!e.isSuccess()) {
 						html = html + "<tr data-rule=\"" + rr.getRuleName() + "\">"
-								    + "  <td>" + e.getEntityDescription() + "</td>"
+									+ "  <td>" + e.getEntityDescription() + "</td>"
 								    + "</tr>";
 					}
 				}
