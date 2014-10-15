@@ -10,6 +10,8 @@ public class Configuration {
 	private static final String ABORT_MESSAGE = "Cannot continue";
 	private static final String DEFAULT_HOST = "127.0.0.1";
 
+	private String help;
+	
 	private String connectionURL;
 	private String host;
 	private String port;
@@ -24,19 +26,27 @@ public class Configuration {
 	public Configuration(String[] args) throws UnsupportedOperationException {
 		Options options = new Options();
 
+		Option helpOption = new Option( "help", "print this message" );
+		options.addOption(helpOption);
+		
 		// We describe the parameters Magnifier can be given
-		options.addOption("h", true, "The database host");
-		options.addOption("p", true, "The database listening port");
+		options.addOption("h", false, "The database host, default is localhost");
+		options.addOption("p", true, "The database listening port, default is the specified DBMS default port");
 		options.addOption("t", true, "DBMS");
 		options.addOption("dp", true, "The JDBC driver package");
 		options.addOption("d", true, "The database name");
 		options.addOption("u", true, "The username");
 		options.addOption("pw", true, "The password");
-		options.addOption("o", true, "The report output path/name");
+		options.addOption("o", true, "The report output path/name, default is ./report.html");
 
 		BasicParser parser = new BasicParser();
 		try {
 			CommandLine commandLine = parser.parse(options, args);
+			
+			if(commandLine.hasOption("help")) {
+				new HelpFormatter().printHelp("OptionsTip", options);
+				System.exit(1);
+			}
 			
 			host = commandLine.getOptionValue("h");
 			if(host == null) {
