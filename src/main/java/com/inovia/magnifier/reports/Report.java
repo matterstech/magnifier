@@ -42,8 +42,10 @@ public class Report {
 					writer.println("        </tr>");
 					writer.println("        <tr id=\"" + rr.getRuleName() + "-plus\">");
 					writer.println("          <td colspan=\"5\">");
-					writer.println("            <table width=\"100%\" style=\"text-align: left; border: 1px black ridge\">");
-					writer.println("              <tbody>");
+					if(rr.getScore() != 100F) {
+						writer.println("            <table width=\"100%\" style=\"text-align: left; border: 1px black ridge\">");
+						writer.println("              <tbody>");
+					}
 				}
 				for(ReportEntry e : rr.getEntries()) {
 					if(!e.isSuccess()) {
@@ -52,9 +54,11 @@ public class Report {
 						writer.println("            </tr>");
 					}
 				}
-				if(rr.getEntries().size() > 0) {
-					writer.println("              </tbody>");
-					writer.println("            </table>");
+				if(rr.getEntries().size() > 0 && rr.getScore() != 100F) {
+					if(rr.getScore() != 100F) {
+						writer.println("              </tbody>");
+						writer.println("            </table>");
+					}
 					writer.println("          </td>");
 					writer.println("        </tr>");
 				}
@@ -73,7 +77,7 @@ public class Report {
 			}
 		}
 	}
-	
+
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
 	}
