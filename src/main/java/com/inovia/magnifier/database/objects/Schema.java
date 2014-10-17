@@ -1,9 +1,9 @@
 package com.inovia.magnifier.database.objects;
 
-import java.util.Vector;
+import java.util.List;
 
 public interface Schema extends Entity {
 	public String getName();
-	public Vector<Function> getFunctions();
+	public List<Function> getFunctions();
 	public String toString();
 }

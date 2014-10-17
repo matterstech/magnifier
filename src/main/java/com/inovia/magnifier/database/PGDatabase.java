@@ -2,7 +2,7 @@ package com.inovia.magnifier.database;
 
 import java.net.*;
 import java.sql.*;
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
@@ -15,20 +15,20 @@ public class PGDatabase implements Database {
 	private String user;
 	private String password;
 
-	private Vector<Schema>   schemas;
-	private Vector<Index>    indexes;
+	private List<Schema>   schemas;
+	private List<Index>    indexes;
 	
-	private Vector<Table>    tables;
-	private Vector<Comment>  tableComments;
+	private List<Table>    tables;
+	private List<Comment>  tableComments;
 	
-	private Vector<Function> functions;
-	private Vector<Comment>  functionComments;
+	private List<Function> functions;
+	private List<Comment>  functionComments;
 	
-	private Vector<Trigger>  triggers;
-	private Vector<Comment>  triggerComments;
+	private List<Trigger>  triggers;
+	private List<Comment>  triggerComments;
 	
-	private Vector<View> views;
-	private Vector<Comment> viewComments;
+	private List<View> views;
+	private List<Comment> viewComments;
 
 	public PGDatabase(String driverPath, String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -210,7 +210,7 @@ public class PGDatabase implements Database {
 				while(doLoop) {
 					PGFunction function = new PGFunction(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD));
 
-					Vector<PGFunctionParameter> parameters = new Vector<PGFunctionParameter>();
+					List<PGFunctionParameter> parameters = new Vector<PGFunctionParameter>();
 
 					PGFunctionParameter parameter = null;
 					String parameterName = results.getString(PARAMETER_NAME_FIELD);
@@ -613,28 +613,28 @@ public class PGDatabase implements Database {
 		}
 	}
 
-	public Vector<Function> getFunctions() {
+	public List<Function> getFunctions() {
 		return functions;
 	}
 
-	public Vector<Schema> getSchemas() {
+	public List<Schema> getSchemas() {
 		return schemas;
 	}
 
-	public Vector<Table> getTables() {
+	public List<Table> getTables() {
 		return tables;
 	}
 	
-	public Vector<Index> getIndexes() {
+	public List<Index> getIndexes() {
 		return indexes;
 	}
 	
-	public Vector<View> getViews() {
+	public List<View> getViews() {
 		return views;
 	}
 
-	public Vector<Comment> getComments() {
-		Vector<Comment> res = new Vector<Comment>();
+	public List<Comment> getComments() {
+		List<Comment> res = new Vector<Comment>();
 		res.addAll(tableComments);
 		res.addAll(functionComments);
 		res.addAll(viewComments);
@@ -642,7 +642,7 @@ public class PGDatabase implements Database {
 		return res;
 	}
 
-	public Vector<Trigger> getTriggers() { 
+	public List<Trigger> getTriggers() { 
 		return triggers;
 	}
 	

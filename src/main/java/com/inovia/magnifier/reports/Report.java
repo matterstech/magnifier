@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Report {
 	private String databaseName;
-	private Vector<RuleReport> ruleReports;
+	private List<RuleReport> ruleReports;
 
 	public Report(String databaseName) {
 		ruleReports = new Vector<RuleReport>();

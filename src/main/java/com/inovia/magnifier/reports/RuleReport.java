@@ -1,13 +1,13 @@
 package com.inovia.magnifier.reports;
 
-import java.util.Vector;
+import java.util.*;
 
 
 public class RuleReport {
 	private String ruleName;
 	private String suggestion;
 	private Float score;
-	private Vector<ReportEntry> entries;
+	private List<ReportEntry> entries;
 	private Float debt;
 	
 	public RuleReport(String ruleName, String suggestion, Float debt) {
@@ -41,7 +41,7 @@ public class RuleReport {
 		return entries.add(entry);
 	}
 	
-	public Vector<ReportEntry> getEntries() {
+	public List<ReportEntry> getEntries() {
 		return entries;
 	}
 	

@@ -1,6 +1,6 @@
 package com.inovia.magnifier.database;
 
-import java.util.Vector;
+import java.util.List;
 
 import com.inovia.magnifier.database.objects.*;
 
@@ -12,11 +12,11 @@ public interface Database {
 	
 	public String getName();
 	
-	public Vector<Schema> getSchemas();
-	public Vector<Function> getFunctions();
-	public Vector<Comment> getComments();
-	public Vector<Table> getTables();
-	public Vector<Index> getIndexes();
-	public Vector<Trigger> getTriggers();
-	public Vector<View> getViews();
+	public List<Schema> getSchemas();
+	public List<Function> getFunctions();
+	public List<Comment> getComments();
+	public List<Table> getTables();
+	public List<Index> getIndexes();
+	public List<Trigger> getTriggers();
+	public List<View> getViews();
 }
