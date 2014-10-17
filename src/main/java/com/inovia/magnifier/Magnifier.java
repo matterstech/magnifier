@@ -1,16 +1,20 @@
 package com.inovia.magnifier;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
 import com.inovia.magnifier.rules.*;
 
+/**
+ * 
+ * @author joeyrogues
+ *
+ */
 public class Magnifier {
 	public static void main(String[] args) {
 		Configuration configuration = null;
-		Database database = null;
+		com.inovia.magnifier.database.Database database = null;
 		try {
 			configuration = new Configuration(args);
 			database = DatabaseFactory.getDatabase(

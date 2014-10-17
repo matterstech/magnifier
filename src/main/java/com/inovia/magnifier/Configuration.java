@@ -4,6 +4,11 @@ import java.io.File;
 
 import org.apache.commons.cli.*;
 
+/**
+ * 
+ * @author joeyrogues
+ *
+ */
 public class Configuration {
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
 	private static final String REPORT_DEFAULT_NAME = "report.html";
