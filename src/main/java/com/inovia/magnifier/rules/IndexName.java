@@ -5,6 +5,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The IndexName class aims at checking if the provided
+ * index names have the right format
+ */
 public class IndexName extends Rule {
 	public static final String RULE_NAME = "IndexName";
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";

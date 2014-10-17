@@ -5,6 +5,10 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.ForeignKey;
 import com.inovia.magnifier.database.objects.Table;
 
+/**
+ * The class PGTable deals with the PostgreSql
+ * implementation of the Table interface
+ */
 public class PGTable implements Table {
 	private String schemaName;
 	private String name;

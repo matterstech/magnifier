@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.Comment;
 
+/**
+ * The class PGComment deals with the PostgreSql
+ * implementation of the Comment interface
+ */
 public class PGComment implements Comment {
 	private String schemaName;
 	private String entityName;

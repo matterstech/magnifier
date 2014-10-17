@@ -5,6 +5,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The ViewName class aims at checking if the provided
+ * view names have the right format
+ */
 public class ViewName extends Rule {
 	public static final String RULE_NAME = "ViewName";
 	public static final String SUGGESTION = "Each view should have a name ending with _view";

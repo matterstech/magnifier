@@ -5,9 +5,10 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.Function;
 import com.inovia.magnifier.database.objects.Schema;
 
-
-
-
+/**
+ * The class PGSchema deals with the PostgreSql
+ * implementation of the Schema interface
+ */
 public class PGSchema implements Schema {
 	private String name;
 	private Vector<PGFunction> functions;

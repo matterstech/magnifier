@@ -4,7 +4,10 @@ import java.util.Vector;
 
 import com.inovia.magnifier.database.objects.*;
 
-
+/**
+ * The class PGFunction deals with the PostgreSql
+ * implementation of the Function interface
+ */
 public class PGFunction implements Function {
 	private String name;
 	private String schemaName;

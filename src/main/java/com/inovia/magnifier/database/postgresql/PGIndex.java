@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.Index;
 
+/**
+ * The class PGIndex deals with the PostgreSql
+ * implementation of the Index interface
+ */
 public class PGIndex implements Index {
 	private String schemaName;
 	private String tableName;

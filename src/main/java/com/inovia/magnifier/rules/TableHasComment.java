@@ -7,6 +7,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The TableHasComment class aims at checking if
+ * the provided tables all have a comment
+ */
 public class TableHasComment extends Rule {
 	public static final String RULE_NAME = "TableHasComment";
 	public static final String SUGGESTION = "Each table should have a comment explaining what it contains";

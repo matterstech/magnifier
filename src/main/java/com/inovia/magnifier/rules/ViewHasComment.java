@@ -7,6 +7,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The ViewHasComment class aims at checking if
+ * the provided views all have a comment
+ */
 public class ViewHasComment extends Rule {
 	public static final String RULE_NAME = "ViewHasComment";
 	public static final String SUGGESTION = "Each view should have a comment explaining what it does";

@@ -7,6 +7,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The TriggerHasComment class aims at checking if
+ * the provided triggers all have a comment
+ */
 public class TriggerHasComment extends Rule {
 	public static final String RULE_NAME = "TriggerHasComment";
 	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";

@@ -5,6 +5,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The ForeignKeyName class aims at checking if the provided
+ * foreign key names have the right format
+ */
 public class ForeignKeyName extends Rule {
 	public static final String RULE_NAME = "ForeignKeyName";
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";

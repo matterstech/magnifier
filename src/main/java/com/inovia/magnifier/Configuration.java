@@ -5,9 +5,8 @@ import java.io.File;
 import org.apache.commons.cli.*;
 
 /**
- * 
- * @author joeyrogues
- *
+ * The Configuration class deals with parsing and
+ * providing the command line parameters 
  */
 public class Configuration {
 	private static final String[] EXPECTED_DBMS = {"postgresql"};

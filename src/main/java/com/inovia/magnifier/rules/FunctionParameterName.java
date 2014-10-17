@@ -5,6 +5,10 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The FunctionParameterName class aims at checking if the provided
+ * function parameter names have the right format
+ */
 public class FunctionParameterName extends Rule {
 	public static final String RULE_NAME = "FunctionParameterName";
 	public static final String SUGGESTION = "Each parameters should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";

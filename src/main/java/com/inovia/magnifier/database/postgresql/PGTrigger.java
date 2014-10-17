@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.*;
 
+/**
+ * The class PGTrigger deals with the PostgreSql
+ * implementation of the Trigger interface
+ */
 public class PGTrigger implements Trigger {
 	private String schemaName;
 	private String tableName;
