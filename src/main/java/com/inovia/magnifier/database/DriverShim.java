@@ -2,6 +2,7 @@ package com.inovia.magnifier.database;
 
 import java.sql.*;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 
 public class DriverShim implements Driver {
@@ -33,5 +34,10 @@ public class DriverShim implements Driver {
 	
 	public boolean jdbcCompliant() {
 		return this.driver.jdbcCompliant();
+	}
+
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
