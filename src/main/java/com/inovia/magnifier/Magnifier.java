@@ -1,6 +1,10 @@
 package com.inovia.magnifier;
 
-import com.inovia.magnifier.databaseObjects.*;
+import java.util.Date;
+
+import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rules.*;
 
 /**
  * 
@@ -9,43 +13,40 @@ import com.inovia.magnifier.databaseObjects.*;
  */
 public class Magnifier {
 	public static void main(String[] args) {
-		Configuration conf = null;
-		Database database = null;
-		try { // This is for testing
-
-			conf = new Configuration(args);
-			database = new Database(conf);
-
-			System.out.println("Functions");
-			for(Function f : database.getFunctions()) {
-				System.out.println(f);
-			}
-			System.out.println("Triggers");
-			for(Trigger t : database.getTriggers()) {
-				System.out.println(t);
-			}
+		Configuration configuration = null;
+		com.inovia.magnifier.database.Database database = null;
+		try {
+			configuration = new Configuration(args);
+			database = DatabaseFactory.getDatabase(
+					configuration.getDriverPath(),
+					configuration.getDatabaseType(),
+					configuration.getHost(),
+					configuration.getPort(),
+					configuration.getDatabaseName(),
+					configuration.getUser(),
+					configuration.getPassword());
 			
-			System.out.println("Foreign Keys");
-			for(ForeignKey fk : database.getForeignKeys()) {
-				System.out.println(fk);
-			}
-			System.out.println("PrimaryKeys");
-			for(PrimaryKey pk : database.getPrimaryKeys()) {
-				System.out.println(pk);
-			}
-			System.out.println("Uniques");
-			for(Unique u : database.getUniques()) {
-				System.out.println(u);
-			}
-			System.out.println();
-
-			System.out.println("Indexes");
-			for(Index i : database.getIndexes()) {
-				System.out.println(i);
-			}
-			System.out.println();
-
-			System.out.println("Alright");
+			// Bootstrap
+			database.connect();
+			database.load();
+			
+			Report report = new Report(database.getName());
+			
+			Date startDate = new Date();
+			
+			report.addRuleReport(TableHasComment.runOn(database.getTables(), database.getComments()));
+			report.addRuleReport(IndexName.runOn(database.getIndexes()));
+			report.addRuleReport(ForeignKeyName.runOn(database.getTables()));
+			report.addRuleReport(TableHasPrimaryKey.runOn(database.getTables()));
+			report.addRuleReport(FunctionParameterName.runOn(database.getFunctions()));
+			report.addRuleReport(FunctionHasComment.runOn(database.getFunctions(), database.getComments()));
+			report.addRuleReport(ViewName.runOn(database.getViews()));
+			report.addRuleReport(ViewHasComment.runOn(database.getViews(), database.getComments()));
+			report.addRuleReport(TriggerName.runOn(database.getTriggers()));
+			report.addRuleReport(TriggerHasComment.runOn(database.getTriggers(), database.getComments()));
+			
+			Date endDate = new Date();
+			report.generateHtml(configuration.getReportPath(), startDate, endDate);
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);
