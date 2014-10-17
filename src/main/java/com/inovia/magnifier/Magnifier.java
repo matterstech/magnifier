@@ -22,8 +22,9 @@ public class Magnifier {
 			database.connect();
 			database.load();
 			
-			Ruleset inoviaRuleset = new InoviaRuleset(configuration);
+			Ruleset inoviaRuleset = new InoviaRuleset(database);
 			inoviaRuleset.run();
+			inoviaRuleset.generateHtml(configuration.getReportPath());
 		} catch(UnsupportedOperationException e) {
 			e.printStackTrace();
 			System.exit(1);

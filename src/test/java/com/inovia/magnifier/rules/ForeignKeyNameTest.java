@@ -1,6 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
@@ -22,10 +22,10 @@ public class ForeignKeyNameTest extends TestCase {
 	public void testRule() {
 		Database database = new Database() {
 			public void load()                     {  }
-			public Vector<View> getViews()         { return null; }
-			public Vector<Trigger> getTriggers()   { return null; }
-			public Vector<Table> getTables() {
-				Vector<Table> tables = new Vector<Table>();
+			public List<View> getViews()         { return null; }
+			public List<Trigger> getTriggers()   { return null; }
+			public List<Table> getTables() {
+				List<Table> tables = new Vector<Table>();
 				
 				PGTable t = new PGTable("public", "my_table");
 				t.addForeignKey(new PGForeignKey(t, "table2_field2_stuff", "public", "table2", "field2"));
@@ -34,11 +34,11 @@ public class ForeignKeyNameTest extends TestCase {
 				tables.add(t);
 				return tables;
 			}
-			public Vector<Schema> getSchemas()     { return null; }
+			public List<Schema> getSchemas()     { return null; }
 			public String getName()                { return null; }
-			public Vector<Index> getIndexes()      { return null; }
-			public Vector<Function> getFunctions() { return null; }
-			public Vector<Comment> getComments()   { return null; }
+			public List<Index> getIndexes()      { return null; }
+			public List<Function> getFunctions() { return null; }
+			public List<Comment> getComments()   { return null; }
 			public void disconnect()               {  }
 			public void connect()                  {  }
 		};

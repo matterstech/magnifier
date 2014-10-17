@@ -1,6 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
@@ -20,20 +20,20 @@ public class TriggerNameTest extends TestCase {
 	
 	public void testRule() {
 		Database database = new Database() {
-			public void load()                     {  }
-			public Vector<View> getViews()         { return null; }
-			public Vector<Trigger> getTriggers()   {
-				Vector<Trigger> triggers = new Vector<Trigger>();
+			public void load()                   {  }
+			public List<View> getViews()         { return null; }
+			public List<Trigger> getTriggers()   {
+				List<Trigger> triggers = new Vector<Trigger>();
 				triggers.add(new PGTrigger("public", "my_table", "my_trigger",                "insert", "before"));
 				triggers.add(new PGTrigger("public", "my_table", "on_before_insert_my_table", "insert", "before"));
 				return triggers;
 			}
-			public Vector<Table> getTables()       { return null; }
-			public Vector<Schema> getSchemas()     { return null; }
-			public String getName()                { return null; }
-			public Vector<Index> getIndexes()      { return null; }
-			public Vector<Function> getFunctions() { return null; }
-			public Vector<Comment> getComments()   { return null; }
+			public List<Table> getTables()       { return null; }
+			public List<Schema> getSchemas()     { return null; }
+			public String getName()              { return null; }
+			public List<Index> getIndexes()      { return null; }
+			public List<Function> getFunctions() { return null; }
+			public List<Comment> getComments()   { return null; }
 			public void disconnect()               {  }
 			public void connect()                  {  }
 		};

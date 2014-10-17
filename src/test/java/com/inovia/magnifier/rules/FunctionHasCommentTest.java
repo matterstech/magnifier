@@ -21,19 +21,19 @@ public class FunctionHasCommentTest extends TestCase {
 	public void testRule() {
 		Database database = new Database() {
 			public void load()                     {  }
-			public Vector<View> getViews()         { return null; }
-			public Vector<Trigger> getTriggers()   { return null; }
-			public Vector<Table> getTables()       { return null; }
-			public Vector<Schema> getSchemas()     { return null; }
+			public List<View> getViews()         { return null; }
+			public List<Trigger> getTriggers()   { return null; }
+			public List<Table> getTables()       { return null; }
+			public List<Schema> getSchemas()     { return null; }
 			public String getName()                { return null; }
-			public Vector<Index> getIndexes()      { return null; }
-			public Vector<Function> getFunctions() {
-				Vector<Function> functions = new Vector<Function>();
+			public List<Index> getIndexes()      { return null; }
+			public List<Function> getFunctions() {
+				List<Function> functions = new Vector<Function>();
 				functions.add(new PGFunction("public", "my_function"));
 				return functions;
 			}
-			public Vector<Comment> getComments()   {
-				Vector<Comment> comments = new Vector<Comment>();
+			public List<Comment> getComments()   {
+				List<Comment> comments = new Vector<Comment>();
 				comments.add(new PGComment("public", "my_function", "cool comment about my_function", "function"));
 				return comments;
 			}

@@ -1,6 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.*;
 
 import junit.framework.*;
 
@@ -21,10 +21,10 @@ public class FunctionParameterNameTest extends TestCase {
 	public void testRule() {
 		Database database = new Database() {
 			public void load()                     {  }
-			public Vector<View> getViews()         { return null; }
-			public Vector<Trigger> getTriggers()   { return null; }
-			public Vector<Table> getTables() {
-				Vector<Table> tables = new Vector<Table>();
+			public List<View> getViews()         { return null; }
+			public List<Trigger> getTriggers()   { return null; }
+			public List<Table> getTables() {
+				List<Table> tables = new Vector<Table>();
 				
 				PGTable t = new PGTable("public", "my_table");
 				t.addForeignKey(new PGForeignKey(t, "table2_field2_stuff", "public", "table2", "field2"));
@@ -33,11 +33,11 @@ public class FunctionParameterNameTest extends TestCase {
 				tables.add(t);
 				return tables;
 			}
-			public Vector<Schema> getSchemas()     { return null; }
+			public List<Schema> getSchemas()     { return null; }
 			public String getName()                { return null; }
-			public Vector<Index> getIndexes()      { return null; }
-			public Vector<Function> getFunctions() {
-				Vector<Function> functions = new Vector<Function>();
+			public List<Index> getIndexes()      { return null; }
+			public List<Function> getFunctions() {
+				List<Function> functions = new Vector<Function>();
 				PGFunction f = new PGFunction("public", "my_function");
 				f.addParameter(new PGFunctionParameter(f, "param1_in", "IN"));
 				f.addParameter(new PGFunctionParameter(f, "param2",    "OUT"));
@@ -46,7 +46,7 @@ public class FunctionParameterNameTest extends TestCase {
 				functions.add(f);
 				return functions;
 			}
-			public Vector<Comment> getComments()   { return null; }
+			public List<Comment> getComments()   { return null; }
 			public void disconnect()               {  }
 			public void connect()                  {  }
 		};

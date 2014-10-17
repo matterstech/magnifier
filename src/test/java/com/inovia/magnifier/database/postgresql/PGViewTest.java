@@ -1,7 +1,5 @@
 package com.inovia.magnifier.database.postgresql;
 
-import com.inovia.magnifier.database.postgresql.*;
-
 import junit.framework.*;
 
 

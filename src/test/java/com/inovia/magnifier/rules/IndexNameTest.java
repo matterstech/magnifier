@@ -1,6 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
@@ -22,21 +22,21 @@ public class IndexNameTest extends TestCase {
 	public void testRule() {
 		Database database = new Database() {
 			public void load()                     {  }
-			public Vector<View> getViews()         { return null; }
-			public Vector<Trigger> getTriggers()   { return null; }
-			public Vector<Table> getTables()       { return null; }
-			public Vector<Schema> getSchemas()     { return null; }
+			public List<View> getViews()         { return null; }
+			public List<Trigger> getTriggers()   { return null; }
+			public List<Table> getTables()       { return null; }
+			public List<Schema> getSchemas()     { return null; }
 			public String getName()                { return null; }
-			public Vector<Index> getIndexes()      {
-				Vector<Index> indexes = new Vector<Index>();
+			public List<Index> getIndexes()      {
+				List<Index> indexes = new Vector<Index>();
 				PGIndex i1 = new PGIndex("public", "my_table", "index1");
 				PGIndex i2 = new PGIndex("public", "my_table", "index_idx");
 				indexes.add(i1);
 				indexes.add(i2);
 				return indexes;
 			}
-			public Vector<Function> getFunctions() { return null; }
-			public Vector<Comment> getComments()   { return null; }
+			public List<Function> getFunctions() { return null; }
+			public List<Comment> getComments()   { return null; }
 			public void disconnect()               {  }
 			public void connect()                  {  }
 		};
