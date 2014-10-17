@@ -1,19 +1,23 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
-
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class FunctionParameterName {
+public class FunctionParameterName extends Rule {
 	public static final String RULE_NAME = "FunctionParameterName";
 	public static final String SUGGESTION = "Each parameters should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
+
+	public FunctionParameterName(Database database) {
+		super(database);
+	}
 	
-	public static RuleReport runOn(Vector<Function> functions) {
+	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Function f : functions) {
+		for(Function f : database.getFunctions()) {
 			for(FunctionParameter p : f.getParameters()) {
 				Boolean isSuccess = assertion(p);
 				ruleReport.addEntry(new ReportEntry(p.getEntityDescription(), isSuccess));
@@ -23,7 +27,7 @@ public class FunctionParameterName {
 		return ruleReport;
 	}
 	
-	private static Boolean assertion(FunctionParameter p) {
+	private Boolean assertion(FunctionParameter p) {
 		return p.getName() != null && !p.getName().isEmpty() && p.getName().endsWith("_" + p.getMode().toLowerCase());
 	}
 }

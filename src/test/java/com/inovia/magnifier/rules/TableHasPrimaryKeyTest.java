@@ -2,6 +2,7 @@ package com.inovia.magnifier.rules;
 
 import java.util.Vector;
 
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.*;
@@ -19,21 +20,30 @@ public class TableHasPrimaryKeyTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Table> tables = new Vector<Table>();
-
-		PGTable t = new PGTable("public", "my_table");
-		tables.add(t);
+		Database database = new Database() {
+			public void load()                     {  }
+			public Vector<View> getViews()         { return null; }
+			public Vector<Trigger> getTriggers()   { return null; }
+			public Vector<Table> getTables()       {
+				Vector<Table> tables = new Vector<Table>();
+				PGTable t = new PGTable("public", "my_table");
+				PGTable t2 = new PGTable("public", "my_table");
+				t2.addPrimaryKey("id");
+				
+				tables.add(t);
+				tables.add(t2);
+				return tables;
+			}
+			public Vector<Schema> getSchemas()     { return null; }
+			public String getName()                { return null; }
+			public Vector<Index> getIndexes()      { return null; }
+			public Vector<Function> getFunctions() { return null; }
+			public Vector<Comment> getComments()   { return null; }
+			public void disconnect()               {  }
+			public void connect()                  {  }
+		};
 		
-		RuleReport rr = null;
-		
-		rr = TableHasPrimaryKey.runOn(tables);
-		assertEquals(rr.getScore(), 0.0F);
-		
-		PGTable t2 = new PGTable("public", "my_table");
-		t2.addPrimaryKey("id");
-		tables.add(t2);
-		
-		rr = TableHasPrimaryKey.runOn(tables);
+		RuleReport rr = new TableHasPrimaryKey(database).run();
 		assertEquals(rr.getScore(), 50.0F);
 	}
 }

@@ -1,27 +1,33 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.List;
 
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class TriggerHasComment {
+public class TriggerHasComment extends Rule {
 	public static final String RULE_NAME = "TriggerHasComment";
 	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";
 	public static final Float DEBT = 1F;
+
+	public TriggerHasComment(Database database) {
+		super(database);
+	}
 	
-	public static RuleReport runOn(Vector<Trigger> triggers, Vector<Comment> comments) {
+	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Trigger t : triggers) {
-			Boolean isSuccess = assertion(t, comments);
+		for(Trigger t : database.getTriggers()) {
+			Boolean isSuccess = assertion(t, database.getComments());
 			ruleReport.addEntry(new ReportEntry(t.getEntityDescription(), isSuccess));
 		}
 		
 		return ruleReport;
 	}
 	
-	private static Boolean assertion(Trigger trigger, Vector<Comment> comments) {
+	private Boolean assertion(Trigger trigger, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getEntityType().equals("trigger") && c.getSchemaName().equals(trigger.getSchemaName()) && c.getEntityName().equals(trigger.getName())) {
 				return true;

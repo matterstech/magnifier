@@ -2,6 +2,7 @@ package com.inovia.magnifier.rules;
 
 import java.util.Vector;
 
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
@@ -18,24 +19,29 @@ public class TableHasCommentTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Table> tables = new Vector<Table>();
-		Vector<Comment> comments = new Vector<Comment>();
+		Database database = new Database() {
+			public void load()                     {  }
+			public Vector<View> getViews()         { return null; }
+			public Vector<Trigger> getTriggers()   { return null; }
+			public Vector<Table> getTables() {
+				Vector<Table> tables = new Vector<Table>();
+				tables.add(new PGTable("public", "my_table"));
+				return tables;
+			}
+			public Vector<Schema> getSchemas()     { return null; }
+			public String getName()                { return null; }
+			public Vector<Index> getIndexes()      { return null; }
+			public Vector<Function> getFunctions() { return null; }
+			public Vector<Comment> getComments()   {
+				Vector<Comment> comments = new Vector<Comment>();
+				comments.add(new PGComment("public", "my_table", "cool comment about my_table", "table"));
+				return comments;
+			}
+			public void disconnect()               {  }
+			public void connect()                  {  }
+		};
 		
-		// We just create a table without adding any comment
-		PGTable t = new PGTable("public", "my_table");
-		tables.add(t);
-		
-		RuleReport rr = null;
-		
-		rr = TableHasComment.runOn(tables, comments);
-		// We test it
-		assertEquals(rr.getScore(), 0F);
-		
-		// Now we create a comment
-		PGComment c = new PGComment("public", "my_table", "cool comment about my_table", "table");
-		comments.add(c);
-		
-		rr = TableHasComment.runOn(tables, comments);
-		assertEquals(rr.getScore(), 100F);
+		RuleReport rr = new TableHasComment(database).run();
+		assertEquals(rr.getScore(), 100.0F);
 	}
 }

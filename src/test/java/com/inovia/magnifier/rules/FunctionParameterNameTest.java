@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import junit.framework.*;
 
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.*;
@@ -18,22 +19,39 @@ public class FunctionParameterNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Function> functions = new Vector<Function>();
+		Database database = new Database() {
+			public void load()                     {  }
+			public Vector<View> getViews()         { return null; }
+			public Vector<Trigger> getTriggers()   { return null; }
+			public Vector<Table> getTables() {
+				Vector<Table> tables = new Vector<Table>();
+				
+				PGTable t = new PGTable("public", "my_table");
+				t.addForeignKey(new PGForeignKey(t, "table2_field2_stuff", "public", "table2", "field2"));
+				t.addForeignKey(new PGForeignKey(t, "table2_field2",       "public", "table2", "field2"));
+				
+				tables.add(t);
+				return tables;
+			}
+			public Vector<Schema> getSchemas()     { return null; }
+			public String getName()                { return null; }
+			public Vector<Index> getIndexes()      { return null; }
+			public Vector<Function> getFunctions() {
+				Vector<Function> functions = new Vector<Function>();
+				PGFunction f = new PGFunction("public", "my_function");
+				f.addParameter(new PGFunctionParameter(f, "param1_in", "IN"));
+				f.addParameter(new PGFunctionParameter(f, "param2",    "OUT"));
+				
+				
+				functions.add(f);
+				return functions;
+			}
+			public Vector<Comment> getComments()   { return null; }
+			public void disconnect()               {  }
+			public void connect()                  {  }
+		};
 		
-		PGFunction f = new PGFunction("public", "my_function");
-		functions.add(f);
-		
-		RuleReport rr = null;
-		rr = FunctionParameterName.runOn(functions);
-		System.out.println(rr.getScore());
-		assertEquals(rr.getScore(), 100.0F); // Because no parameters in the function
-		
-		f.addParameter(new PGFunctionParameter(f, "param1_in", "IN"));
-		rr = FunctionParameterName.runOn(functions);
-		assertEquals(rr.getScore(), 100.0F);
-		
-		f.addParameter(new PGFunctionParameter(f, "param2", "OUT"));
-		rr = FunctionParameterName.runOn(functions);
+		RuleReport rr = new FunctionParameterName(database).run();
 		assertEquals(rr.getScore(), 50.0F);
 	}
 }

@@ -14,8 +14,6 @@ public class Configuration {
 	private static final String REPORT_DEFAULT_NAME = "report.html";
 	private static final String ABORT_MESSAGE = "Cannot continue";
 	private static final String DEFAULT_HOST = "127.0.0.1";
-
-	private String help;
 	
 	private String connectionURL;
 	private String host;

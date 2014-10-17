@@ -1,21 +1,25 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
-
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class ViewName {
+public class ViewName extends Rule {
 	public static final String RULE_NAME = "ViewName";
 	public static final String SUGGESTION = "Each view should have a name ending with _view";
 	public static final Float DEBT = 1F;
-
+	
 	private static final String SUFFIX = "_view";
 
-	public static RuleReport runOn(Vector<View> views) {
+	public ViewName(Database database) {
+		super(database);
+	}
+	
+	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 
-		for(View v : views) {
+		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v);
 			ruleReport.addEntry(new ReportEntry(v.getEntityDescription(), isSuccess));
 		}
@@ -23,7 +27,7 @@ public class ViewName {
 		return ruleReport;
 	}
 
-	private static Boolean assertion(View view) {
+	private Boolean assertion(View view) {
 		if(view.getName().endsWith(SUFFIX)) {
 			return true;
 		}

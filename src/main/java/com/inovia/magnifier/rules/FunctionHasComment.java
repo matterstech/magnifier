@@ -1,27 +1,33 @@
 package com.inovia.magnifier.rules;
 
-import java.util.*;
+import java.util.List;
 
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public abstract class FunctionHasComment {
+public class FunctionHasComment extends Rule {
 	public static final String RULE_NAME = "FunctionHasComment";
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
+
+	public FunctionHasComment(Database database) {
+		super(database);
+	}
 	
-	public static RuleReport runOn(Vector<Function> functions, Vector<Comment> comments) {
+	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Function f : functions) {
-			Boolean isSuccess = assertion(f, comments);
+		for(Function f : database.getFunctions()) {
+			Boolean isSuccess = assertion(f, database.getComments());
 			ruleReport.addEntry(new ReportEntry(f.getEntityDescription(), isSuccess));
 		}
 		
 		return ruleReport;
 	}
 	
-	private static Boolean assertion(Function function, Vector<Comment> comments) {
+	private Boolean assertion(Function function, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getEntityType().equals("function") && c.getSchemaName().equals(function.getSchemaName()) && c.getEntityName().equals(function.getName())) {
 				return true;

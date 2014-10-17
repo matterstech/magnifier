@@ -2,10 +2,9 @@ package com.inovia.magnifier.rules;
 
 import java.util.Vector;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.View;
-import com.inovia.magnifier.database.postgresql.PGComment;
-import com.inovia.magnifier.database.postgresql.PGView;
+import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
 
 import junit.framework.*;
@@ -21,16 +20,31 @@ public class ViewNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<View> views = new Vector<View>();
+		Database database = new Database() {
+			public void load()                     {  }
+			public Vector<View> getViews()         {
+				Vector<View> views = new Vector<View>();
+				views.add(new PGView("public", "my_view"));
+				views.add(new PGView("public", "my_view_bis"));
+				return views;
+			}
+			public Vector<Trigger> getTriggers()   {
+				Vector<Trigger> triggers = new Vector<Trigger>();
+				triggers.add(new PGTrigger("public", "my_table", "my_trigger",                "insert", "before"));
+				triggers.add(new PGTrigger("public", "my_table", "on_before_insert_my_table", "insert", "before"));
+				return triggers;
+			}
+			public Vector<Table> getTables()       { return null; }
+			public Vector<Schema> getSchemas()     { return null; }
+			public String getName()                { return null; }
+			public Vector<Index> getIndexes()      { return null; }
+			public Vector<Function> getFunctions() { return null; }
+			public Vector<Comment> getComments()   { return null; }
+			public void disconnect()               {  }
+			public void connect()                  {  }
+		};
 
-		views.add(new PGView("public", "my_view"));
-
-		RuleReport rr = null;
-		rr = ViewName.runOn(views);
-		assertEquals(rr.getScore(), 100.0F);
-
-		views.add(new PGView("public", "my_view_bis"));
-		rr = ViewName.runOn(views);
+		RuleReport rr = new ViewName(database).run();
 		assertEquals(rr.getScore(), 50.0F);
 	}
 }
