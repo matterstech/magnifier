@@ -13,5 +13,4 @@ public interface Function extends Entity {
 	public String getName();
 	public List<FunctionParameter> getParameters();
 	public void addParameter(FunctionParameter parameter);
-	public String toString();
 }

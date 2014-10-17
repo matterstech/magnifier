@@ -14,6 +14,4 @@ public interface ForeignKey extends Entity {
 	public String getForeignSchemaName();
 	public String getForeignTableName();
 	public String getForeignColumnName();
-	
-	public String toString();
 }
