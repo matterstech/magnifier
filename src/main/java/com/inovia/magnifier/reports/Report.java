@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 public class Report {
 	private String databaseName;
 	private Vector<RuleReport> ruleReports;
