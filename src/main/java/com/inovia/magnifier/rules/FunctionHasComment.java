@@ -5,6 +5,10 @@ import java.util.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The FunctionHasComment class aims at checking if
+ * the provided functions all have a comment
+ */
 public abstract class FunctionHasComment {
 	public static final String RULE_NAME = "FunctionHasComment";
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";

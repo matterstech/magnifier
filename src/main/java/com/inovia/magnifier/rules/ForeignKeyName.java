@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class ForeignKeyName {
+/**
+ * The ForeignKeyName class aims at checking if the provided
+ * foreign key names have the right format
+ */
+public abstract class ForeignKeyName {
 	public static final String RULE_NAME = "ForeignKeyName";
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
 	public static final Float DEBT = 1F;

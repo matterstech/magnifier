@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class FunctionParameterName {
+/**
+ * The FunctionParameterName class aims at checking if the provided
+ * function parameter names have the right format
+ */
+public abstract class FunctionParameterName {
 	public static final String RULE_NAME = "FunctionParameterName";
 	public static final String SUGGESTION = "Each parameters should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;

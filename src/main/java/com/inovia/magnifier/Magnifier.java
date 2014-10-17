@@ -1,6 +1,5 @@
 package com.inovia.magnifier;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.inovia.magnifier.database.*;

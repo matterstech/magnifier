@@ -3,7 +3,10 @@ package com.inovia.magnifier.database;
 import java.sql.*;
 import java.util.Properties;
 
-
+/**
+ * The DriverShim class is a delegator for an object implementing
+ * the Driver interface to allow dynamically loaded database drivers
+ */
 public class DriverShim implements Driver {
 	private Driver driver;
 	

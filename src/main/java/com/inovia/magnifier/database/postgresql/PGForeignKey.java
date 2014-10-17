@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.*;
 
+/**
+ * The class PGForeignKey deals with the PostgreSql
+ * implementation of the ForeignKey interface
+ */
 public class PGForeignKey implements ForeignKey {
 	private PGTable table;
 	private String columnName;

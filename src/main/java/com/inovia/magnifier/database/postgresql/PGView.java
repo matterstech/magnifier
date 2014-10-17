@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.View;
 
+/**
+ * The class PGView deals with the PostgreSql
+ * implementation of the View interface
+ */
 public class PGView implements View {
 	public String schemaName;
 	public String name;

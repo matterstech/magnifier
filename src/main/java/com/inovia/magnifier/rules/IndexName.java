@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class IndexName {
+/**
+ * The IndexName class aims at checking if the provided
+ * index names have the right format
+ */
+public abstract class IndexName {
 	public static final String RULE_NAME = "IndexName";
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";
 	public static final Float DEBT = 1F;

@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class ViewHasComment {
+/**
+ * The ViewHasComment class aims at checking if
+ * the provided views all have a comment
+ */
+public abstract class ViewHasComment {
 	public static final String RULE_NAME = "ViewHasComment";
 	public static final String SUGGESTION = "Each view should have a comment explaining what it does";
 	public static final Float DEBT = 1F;

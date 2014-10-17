@@ -4,6 +4,10 @@ import java.io.File;
 
 import org.apache.commons.cli.*;
 
+/**
+ * The Configuration class deals with parsing and
+ * providing the command line parameters 
+ */
 public class Configuration {
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
 	private static final String REPORT_DEFAULT_NAME = "report.html";

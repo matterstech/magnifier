@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class ViewName {
+/**
+ * The ViewName class aims at checking if the provided
+ * view names have the right format
+ */
+public abstract class ViewName {
 	public static final String RULE_NAME = "ViewName";
 	public static final String SUGGESTION = "Each view should have a name ending with _view";
 	public static final Float DEBT = 1F;

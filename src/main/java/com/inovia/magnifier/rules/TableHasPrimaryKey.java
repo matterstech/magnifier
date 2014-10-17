@@ -5,7 +5,11 @@ import java.util.Vector;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
-public class TableHasPrimaryKey {
+/**
+ * The TableHasComment class aims at checking if
+ * the provided tables all have a primary key
+ */
+public abstract class TableHasPrimaryKey {
 	public static final String RULE_NAME = "TableHasPrimaryKey";
 	public static final String SUGGESTION = "Each table should have a primary key";
 	public static final Float DEBT = 1F;

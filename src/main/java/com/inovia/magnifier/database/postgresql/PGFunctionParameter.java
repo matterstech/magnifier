@@ -2,6 +2,10 @@ package com.inovia.magnifier.database.postgresql;
 
 import com.inovia.magnifier.database.objects.*;
 
+/**
+ * The class PGFunctionParameter deals with the PostgreSql
+ * implementation of the FunctionParameter interface
+ */
 public class PGFunctionParameter implements FunctionParameter {
 	private PGFunction function;
 	private String name;
