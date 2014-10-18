@@ -13,6 +13,14 @@ public class Configuration {
 	private static final String REPORT_DEFAULT_NAME = "report.html";
 	private static final String ABORT_MESSAGE = "Cannot continue";
 	private static final String DEFAULT_HOST = "127.0.0.1";
+	private static final String HELP_MESSAGE[] = {
+		"Synopsis: ",
+		"Magnifier is a database analyzer able to detect database convention",
+		"mistakes by running specific set of rules.",
+		"At the end of the analysis, a report is generated with all the defects.",
+		"",
+		"Author: Inovia http://inovia.fr/"
+	};
 	
 	private String connectionURL;
 	private String host;
@@ -28,7 +36,7 @@ public class Configuration {
 	public Configuration(String[] args) throws UnsupportedOperationException {
 		Options options = new Options();
 
-		Option helpOption = new Option( "help", "print this message" );
+		Option helpOption = new Option("help", "print this message");
 		options.addOption(helpOption);
 		
 		// We describe the parameters Magnifier can be given
@@ -47,6 +55,12 @@ public class Configuration {
 			
 			if(commandLine.hasOption("help")) {
 				new HelpFormatter().printHelp("OptionsTip", options);
+				
+				System.out.println("");
+				for(String s : HELP_MESSAGE) {
+					System.out.println(s);
+				}
+				
 				System.exit(1);
 			}
 			
