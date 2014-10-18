@@ -15,8 +15,8 @@ public class Configuration {
 	private static final String DEFAULT_HOST = "127.0.0.1";
 	private static final String HELP_MESSAGE[] = {
 		"Synopsis: ",
-		"Magnifier is a database analyzer able to detect database convention",
-		"mistakes by running specific set of rules.",
+		"Magnifier is a database analyzer able to detect database errors",
+		"by running specific set of rules.",
 		"At the end of the analysis, a report is generated with all the defects.",
 		"",
 		"Author: Inovia http://inovia.fr/"
