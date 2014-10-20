@@ -97,7 +97,7 @@ public class PGDatabase implements Database {
 
 	private void loadSchemas() {
 		if(schemas == null) {
-			final String SQL = "SELECT schema_name FROM information_schema.schemata";
+			String SQL = "SELECT schema_name FROM information_schema.schemata";
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -133,7 +133,7 @@ public class PGDatabase implements Database {
 	
 	private void loadTriggers() {
 		if(triggers == null) {
-			final String SQL = "select"
+			String SQL = "select"
 					+ " trigger_schema,"
 					+ " trigger_name,"
 					+ " event_manipulation,"
@@ -183,7 +183,7 @@ public class PGDatabase implements Database {
 
 	private void loadFunctions() {
 		if(functions == null) {
-			final String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
+			String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
 					+ " FROM information_schema.routines r"
 					+ " LEFT OUTER JOIN information_schema.parameters p"
 					+ " ON r.specific_name   = p.specific_name"
@@ -201,10 +201,10 @@ public class PGDatabase implements Database {
 				results = statement.executeQuery(SQL);
 
 				functions = new Vector<Function>();
-				final String SCHEMA_NAME_FIELD = "routine_schema";
-				final String ROUTINE_NAME_FIELD = "routine_name";
-				final String PARAMETER_NAME_FIELD = "parameter_name";
-				final String PARAMETER_TYPE_FIELD = "parameter_mode";
+				String SCHEMA_NAME_FIELD = "routine_schema";
+				String ROUTINE_NAME_FIELD = "routine_name";
+				String PARAMETER_NAME_FIELD = "parameter_name";
+				String PARAMETER_TYPE_FIELD = "parameter_mode";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
@@ -259,7 +259,7 @@ public class PGDatabase implements Database {
 	
 	private void loadViews() {
 		if(views == null) {
-			final String SQL = "SELECT table_schema, table_name"
+			String SQL = "SELECT table_schema, table_name"
 					+ " FROM information_schema.views"
 					+ " WHERE table_schema"
 					+ " NOT IN ('pg_catalog', 'information_schema')";
@@ -271,8 +271,8 @@ public class PGDatabase implements Database {
 				results = statement.executeQuery(SQL);
 
 				views = new Vector<View>();
-				final String SCHEMA_NAME_FIELD = "table_schema";
-				final String ROUTINE_NAME_FIELD = "table_name";
+				String SCHEMA_NAME_FIELD = "table_schema";
+				String ROUTINE_NAME_FIELD = "table_name";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
@@ -300,7 +300,7 @@ public class PGDatabase implements Database {
 
 	private void loadFunctionComments() {
 		if(functionComments == null) {
-			final String SQL = "SELECT nspname, proname, description"
+			String SQL = "SELECT nspname, proname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_proc"
 					+ " ON pg_description.objoid = pg_proc.oid"
@@ -345,7 +345,7 @@ public class PGDatabase implements Database {
 	
 	private void loadViewComments() {
 			if(viewComments == null) {
-				final String SQL = "SELECT nspname, relname, description"
+				String SQL = "SELECT nspname, relname, description"
 						+ " FROM pg_class c"
 						+ " JOIN pg_namespace n ON n.oid = c.relnamespace"
 						+ " JOIN pg_description d ON relfilenode = d.objoid"
@@ -389,7 +389,7 @@ public class PGDatabase implements Database {
 
 	private void loadTableComments() {
 		if(tableComments == null) {
-			final String SQL = "SELECT nspname, relname, description"
+			String SQL = "SELECT nspname, relname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_class"
 					+ " ON pg_description.objoid = pg_class.oid"
@@ -435,7 +435,7 @@ public class PGDatabase implements Database {
 	private void loadTables() {
 		if(tables == null) {
 			// Retrieve every primary and foreign key for each tables, not every columns
-			final String SQL = "select distinct"
+			String SQL = "select distinct"
 					+ "   tc.table_schema    as local_schema,"
 					+ "   tc.table_name      as local_table,"
 					+ "   kcu.column_name    as local_column,"
@@ -465,13 +465,13 @@ public class PGDatabase implements Database {
 				statement = connection.createStatement();
 				results = statement.executeQuery(SQL);
 				tables = new Vector<Table>();
-				final String LOCAL_SCHEMA_FIELD   = "local_schema";
-				final String LOCAL_TABLE_FIELD    = "local_table";
-				final String LOCAL_COLUMN_FIELD   = "local_column";
-				final String FOREIGN_SCHEMA_FIELD = "foreign_schema";
-				final String FOREIGN_TABLE_FIELD  = "foreign_table";
-				final String FOREIGN_COLUMN_FIELD = "foreign_column";
-				final String KEY_TYPE_FIELD       = "key_type";
+				String LOCAL_SCHEMA_FIELD   = "local_schema";
+				String LOCAL_TABLE_FIELD    = "local_table";
+				String LOCAL_COLUMN_FIELD   = "local_column";
+				String FOREIGN_SCHEMA_FIELD = "foreign_schema";
+				String FOREIGN_TABLE_FIELD  = "foreign_table";
+				String FOREIGN_COLUMN_FIELD = "foreign_column";
+				String KEY_TYPE_FIELD       = "key_type";
 
 				Boolean doLoop = results.next();
 				// Loop on tables
@@ -520,7 +520,7 @@ public class PGDatabase implements Database {
 
 	private void loadTriggerComments() {
 		if(triggerComments == null) {
-			final String SQL = "SELECT"
+			String SQL = "SELECT"
 					+ "   n.nspname     AS schema_name,"
 					+ "   c.relname     AS table_name,"
 					+ "   t.tgname      AS trigger_name,"
@@ -566,7 +566,7 @@ public class PGDatabase implements Database {
 	
 	private void loadIndexes() {
 		if(indexes == null) {
-			final String SQL = "SELECT schemaname, tablename, indexname"
+			String SQL = "SELECT schemaname, tablename, indexname"
 					+ " FROM pg_indexes"
 					+ " WHERE schemaname NOT IN ('pg_catalog', 'information_schema')";
 

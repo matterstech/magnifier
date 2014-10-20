@@ -30,7 +30,7 @@ public class TriggerName extends Rule {
 	}
 
 	private Boolean assertion(Trigger t) {
-		final String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
+		String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
 		return t.getName().equalsIgnoreCase(PATTERN);
 	}
 }
