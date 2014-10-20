@@ -2,8 +2,7 @@ package com.inovia.magnifier.rules;
 
 import java.util.List;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -16,15 +15,15 @@ public class FunctionHasComment extends Rule {
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 
-	public FunctionHasComment(Database database) {
-		super(database);
+	public FunctionHasComment(Ruleset ruleset) {
+		super(ruleset);
 	}
 	
 	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Function f : database.getFunctions()) {
-			Boolean isSuccess = assertion(f, database.getComments());
+		for(Function f : getDatabase().getFunctions()) {
+			Boolean isSuccess = assertion(f, getDatabase().getComments());
 			ruleReport.addEntry(new ReportEntry(f.getEntityDescription(), isSuccess));
 		}
 		

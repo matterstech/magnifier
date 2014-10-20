@@ -4,6 +4,8 @@ import java.util.*;
 
 import junit.framework.*;
 
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.Ruleset;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
@@ -50,8 +52,16 @@ public class FunctionParameterNameTest extends TestCase {
 			public void disconnect()               {  }
 			public void connect()                  {  }
 		};
+
+		class MockRuleSet extends Ruleset {
+			public MockRuleSet(Database database) {
+				super(database);
+			}
+			protected List<Rule> getRules() { return null; }
+		}		
+		MockRuleSet mockRuleSet = new MockRuleSet(database);
 		
-		RuleReport rr = new FunctionParameterName(database).run();
+		RuleReport rr = new FunctionParameterName(mockRuleSet).run();
 		assertEquals(rr.getScore(), 50.0F);
 	}
 }

@@ -1,6 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
@@ -14,14 +14,14 @@ public class IndexName extends Rule {
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";
 	public static final Float DEBT = 1F;
 
-	public IndexName(Database database) {
-		super(database);
+	public IndexName(Ruleset ruleset) {
+		super(ruleset);
 	}
 	
 	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 
-		for(Index i : database.getIndexes()) {
+		for(Index i : getDatabase().getIndexes()) {
 			Boolean isSuccess = assertion(i);
 			ruleReport.addEntry(new ReportEntry(i.getEntityDescription(), isSuccess));
 		}

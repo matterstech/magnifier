@@ -1,7 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -14,14 +13,14 @@ public class TableHasPrimaryKey extends Rule {
 	public static final String SUGGESTION = "Each table should have a primary key";
 	public static final Float DEBT = 1F;
 
-	public TableHasPrimaryKey(Database database) {
-		super(database);
+	public TableHasPrimaryKey(Ruleset ruleset) {
+		super(ruleset);
 	}
 	
 	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Table t : database.getTables()) {
+		for(Table t : getDatabase().getTables()) {
 			Boolean isSuccess = assertion(t);
 			ruleReport.addEntry(new ReportEntry(t.getEntityDescription(), isSuccess));
 		}

@@ -2,6 +2,8 @@ package com.inovia.magnifier.rules;
 
 import java.util.*;
 
+import com.inovia.magnifier.Rule;
+import com.inovia.magnifier.Ruleset;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
@@ -42,7 +44,15 @@ public class ViewHasCommentTest extends TestCase {
 			public void connect()                  {  }
 		};
 
-		RuleReport rr = new ViewHasComment(database).run();
+		class MockRuleSet extends Ruleset {
+			public MockRuleSet(Database database) {
+				super(database);
+			}
+			protected List<Rule> getRules() { return null; }
+		}		
+		MockRuleSet mockRuleSet = new MockRuleSet(database);
+		
+		RuleReport rr = new ViewHasComment(mockRuleSet).run();
 		assertEquals(rr.getScore(), 100.0F);
 	}
 }

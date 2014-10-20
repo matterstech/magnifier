@@ -23,7 +23,7 @@ public abstract class Ruleset {
 		report = new Report(database.getName());
 	}
 	
-	public Report run() {
+	final public Report run() {
 		startDate = new Date();
 		
 		for(Rule r : this.getRules()) {
@@ -34,8 +34,12 @@ public abstract class Ruleset {
 		return report;
 	}
 	
-	public void generateHtml(String path) {
+	final public void generateHtml(String path) {
 		report.generateHtml(path, startDate, endDate);
+	}
+	
+	final public Database getDatabase() {
+		return database;
 	}
 	
 	abstract protected List<Rule> getRules();

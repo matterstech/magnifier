@@ -1,7 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -14,14 +13,14 @@ public class TriggerName extends Rule {
 	public static final String SUGGESTION = "Each trigger name should match on_when_what_tablename (example: on_before_update_user)";
 	public static final Float DEBT = 1F;
 
-	public TriggerName(Database database) {
-		super(database);
+	public TriggerName(Ruleset ruleset) {
+		super(ruleset);
 	}
 	
 	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 
-		for(Trigger t : database.getTriggers()) {
+		for(Trigger t : getDatabase().getTriggers()) {
 			Boolean isSuccess = assertion(t);
 			ruleReport.addEntry(new ReportEntry(t.getEntityDescription(), isSuccess));
 		}

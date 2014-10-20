@@ -8,10 +8,14 @@ import com.inovia.magnifier.reports.*;
  * the expected behaviour of rules.
  */
 public abstract class Rule {
-	protected Database database;
+	protected Ruleset ruleset;
 	
-	public Rule(Database database) {
-		this.database = database;
+	public Rule(Ruleset ruleset) {
+		this.ruleset = ruleset;
+	}
+	
+	final protected Database getDatabase() {
+		return ruleset.getDatabase();
 	}
 	
 	abstract public RuleReport run();

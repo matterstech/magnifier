@@ -2,10 +2,11 @@ package com.inovia.magnifier.rules;
 
 import java.util.*;
 
-import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.*;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.database.postgresql.*;
-import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.reports.*;
 
 import junit.framework.*;
 
@@ -43,9 +44,15 @@ public class ForeignKeyNameTest extends TestCase {
 			public void connect()                  {  }
 		};
 		
-		RuleReport rr = null;
+		class MockRuleSet extends Ruleset {
+			public MockRuleSet(Database database) {
+				super(database);
+			}
+			protected List<Rule> getRules() { return null; }
+		}		
+		MockRuleSet mockRuleSet = new MockRuleSet(database);
 		
-		rr = new ForeignKeyName(database).run();
+		RuleReport rr = new ForeignKeyName(mockRuleSet).run();
 		assertEquals(rr.getScore(), 50.0F);
 	}
 }

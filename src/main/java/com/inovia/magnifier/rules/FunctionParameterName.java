@@ -1,7 +1,6 @@
 package com.inovia.magnifier.rules;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.database.Database;
+import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -14,14 +13,14 @@ public class FunctionParameterName extends Rule {
 	public static final String SUGGESTION = "Each parameter should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
 
-	public FunctionParameterName(Database database) {
-		super(database);
+	public FunctionParameterName(Ruleset ruleset) {
+		super(ruleset);
 	}
 	
 	public RuleReport run() {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Function f : database.getFunctions()) {
+		for(Function f : getDatabase().getFunctions()) {
 			for(FunctionParameter p : f.getParameters()) {
 				Boolean isSuccess = assertion(p);
 				ruleReport.addEntry(new ReportEntry(p.getEntityDescription(), isSuccess));
