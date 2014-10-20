@@ -8,7 +8,8 @@ public abstract class Rule {
 	
 	public Rule(Database database) {
 		this.database = database;
-	}
+	} 
 	
 	abstract public RuleReport run();
+	abstract public String getHelp();
 }

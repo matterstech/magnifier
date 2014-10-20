@@ -37,4 +37,8 @@ public class IndexName extends Rule {
 		}
 		return false;
 	}
+
+	public String getHelp() {
+		return RULE_NAME + ": " + SUGGESTION;
+	}
 }

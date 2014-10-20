@@ -32,4 +32,8 @@ public class TableHasPrimaryKey extends Rule {
 	private Boolean assertion(Table table) {
 		return table.hasPrimaryKey();
 	}
+
+	public String getHelp() {
+		return RULE_NAME + ": " + SUGGESTION;
+	}
 }

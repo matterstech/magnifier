@@ -11,7 +11,9 @@ public class InoviaRuleset extends Ruleset {
 		super(database);
 		
 		rules = new Vector<Rule>();
-		report = new Report(database.getName());
+		if(database != null) {
+			report = new Report(database.getName());
+		}
 	}
 	
 	protected List<Rule> getRules() {

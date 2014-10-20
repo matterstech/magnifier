@@ -16,7 +16,9 @@ public abstract class Ruleset {
 		this.database = database;
 		
 		rules = this.getRules();
-		report = new Report(database.getName());
+		if(database != null) {
+			report = new Report(database.getName());
+		}
 	}
 	
 	public Report run() {
@@ -35,4 +37,14 @@ public abstract class Ruleset {
 	}
 	
 	abstract protected List<Rule> getRules();
+
+	final protected String getHelp() {
+		String res = "The available rules:";
+		
+		for(Rule r : getRules()) {
+			res = res + "\n  " + r.getHelp();
+		}
+		
+		return res;
+	}
 }

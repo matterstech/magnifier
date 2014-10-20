@@ -34,4 +34,8 @@ public class FunctionParameterName extends Rule {
 	private Boolean assertion(FunctionParameter p) {
 		return p.getName() != null && !p.getName().isEmpty() && p.getName().endsWith("_" + p.getMode().toLowerCase());
 	}
+
+	public String getHelp() {
+		return RULE_NAME + ": " + SUGGESTION;
+	}
 }

@@ -61,6 +61,9 @@ public class Configuration {
 					System.out.println(s);
 				}
 				
+				System.out.println();
+				System.out.println(new InoviaRuleset(null).getHelp());
+				
 				System.exit(1);
 			}
 			

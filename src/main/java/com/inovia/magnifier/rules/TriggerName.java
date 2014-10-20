@@ -33,4 +33,8 @@ public class TriggerName extends Rule {
 		final String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
 		return t.getName().equalsIgnoreCase(PATTERN);
 	}
+
+	public String getHelp() {
+		return RULE_NAME + ": " + SUGGESTION;
+	}
 }
