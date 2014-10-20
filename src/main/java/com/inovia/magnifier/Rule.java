@@ -7,6 +7,6 @@ import com.inovia.magnifier.reports.*;
  * The Rule abstract class deals with
  * the expected behaviour of rules.
  */
-public abstract class Rule {
+public interface Rule {
 	abstract public RuleReport run(Database database);
 }

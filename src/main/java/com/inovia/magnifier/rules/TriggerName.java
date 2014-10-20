@@ -9,7 +9,7 @@ import com.inovia.magnifier.reports.*;
  * The TriggerName class aims at checking if the provided
  * trigger names have the right format
  */
-public class TriggerName extends Rule {
+public class TriggerName implements Rule {
 	public static final String RULE_NAME = "TriggerName";
 	public static final String SUGGESTION = "Each trigger name should match on_when_what_tablename (example: on_before_update_user)";
 	public static final Float DEBT = 1F;

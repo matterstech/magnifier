@@ -9,7 +9,7 @@ import com.inovia.magnifier.reports.*;
  * Checks if the foreign key names follow the convention.
  * 
  */
-public class ForeignKeyName extends Rule {
+public class ForeignKeyName implements Rule {
 	public static final String RULE_NAME = "ForeignKeyName";
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
 	public static final Float DEBT = 1F;
