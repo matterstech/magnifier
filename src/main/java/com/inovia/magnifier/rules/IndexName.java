@@ -1,7 +1,6 @@
 package com.inovia.magnifier.rules;
 
 import com.inovia.magnifier.*;
-import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -30,9 +29,11 @@ public class IndexName extends Rule {
 	}
 
 	private Boolean assertion(Index i) {
-		if(i.getName().endsWith("_idx")) { // Inovia convention
+		if(i.getName().endsWith("_idx")) {
+			// Inovia convention
 			return true;
-		} else if(i.getName().endsWith("_pkey") || i.getName().endsWith("_key")) { // Postgres Convention
+		} else if(i.getName().endsWith("_pkey") || i.getName().endsWith("_key")) {
+			// Postgres Convention
 			return true;
 		}
 		return false;

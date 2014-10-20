@@ -111,11 +111,9 @@ public class Configuration {
 			File f = new File(reportPath);
 
 			// Report path is a directory
-			if(f.exists()) {
-				if(f.isDirectory()) {
-					reportPath = reportPath + "/" + REPORT_DEFAULT_NAME;
-					System.err.println("The report will be called: " + REPORT_DEFAULT_NAME);
-				}
+			if(f.exists() && f.isDirectory()) {
+				reportPath = reportPath + "/" + REPORT_DEFAULT_NAME;
+				System.err.println("The report will be called: " + REPORT_DEFAULT_NAME);
 			}
 
 			// We check if the DBMS is acceptable
