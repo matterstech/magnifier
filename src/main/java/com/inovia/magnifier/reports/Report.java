@@ -39,11 +39,16 @@ public class Report {
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
+			Integer HOURS_IN_DAY           = 24;
+			Integer MINUTES_IN_HOUR        = 60;
+			Integer SECONDS_IN_MINUTE      = 60;
+			Integer MILLISECONDS_IN_SECOND = 1000;
+			
 			Long timeDiff = endTime.getTime() - startTime.getTime();
-			Long seconds = timeDiff / 1000;
-			Long minutes = seconds / 60;
-			Long hours = minutes / 60;
-			Long days = hours / 24;
+			Long seconds = timeDiff / MILLISECONDS_IN_SECOND;
+			Long minutes = seconds  / SECONDS_IN_MINUTE;
+			Long hours   = minutes  / MINUTES_IN_HOUR;
+			Long days    = hours    / HOURS_IN_DAY;
 
 			String html = "";
 			html = html + "<html>"
