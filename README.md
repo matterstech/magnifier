@@ -2,14 +2,7 @@
 
 Magnifier is a database analyzer able to perform convention validations. Its goal is to allow the developers to check the consistency of their database over a set of configurable rules. 
 
-## Development
-
-To develop on Magnifier you need:
-
-- [Maven](https://github.com/apache/maven).
-- The JDBC Driver for your DBMS.
-
-## Deployment
+## Install
 
 - Retrieve the magnifier.jar file
 - Download the JDBC driver for your database
@@ -37,6 +30,12 @@ Analyze the distant "magnifier__dev" postgresql database, listening on port 5432
 
 	java -jar magnifier.jar -h 192.168.0.15 -p 5432 -t postgresql -dp ./jdbc_pgsql.jar -d my__database -u john -pw john_password -o report.html
 
+## Development
+
+To develop on Magnifier you need:
+
+- [Maven](https://github.com/apache/maven).
+- The JDBC Driver for your DBMS ([PostgreSql](http://jdbc.postgresql.org/download.html), ...).
 
 ## Contributing
 
