@@ -13,6 +13,13 @@ public class PGTrigger implements Trigger {
 	private String action;
 	private String timing;
 	
+	/**
+	 * @param schemaName The name of the schema containing the trigger
+	 * @param tableName  The name of the table firing the trigger
+	 * @param name       The name of the trigger
+	 * @param action     The action firing the trigger (UPDATE, INSERT, ...)
+	 * @param timing     The moment the trigger is executed (BEFORE, AFTER, ...)
+	 */
 	public PGTrigger(String schemaName, String tableName, String name, String action, String timing) {
 		this.schemaName = schemaName;
 		this.tableName = tableName;

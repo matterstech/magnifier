@@ -322,7 +322,7 @@ public class PGDatabase implements Database {
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"), "function");
+					Comment f = new PGComment(results.getString("nspname"), results.getString("proname"), results.getString("description"), Comment.FUNCTION_TYPE);
 
 					functionComments.add(f);
 
@@ -369,7 +369,7 @@ public class PGDatabase implements Database {
 
 					Boolean exitLoop = results.next();
 					while(exitLoop) {
-						Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), "view");
+						Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), Comment.VIEW_TYPE);
 
 						viewComments.add(f);
 
@@ -417,7 +417,7 @@ public class PGDatabase implements Database {
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), "table");
+					Comment f = new PGComment(results.getString("nspname"), results.getString("relname"), results.getString("description"), Comment.TABLE_TYPE);
 
 					tableComments.add(f);
 
@@ -554,7 +554,7 @@ public class PGDatabase implements Database {
 
 				Boolean exitLoop = results.next();
 				while(exitLoop) {
-					Comment f = new PGComment(results.getString("schema_name"), results.getString("table_name"), results.getString("description"), "trigger");
+					Comment f = new PGComment(results.getString("schema_name"), results.getString("table_name"), results.getString("description"), Comment.TRIGGER_TYPE);
 
 					triggerComments.add(f);
 

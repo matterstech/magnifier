@@ -13,6 +13,10 @@ public class PGFunction implements Function {
 	private String schemaName;
 	private Vector<PGFunctionParameter> parameters;
 
+	/**
+	 * @param schemaName The name of the schema containing the function
+	 * @param name       The name of the function
+	 */
 	public PGFunction(String schemaName, String name) {
 		this.schemaName = schemaName;
 		this.name = name;

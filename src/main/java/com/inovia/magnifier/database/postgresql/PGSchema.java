@@ -13,6 +13,9 @@ public class PGSchema implements Schema {
 	private String name;
 	private Vector<PGFunction> functions;
 
+	/**
+	 * @param name The name of the schema
+	 */
 	public PGSchema(String name) {
 		this.name = name;
 	}

@@ -12,10 +12,16 @@ public class PGComment implements Comment {
 	private String entityType;
 	private String content;
 	
+	/**
+	 * @param schemaName The name of the schema containing the commented entity
+	 * @param entityName The name of the commented entity
+	 * @param content    The text of the comment
+	 * @param entityType The type of the commented entity ({@link Comment}})
+	 */
 	public PGComment(String schemaName, String entityName, String content, String entityType) {
 		this.schemaName = schemaName;
 		this.entityName = entityName;
-		this.content = content;
+		this.content    = content;
 		this.entityType = entityType;
 	}
 	

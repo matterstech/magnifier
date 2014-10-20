@@ -11,6 +11,11 @@ public class PGFunctionParameter implements FunctionParameter {
 	private String name;
 	private String mode;
 	
+	/**
+	 * @param function The function processing this parameter
+	 * @param name     The name of the parameter;
+	 * @param mode     The mode of the parameter (IN, OUT, ...)
+	 */
 	public PGFunctionParameter(PGFunction function, String name, String mode) {
 		this.function = function;
 		this.name = name;

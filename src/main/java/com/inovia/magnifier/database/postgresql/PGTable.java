@@ -15,8 +15,12 @@ public class PGTable implements Table {
 	private Vector<String> primaryKey;
 	private Vector<ForeignKey> foreignKeys;
 	
-	public PGTable(String schema, String name) {
-		this.schemaName = schema;
+	/**
+	 * @param schema The name of the schema containing the table
+	 * @param name   The name of the table
+	 */
+	public PGTable(String schemaName, String name) {
+		this.schemaName = schemaName;
 		this.name = name;
 		primaryKey = new Vector<String>();
 		foreignKeys = new Vector<ForeignKey>();

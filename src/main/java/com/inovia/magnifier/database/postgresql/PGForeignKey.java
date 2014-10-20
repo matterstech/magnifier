@@ -13,6 +13,13 @@ public class PGForeignKey implements ForeignKey {
 	private String foreignTableName;
 	private String foreignColumnName;
 	
+	/**
+	 * @param table             The table containing the foreign key
+	 * @param columnName        The name of the foreign key field
+	 * @param foreignSchemaName The name of the foreign schema
+	 * @param foreignTableName  The name of the foreign table
+	 * @param foreignColumnName The name of the foreign column
+	 */
 	public PGForeignKey(PGTable table, String columnName, String foreignSchemaName, String foreignTableName, String foreignColumnName) {
 		this.table = table;
 		this.columnName = columnName;
