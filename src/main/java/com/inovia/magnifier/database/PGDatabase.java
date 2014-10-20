@@ -51,6 +51,9 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Establish the connection to the database specified in constructor.
+	 */
 	public void connect() {
 		if(connection == null) {
 			try {
@@ -62,6 +65,9 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Retrieve/load all the entities from the database
+	 */
 	public void load() {
 		loadSchemas();
 
@@ -80,6 +86,9 @@ public class PGDatabase implements Database {
 		loadViewComments();
 	}
 
+	/**
+	 * Retrieve/load the schemas from the database
+	 */
 	private void loadSchemas() {
 		if(schemas == null) {
 			String SQL = "SELECT schema_name FROM information_schema.schemata";
@@ -116,6 +125,9 @@ public class PGDatabase implements Database {
 		}
 	}
 	
+	/**
+	 * Retrieve/load the triggers from the database
+	 */
 	private void loadTriggers() {
 		if(triggers == null) {
 			String SQL = "select"
@@ -166,6 +178,9 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Retrieve/load the functions from the database
+	 */
 	private void loadFunctions() {
 		if(functions == null) {
 			String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
@@ -176,8 +191,6 @@ public class PGDatabase implements Database {
 					+ " WHERE routine_schema"
 					+ " NOT IN ('pg_catalog', 'information_schema')"
 					+ " ORDER BY r.routine_schema ASC, r.routine_name ASC, p.parameter_name ASC";
-
-
 
 			Statement statement = null;
 			ResultSet results = null;
@@ -207,7 +220,6 @@ public class PGDatabase implements Database {
 
 						function.addParameter(parameter);
 					}
-
 
 					String schemaName = results.getString(SCHEMA_NAME_FIELD);
 					String routineName = results.getString(ROUTINE_NAME_FIELD);
@@ -242,6 +254,9 @@ public class PGDatabase implements Database {
 		}
 	}
 	
+	/**
+	 * Retrieve/load the views from the database
+	 */
 	private void loadViews() {
 		if(views == null) {
 			String SQL = "SELECT table_schema, table_name"
@@ -283,6 +298,9 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Retrieve/load the function comments from the database
+	 */
 	private void loadFunctionComments() {
 		if(functionComments == null) {
 			String SQL = "SELECT nspname, proname, description"
@@ -328,6 +346,9 @@ public class PGDatabase implements Database {
 		}
 	}
 	
+	/**
+	 * Retrieve/load the view comments from the database
+	 */
 	private void loadViewComments() {
 			if(viewComments == null) {
 				String SQL = "SELECT nspname, relname, description"
@@ -372,6 +393,9 @@ public class PGDatabase implements Database {
 			}
 	}
 
+	/**
+	 * Retrieve/load the table comments from the database
+	 */
 	private void loadTableComments() {
 		if(tableComments == null) {
 			String SQL = "SELECT nspname, relname, description"
@@ -417,9 +441,11 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Retrieve/load the tables from the database
+	 */
 	private void loadTables() {
 		if(tables == null) {
-			// Retrieve every primary and foreign key for each tables, not every columns
 			String SQL = "select distinct"
 					+ "   tc.table_schema    as local_schema,"
 					+ "   tc.table_name      as local_table,"
@@ -503,6 +529,9 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Retrieve/load the triggers comments from the database
+	 */
 	private void loadTriggerComments() {
 		if(triggerComments == null) {
 			String SQL = "SELECT"
@@ -549,6 +578,9 @@ public class PGDatabase implements Database {
 		}
 	}
 	
+	/**
+	 * Retrieve/load the indexes from the database
+	 */
 	private void loadIndexes() {
 		if(indexes == null) {
 			String SQL = "SELECT schemaname, tablename, indexname"
@@ -587,6 +619,9 @@ public class PGDatabase implements Database {
 		}
 	}
 	
+	/**
+	 * Close the previously established database connection
+	 */
 	public void disconnect() {
 		try {
 			if(connection != null) {
@@ -598,26 +633,50 @@ public class PGDatabase implements Database {
 		}
 	}
 
+	/**
+	 * Get the list of functions found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Function> getFunctions() {
 		return functions;
 	}
 
+	/**
+	 * Get the list of schemas found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Schema> getSchemas() {
 		return schemas;
 	}
 
+	/**
+	 * Get the list of tables found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Table> getTables() {
 		return tables;
 	}
 	
+	/**
+	 * Get the list of indexes found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Index> getIndexes() {
 		return indexes;
 	}
 	
+	/**
+	 * Get the list of views found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<View> getViews() {
 		return views;
 	}
 
+	/**
+	 * Get the list of comments found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Comment> getComments() {
 		List<Comment> res = new Vector<Comment>();
 		res.addAll(tableComments);
@@ -627,6 +686,10 @@ public class PGDatabase implements Database {
 		return res;
 	}
 
+	/**
+	 * Get the list of triggers found in the database.
+	 * Important: the method load() should be have been executed before this getter.
+	 */
 	public List<Trigger> getTriggers() { 
 		return triggers;
 	}

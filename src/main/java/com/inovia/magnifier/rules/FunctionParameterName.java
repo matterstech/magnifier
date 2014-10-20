@@ -11,7 +11,7 @@ import com.inovia.magnifier.reports.*;
  */
 public class FunctionParameterName extends Rule {
 	public static final String RULE_NAME = "FunctionParameterName";
-	public static final String SUGGESTION = "Each parameters should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
+	public static final String SUGGESTION = "Each parameter should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
 
 	public FunctionParameterName(Database database) {
