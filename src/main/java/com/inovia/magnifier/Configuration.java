@@ -122,7 +122,7 @@ public class Configuration {
 			Boolean is_expected_dbms = false;
 			// Try to find the provided DBMS inside the supported ones.
 			for(Integer i = EXPECTED_DBMS.length-1 ; i >= 0 && !is_expected_dbms; i--) {
-				if(EXPECTED_DBMS[i].equals(getDatabaseType())) {
+				if(EXPECTED_DBMS[i].equals(databaseType)) {
 					is_expected_dbms = true;
 				}
 			}
@@ -132,7 +132,7 @@ public class Configuration {
 				System.exit(1);
 			}
 
-			connectionURL = "jdbc:" + getDatabaseType() + "://" + getHost() + ":" + getPort() + "/" + getDatabaseName();
+			connectionURL = "jdbc:" + databaseType + "://" + host + ":" + port + "/" + databaseName;
 		} catch (ParseException e) {
 			System.err.println(ABORT_MESSAGE + ": The provided parameters cannot be processed");
 			System.err.println(e.getMessage());
@@ -140,7 +140,7 @@ public class Configuration {
 		}
 	}
 
-	private String getDefaultPort(String type) {
+	private static String getDefaultPort(String type) {
 		if(type.equals("postgresql")) {
 			return "5432";
 		}

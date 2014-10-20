@@ -27,8 +27,8 @@ public class PGDatabase implements Database {
 	private List<Trigger>  triggers;
 	private List<Comment>  triggerComments;
 	
-	private List<View> views;
-	private List<Comment> viewComments;
+	private List<View>     views;
+	private List<Comment>  viewComments;
 
 	public PGDatabase(String driverPath, String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
@@ -38,30 +38,15 @@ public class PGDatabase implements Database {
 		this.password = password;
 
 		try {
+			URL url = new URL("jar:file:" + driverPath + "!/");
 			
-			// URL u = new URL("jar:file:/path/to/pgjdbc2.jar!/");
-			URL u = new URL("jar:file:" + driverPath + "!/");
 			String classname = "org.postgresql.Driver";
-			URLClassLoader ucl = new URLClassLoader(new URL[] { u });
-			Driver d = (Driver) Class.forName(classname, true, ucl).newInstance();
-			DriverManager.registerDriver((Driver) new DriverShim(d));
-			// DriverManager.getConnection("jdbc:postgresql://host/db", "user", "pw");
+			URLClassLoader urlcl = new URLClassLoader(new URL[] { url });
 			
-			// Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			Driver d = (Driver) Class.forName(classname, true, urlcl).newInstance();
+			DriverManager.registerDriver((Driver) new DriverShim(d));
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -71,7 +56,7 @@ public class PGDatabase implements Database {
 			try {
 				connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, user, password);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 				System.exit(1);
 			}
 		}
@@ -114,7 +99,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -124,7 +109,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -164,7 +149,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -174,7 +159,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -240,7 +225,7 @@ public class PGDatabase implements Database {
 					functions.add(function);
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -250,7 +235,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -281,7 +266,7 @@ public class PGDatabase implements Database {
 					doLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -291,7 +276,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -326,7 +311,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -336,7 +321,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -370,7 +355,7 @@ public class PGDatabase implements Database {
 						exitLoop = results.next();
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 				} finally {
 					try {
 						if(results != null) {
@@ -380,7 +365,7 @@ public class PGDatabase implements Database {
 							statement.close();						
 						}
 					} catch (SQLException e) {
-						e.printStackTrace();
+						System.err.println(e.getMessage());
 						System.exit(1);
 					}
 				}
@@ -415,7 +400,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -425,7 +410,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -501,7 +486,7 @@ public class PGDatabase implements Database {
 					tables.add(table);
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -511,7 +496,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -547,7 +532,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -557,7 +542,7 @@ public class PGDatabase implements Database {
 						statement.close();						
 					}
 				} catch (SQLException e) {
-					e.printStackTrace();
+					System.err.println(e.getMessage());
 					System.exit(1);
 				}
 			}
@@ -585,7 +570,7 @@ public class PGDatabase implements Database {
 					exitLoop = results.next();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			} finally {
 				try {
 					if(results != null) {
@@ -608,7 +593,7 @@ public class PGDatabase implements Database {
 				connection.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 	}
