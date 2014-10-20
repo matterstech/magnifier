@@ -1,7 +1,7 @@
 package com.inovia.magnifier.rules;
 
 import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.Ruleset;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -16,14 +16,12 @@ public class ViewName extends Rule {
 	
 	private static final String SUFFIX = "_view";
 
-	public ViewName(Ruleset ruleset) {
-		super(ruleset);
-	}
+	public ViewName() { }
 	
-	public RuleReport run() {
+	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 
-		for(View v : getDatabase().getViews()) {
+		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v);
 			ruleReport.addEntry(new ReportEntry(v.getEntityDescription(), isSuccess));
 		}

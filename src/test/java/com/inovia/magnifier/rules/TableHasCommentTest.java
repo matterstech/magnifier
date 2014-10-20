@@ -1,12 +1,11 @@
 package com.inovia.magnifier.rules;
 
+import static org.mockito.Mockito.*;
+
 import java.util.*;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.Ruleset;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
 
 import junit.framework.*;
@@ -21,37 +20,35 @@ public class TableHasCommentTest extends TestCase {
     }
 	
 	public void testRule() {
-		Database database = new Database() {
-			public void load()                     {  }
-			public List<View> getViews()         { return null; }
-			public List<Trigger> getTriggers()   { return null; }
-			public List<Table> getTables() {
-				List<Table> tables = new Vector<Table>();
-				tables.add(new PGTable("public", "my_table"));
-				return tables;
-			}
-			public List<Schema> getSchemas()     { return null; }
-			public String getName()                { return null; }
-			public List<Index> getIndexes()      { return null; }
-			public List<Function> getFunctions() { return null; }
-			public List<Comment> getComments()   {
-				List<Comment> comments = new Vector<Comment>();
-				comments.add(new PGComment("public", "my_table", "cool comment about my_table", "table"));
-				return comments;
-			}
-			public void disconnect()               {  }
-			public void connect()                  {  }
-		};
-
-		class MockRuleSet extends Ruleset {
-			public MockRuleSet(Database database) {
-				super(database);
-			}
-			protected List<Rule> getRules() { return null; }
-		}		
-		MockRuleSet mockRuleSet = new MockRuleSet(database);
+		final Table mockTable1 = mock(Table.class);
+		when(mockTable1.getSchemaName()).thenReturn("public");
+		when(mockTable1.getName()).thenReturn("my_table");
 		
-		RuleReport rr = new TableHasComment(mockRuleSet).run();
-		assertEquals(rr.getScore(), 100.0F);
+		List<Table> mockTables = new Vector<Table>();
+		mockTables.add(mockTable1);
+		
+		final Comment mockComment = mock(Comment.class);
+		when(mockComment.getSchemaName()).thenReturn("public");
+		when(mockComment.getEntityName()).thenReturn("my_table");
+		when(mockComment.getEntityType()).thenReturn(Comment.TABLE_TYPE);
+		
+		List<Comment> mockComments = new Vector<Comment>();
+		mockComments.add(mockComment);
+		
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTables()).thenReturn(mockTables);
+		when(mockDatabase.getComments()).thenReturn(mockComments);
+		
+		RuleReport rr = new TableHasComment().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final Table mockTable2 = mock(Table.class);
+		when(mockTable2.getSchemaName()).thenReturn("public");
+		when(mockTable2.getName()).thenReturn("your_table");
+		
+		mockTables.add(mockTable2);
+		
+		rr = new TableHasComment().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

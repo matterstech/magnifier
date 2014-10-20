@@ -2,14 +2,12 @@ package com.inovia.magnifier.rules;
 
 import java.util.*;
 
-import com.inovia.magnifier.*;
 import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.*;
 
 import junit.framework.*;
-
+import static org.mockito.Mockito.*;
 
 public class ForeignKeyNameTest extends TestCase {
 	public ForeignKeyNameTest(String testName) {
@@ -21,38 +19,30 @@ public class ForeignKeyNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Database database = new Database() {
-			public void load()                     {  }
-			public List<View> getViews()         { return null; }
-			public List<Trigger> getTriggers()   { return null; }
-			public List<Table> getTables() {
-				List<Table> tables = new Vector<Table>();
-				
-				PGTable t = new PGTable("public", "my_table");
-				t.addForeignKey(new PGForeignKey(t, "table2_field2_stuff", "public", "table2", "field2"));
-				t.addForeignKey(new PGForeignKey(t, "table2_field2",       "public", "table2", "field2"));
-				
-				tables.add(t);
-				return tables;
-			}
-			public List<Schema> getSchemas()     { return null; }
-			public String getName()                { return null; }
-			public List<Index> getIndexes()      { return null; }
-			public List<Function> getFunctions() { return null; }
-			public List<Comment> getComments()   { return null; }
-			public void disconnect()               {  }
-			public void connect()                  {  }
-		};
+		List<ForeignKey> mockForeignKeys = new Vector<ForeignKey>();
 		
-		class MockRuleSet extends Ruleset {
-			public MockRuleSet(Database database) {
-				super(database);
-			}
-			protected List<Rule> getRules() { return null; }
-		}		
-		MockRuleSet mockRuleSet = new MockRuleSet(database);
+		final ForeignKey mockForeignKey1 = mock(ForeignKey.class);
+		when(mockForeignKey1.getColumnName()).thenReturn("my_foreign_key");
+		when(mockForeignKey1.getForeignTableName()).thenReturn("user");
+		when(mockForeignKey1.getForeignColumnName()).thenReturn("id");
+		mockForeignKeys.add(mockForeignKey1);
 		
-		RuleReport rr = new ForeignKeyName(mockRuleSet).run();
-		assertEquals(rr.getScore(), 50.0F);
+		final ForeignKey mockForeignKey2 = mock(ForeignKey.class);
+		when(mockForeignKey2.getColumnName()).thenReturn("user_id");
+		when(mockForeignKey2.getForeignTableName()).thenReturn("user");
+		when(mockForeignKey2.getForeignColumnName()).thenReturn("id");
+		mockForeignKeys.add(mockForeignKey2);
+		
+		final Table mockTable = mock(Table.class);
+		when(mockTable.getForeignKeys()).thenReturn(mockForeignKeys);
+		when(mockTable.getName()).thenReturn("group");
+		List<Table> mockTables = new Vector<Table>();
+		mockTables.add(mockTable);
+		
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTables()).thenReturn(mockTables);
+		
+		RuleReport rr = new ForeignKeyName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

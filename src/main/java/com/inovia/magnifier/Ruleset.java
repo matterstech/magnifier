@@ -27,7 +27,7 @@ public abstract class Ruleset {
 		startDate = new Date();
 		
 		for(Rule r : this.getRules()) {
-			report.addRuleReport(r.run());
+			report.addRuleReport(r.run(database));
 		}
 		
 		endDate = new Date();

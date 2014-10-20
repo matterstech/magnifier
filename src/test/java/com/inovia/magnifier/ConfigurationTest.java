@@ -11,7 +11,7 @@ public class ConfigurationTest extends TestCase {
         return new TestSuite(ConfigurationTest.class);
     }
 	
-	public void testConstructorWithRightParamters() {
+	public void testConstructorAndGetters() {
 		final String[] ARGS = {
 				"-h",  "127.0.0.1",
 				"-p",  "5432",

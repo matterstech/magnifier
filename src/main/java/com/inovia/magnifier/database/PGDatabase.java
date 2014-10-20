@@ -30,7 +30,15 @@ public class PGDatabase implements Database {
 	private List<View>     views;
 	private List<Comment>  viewComments;
 
-	public PGDatabase(String driverPath, String databaseName, String host, String port, String user, String password) {
+	/**
+	 * @param driverFile   The JDBC driver file
+	 * @param databaseName The name of the database to analyze
+	 * @param host         The host on which the database is running (default:  127.0.0.1)
+	 * @param port         The port on which the database is listening (default: default for DBMS)
+	 * @param user
+	 * @param password
+	 */
+	public PGDatabase(String driverFile, String databaseName, String host, String port, String user, String password) {
 		this.name = databaseName;
 		this.host = host;
 		this.port = port;
@@ -38,7 +46,7 @@ public class PGDatabase implements Database {
 		this.password = password;
 
 		try {
-			URL url = new URL("jar:file:" + driverPath + "!/");
+			URL url = new URL("jar:file:" + driverFile + "!/");
 			
 			String classname = "org.postgresql.Driver";
 			URLClassLoader urlcl = new URLClassLoader(new URL[] { url });

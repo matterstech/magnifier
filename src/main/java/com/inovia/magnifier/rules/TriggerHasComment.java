@@ -3,6 +3,7 @@ package com.inovia.magnifier.rules;
 import java.util.List;
 
 import com.inovia.magnifier.*;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -15,15 +16,13 @@ public class TriggerHasComment extends Rule {
 	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";
 	public static final Float DEBT = 1F;
 
-	public TriggerHasComment(Ruleset ruleset) {
-		super(ruleset);
-	}
+	public TriggerHasComment() { }
 	
-	public RuleReport run() {
+	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Trigger t : getDatabase().getTriggers()) {
-			Boolean isSuccess = assertion(t, getDatabase().getComments());
+		for(Trigger t : database.getTriggers()) {
+			Boolean isSuccess = assertion(t, database.getComments());
 			ruleReport.addEntry(new ReportEntry(t.getEntityDescription(), isSuccess));
 		}
 		

@@ -1,12 +1,12 @@
 package com.inovia.magnifier.rules;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.*;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.Ruleset;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
 
 import junit.framework.*;
@@ -22,39 +22,26 @@ public class ViewNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Database database = new Database() {
-			public void load()                     {  }
-			public List<View> getViews()         {
-				List<View> views = new Vector<View>();
-				views.add(new PGView("public", "my_view"));
-				views.add(new PGView("public", "my_view_bis"));
-				return views;
-			}
-			public List<Trigger> getTriggers()   {
-				List<Trigger> triggers = new Vector<Trigger>();
-				triggers.add(new PGTrigger("public", "my_table", "my_trigger",                "insert", "before"));
-				triggers.add(new PGTrigger("public", "my_table", "on_before_insert_my_table", "insert", "before"));
-				return triggers;
-			}
-			public List<Table> getTables()       { return null; }
-			public List<Schema> getSchemas()     { return null; }
-			public String getName()              { return null; }
-			public List<Index> getIndexes()      { return null; }
-			public List<Function> getFunctions() { return null; }
-			public List<Comment> getComments()   { return null; }
-			public void disconnect()             {  }
-			public void connect()                {  }
-		};
+		final View mockView1 = mock(View.class);
+		when(mockView1.getSchemaName()).thenReturn("public");
+		when(mockView1.getName()).thenReturn("my_view");
 		
-		class MockRuleSet extends Ruleset {
-			public MockRuleSet(Database database) {
-				super(database);
-			}
-			protected List<Rule> getRules() { return null; }
-		}		
-		MockRuleSet mockRuleSet = new MockRuleSet(database);
+		List<View> mockViews = new Vector<View>();
+		mockViews.add(mockView1);
 		
-		RuleReport rr = new ViewName(mockRuleSet).run();
-		assertEquals(rr.getScore(), 50.0F);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getViews()).thenReturn(mockViews);
+		
+		RuleReport rr = new ViewName().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final View mockView2 = mock(View.class);
+		when(mockView2.getSchemaName()).thenReturn("public");
+		when(mockView2.getName()).thenReturn("view_of_something");
+		
+		mockViews.add(mockView2);
+		
+		rr = new ViewName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

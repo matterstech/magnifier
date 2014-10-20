@@ -3,6 +3,7 @@ package com.inovia.magnifier.rules;
 import java.util.List;
 
 import com.inovia.magnifier.*;
+import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
 
@@ -15,15 +16,13 @@ public class FunctionHasComment extends Rule {
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 
-	public FunctionHasComment(Ruleset ruleset) {
-		super(ruleset);
-	}
+	public FunctionHasComment() {  }
 	
-	public RuleReport run() {
+	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
 		
-		for(Function f : getDatabase().getFunctions()) {
-			Boolean isSuccess = assertion(f, getDatabase().getComments());
+		for(Function f : database.getFunctions()) {
+			Boolean isSuccess = assertion(f, database.getComments());
 			ruleReport.addEntry(new ReportEntry(f.getEntityDescription(), isSuccess));
 		}
 		
@@ -32,7 +31,9 @@ public class FunctionHasComment extends Rule {
 	
 	private Boolean assertion(Function function, List<Comment> comments) {
 		for(Comment c : comments) {
-			if(c.getEntityType().equals("function") && c.getSchemaName().equals(function.getSchemaName()) && c.getEntityName().equals(function.getName())) {
+			if(c.getEntityType().equals(Comment.FUNCTION_TYPE)
+					&& c.getSchemaName().equals(function.getSchemaName())
+					&& c.getEntityName().equals(function.getName())) {
 				return true;
 			}
 		}

@@ -21,16 +21,16 @@ public class InoviaRuleset extends Ruleset {
 	protected List<Rule> getRules() {
 		List<Rule> rules = new Vector<Rule>();
 		
-		rules.add(new ForeignKeyName(this));
-		rules.add(new FunctionHasComment(this));
-		rules.add(new FunctionParameterName(this));
-		rules.add(new IndexName(this));
-		rules.add(new TableHasComment(this));
-		rules.add(new TableHasPrimaryKey(this));
-		rules.add(new TriggerHasComment(this));
-		rules.add(new TriggerName(this));
-		rules.add(new ViewHasComment(this));
-		rules.add(new ViewName(this));
+		rules.add(new ForeignKeyName());
+		rules.add(new FunctionHasComment());
+		rules.add(new FunctionParameterName());
+		rules.add(new IndexName());
+		rules.add(new TableHasComment());
+		rules.add(new TableHasPrimaryKey());
+		rules.add(new TriggerHasComment());
+		rules.add(new TriggerName());
+		rules.add(new ViewHasComment());
+		rules.add(new ViewName());
 		
 		return rules;
 	}

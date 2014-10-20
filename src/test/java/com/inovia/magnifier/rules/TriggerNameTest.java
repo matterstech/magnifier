@@ -1,12 +1,12 @@
 package com.inovia.magnifier.rules;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.*;
 
-import com.inovia.magnifier.Rule;
-import com.inovia.magnifier.Ruleset;
 import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
 import com.inovia.magnifier.reports.RuleReport;
 
 import junit.framework.*;
@@ -21,34 +21,30 @@ public class TriggerNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Database database = new Database() {
-			public void load()                   {  }
-			public List<View> getViews()         { return null; }
-			public List<Trigger> getTriggers()   {
-				List<Trigger> triggers = new Vector<Trigger>();
-				triggers.add(new PGTrigger("public", "my_table", "my_trigger",                "insert", "before"));
-				triggers.add(new PGTrigger("public", "my_table", "on_before_insert_my_table", "insert", "before"));
-				return triggers;
-			}
-			public List<Table> getTables()       { return null; }
-			public List<Schema> getSchemas()     { return null; }
-			public String getName()              { return null; }
-			public List<Index> getIndexes()      { return null; }
-			public List<Function> getFunctions() { return null; }
-			public List<Comment> getComments()   { return null; }
-			public void disconnect()               {  }
-			public void connect()                  {  }
-		};
-
-		class MockRuleSet extends Ruleset {
-			public MockRuleSet(Database database) {
-				super(database);
-			}
-			protected List<Rule> getRules() { return null; }
-		}		
-		MockRuleSet mockRuleSet = new MockRuleSet(database);
+		Trigger mockTrigger1 = mock(Trigger.class);
+		when(mockTrigger1.getName()).thenReturn("my_trigger_on_user");
+		when(mockTrigger1.getTableName()).thenReturn("user");
+		when(mockTrigger1.getTiming()).thenReturn("BEFORE");
+		when(mockTrigger1.getAction()).thenReturn("UPDATE");
 		
-		RuleReport rr = new TriggerName(mockRuleSet).run();
-		assertEquals(rr.getScore(), 50.0F);
+		List<Trigger> mockTriggers = new Vector<Trigger>();
+		mockTriggers.add(mockTrigger1);
+		
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTriggers()).thenReturn(mockTriggers);
+		
+		RuleReport rr = new TriggerName().run(mockDatabase);
+		assertEquals(0.0F, rr.getScore());
+		
+		Trigger mockTrigger2 = mock(Trigger.class);
+		when(mockTrigger2.getName()).thenReturn("on_before_update_user");
+		when(mockTrigger2.getTableName()).thenReturn("user");
+		when(mockTrigger2.getTiming()).thenReturn("BEFORE");
+		when(mockTrigger2.getAction()).thenReturn("UPDATE");
+		
+		mockTriggers.add(mockTrigger2);
+		
+		rr = new TriggerName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }
