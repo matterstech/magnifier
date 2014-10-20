@@ -2,7 +2,11 @@ package com.inovia.magnifier.reports;
 
 import java.util.*;
 
-
+/**
+ * A rule report is a report on a specific rule.
+ * It includes a set of report entries
+ *
+ */
 public class RuleReport {
 	private String ruleName;
 	private String suggestion;

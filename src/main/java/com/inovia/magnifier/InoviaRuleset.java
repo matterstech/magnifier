@@ -6,6 +6,10 @@ import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
 import com.inovia.magnifier.rules.*;
 
+/**
+ * The InoviaRuleset class deals with checking
+ * Inovia specific rules over a database
+ */
 public class InoviaRuleset extends Ruleset {
 	public InoviaRuleset(Database database) {
 		super(database);

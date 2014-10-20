@@ -4,7 +4,11 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
+/**
+ * A report is a report on a specific database.
+ * It includes a set of rule reports
+ * 
+ */
 public class Report {
 	private final String ENCODING = "UTF-8";
 

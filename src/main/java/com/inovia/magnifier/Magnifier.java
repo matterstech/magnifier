@@ -2,7 +2,9 @@ package com.inovia.magnifier;
 
 import com.inovia.magnifier.database.*;
 
-
+/**
+ * The Magnifier class contains Magnifier's main method.
+ */
 public class Magnifier {
 	public static void main(String[] args) {
 		Configuration configuration = null;

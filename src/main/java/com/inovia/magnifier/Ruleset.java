@@ -5,6 +5,10 @@ import java.util.*;
 import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
 
+/**
+ * The Ruleset abstract class deals with the expected
+ * behaviour of rule sets.
+ */
 public abstract class Ruleset {
 	protected List<Rule> rules;
 	protected Report report;
