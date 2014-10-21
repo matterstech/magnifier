@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.*;
 
-import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.rule.ViewHasComment;
 
 import junit.framework.*;
 

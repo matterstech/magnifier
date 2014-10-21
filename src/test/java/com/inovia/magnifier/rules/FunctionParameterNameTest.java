@@ -7,9 +7,9 @@ import java.util.*;
 
 import junit.framework.*;
 
-import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.FunctionParameterName;
 
 public class FunctionParameterNameTest extends TestCase {
 	public FunctionParameterNameTest(String testName) {

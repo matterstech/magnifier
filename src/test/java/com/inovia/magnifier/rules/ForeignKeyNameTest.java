@@ -3,8 +3,8 @@ package com.inovia.magnifier.rules;
 import java.util.*;
 
 import com.inovia.magnifier.database.*;
-import com.inovia.magnifier.database.objects.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.ForeignKeyName;
 
 import junit.framework.*;
 import static org.mockito.Mockito.*;

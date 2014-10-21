@@ -2,8 +2,6 @@ package com.inovia.magnifier.database;
 
 import java.util.List;
 
-import com.inovia.magnifier.database.objects.*;
-
 /**
  * The Database interface deals with the expected
  * behaviour of any kind of relational databases
