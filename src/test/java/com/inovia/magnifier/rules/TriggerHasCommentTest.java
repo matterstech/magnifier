@@ -1,11 +1,13 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.PGComment;
-import com.inovia.magnifier.database.postgresql.PGTrigger;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.TriggerHasComment;
 
 import junit.framework.*;
 
@@ -20,18 +22,35 @@ public class TriggerHasCommentTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Trigger> triggers = new Vector<Trigger>();
-		Vector<Comment> comments = new Vector<Comment>();
+		final Trigger mockTrigger1 = mock(Trigger.class);
+		when(mockTrigger1.getSchemaName()).thenReturn("public");
+		when(mockTrigger1.getName()).thenReturn("my_trigger");
 		
-		triggers.add(new PGTrigger("public", "my_table", "my_trigger", "insert", "before"));
+		List<Trigger> mockTriggers = new Vector<Trigger>();
+		mockTriggers.add(mockTrigger1);
 		
-		RuleReport rr = null;
-		rr = TriggerHasComment.runOn(triggers, comments);
-		assertEquals(rr.getScore(), 0.0F);
+		final Comment mockComment = mock(Comment.class);
+		when(mockComment.getSchemaName()).thenReturn("public");
+		when(mockComment.getEntityName()).thenReturn("my_trigger");
+		when(mockComment.getEntityType()).thenReturn(Comment.TRIGGER_TYPE);
 		
-		comments.add(new PGComment("public", "my_trigger", "cool comment about my_trigger", "trigger"));
+		List<Comment> mockComments = new Vector<Comment>();
+		mockComments.add(mockComment);
 		
-		rr = TriggerHasComment.runOn(triggers, comments);
-		assertEquals(rr.getScore(), 100.0F);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTriggers()).thenReturn(mockTriggers);
+		when(mockDatabase.getComments()).thenReturn(mockComments);
+		
+		RuleReport rr = new TriggerHasComment().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final Trigger mockTrigger2 = mock(Trigger.class);
+		when(mockTrigger2.getSchemaName()).thenReturn("public");
+		when(mockTrigger2.getName()).thenReturn("your_trigger");
+		
+		mockTriggers.add(mockTrigger2);
+		
+		rr = new TriggerHasComment().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

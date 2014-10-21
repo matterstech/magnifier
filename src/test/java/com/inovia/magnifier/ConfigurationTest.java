@@ -1,6 +1,8 @@
 package com.inovia.magnifier;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class ConfigurationTest extends TestCase {
 	public ConfigurationTest(String testName) {
@@ -11,7 +13,7 @@ public class ConfigurationTest extends TestCase {
         return new TestSuite(ConfigurationTest.class);
     }
 	
-	public void testConstructorWithRightParamters() {
+	public void testConstructorAndGetters() {
 		final String[] ARGS = {
 				"-h",  "127.0.0.1",
 				"-p",  "5432",

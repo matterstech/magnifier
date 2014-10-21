@@ -1,11 +1,13 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.PGComment;
-import com.inovia.magnifier.database.postgresql.PGView;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.rule.ViewHasComment;
 
 import junit.framework.*;
 
@@ -20,18 +22,35 @@ public class ViewHasCommentTest extends TestCase {
 	}
 
 	public void testRule() {
-		Vector<View> views = new Vector<View>();
-		Vector<Comment> comments = new Vector<Comment>();
-
-		views.add(new PGView("public", "my_view"));
-
-		RuleReport rr = null;
-		rr = ViewHasComment.runOn(views, comments);
-		assertEquals(rr.getScore(), 0.0F);
-
-		comments.add(new PGComment("public", "my_view", "cool comment about my_view", "view"));
+		final View mockView1 = mock(View.class);
+		when(mockView1.getSchemaName()).thenReturn("public");
+		when(mockView1.getName()).thenReturn("my_view");
 		
-		rr = ViewHasComment.runOn(views, comments);
-		assertEquals(rr.getScore(), 100.0F);
+		List<View> mockViews = new Vector<View>();
+		mockViews.add(mockView1);
+		
+		final Comment mockComment = mock(Comment.class);
+		when(mockComment.getSchemaName()).thenReturn("public");
+		when(mockComment.getEntityName()).thenReturn("my_view");
+		when(mockComment.getEntityType()).thenReturn(Comment.FUNCTION_TYPE);
+		
+		List<Comment> mockComments = new Vector<Comment>();
+		mockComments.add(mockComment);
+		
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getViews()).thenReturn(mockViews);
+		when(mockDatabase.getComments()).thenReturn(mockComments);
+		
+		RuleReport rr = new ViewHasComment().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final View mockView2 = mock(View.class);
+		when(mockView2.getSchemaName()).thenReturn("public");
+		when(mockView2.getName()).thenReturn("your_view");
+		
+		mockViews.add(mockView2);
+		
+		rr = new ViewHasComment().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

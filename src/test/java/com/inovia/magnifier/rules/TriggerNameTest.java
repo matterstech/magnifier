@@ -1,11 +1,13 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.Trigger;
-import com.inovia.magnifier.database.postgresql.PGTrigger;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.rule.TriggerName;
 
 import junit.framework.*;
 
@@ -19,17 +21,30 @@ public class TriggerNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Trigger> triggers = new Vector<Trigger>();
+		Trigger mockTrigger1 = mock(Trigger.class);
+		when(mockTrigger1.getName()).thenReturn("my_trigger_on_user");
+		when(mockTrigger1.getTableName()).thenReturn("user");
+		when(mockTrigger1.getTiming()).thenReturn("BEFORE");
+		when(mockTrigger1.getAction()).thenReturn("UPDATE");
 		
-		triggers.add(new PGTrigger("public", "my_table", "my_trigger", "insert", "before"));
+		List<Trigger> mockTriggers = new Vector<Trigger>();
+		mockTriggers.add(mockTrigger1);
 		
-		RuleReport rr = null;
-		rr = TriggerName.runOn(triggers);
-		assertEquals(rr.getScore(), 0.0F);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTriggers()).thenReturn(mockTriggers);
 		
-		triggers.add(new PGTrigger("public", "my_table", "on_before_insert_my_table", "insert", "before"));
+		RuleReport rr = new TriggerName().run(mockDatabase);
+		assertEquals(0.0F, rr.getScore());
 		
-		rr = TriggerName.runOn(triggers);
-		assertEquals(rr.getScore(), 50.0F);
+		Trigger mockTrigger2 = mock(Trigger.class);
+		when(mockTrigger2.getName()).thenReturn("on_before_update_user");
+		when(mockTrigger2.getTableName()).thenReturn("user");
+		when(mockTrigger2.getTiming()).thenReturn("BEFORE");
+		when(mockTrigger2.getAction()).thenReturn("UPDATE");
+		
+		mockTriggers.add(mockTrigger2);
+		
+		rr = new TriggerName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

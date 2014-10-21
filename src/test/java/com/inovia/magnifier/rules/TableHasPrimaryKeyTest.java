@@ -1,10 +1,12 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.*;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.TableHasPrimaryKey;
 
 import junit.framework.*;
 
@@ -19,21 +21,21 @@ public class TableHasPrimaryKeyTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Table> tables = new Vector<Table>();
-
-		PGTable t = new PGTable("public", "my_table");
-		tables.add(t);
+		Table mockTable = mock(Table.class);
+		when(mockTable.hasPrimaryKey()).thenReturn(false);
 		
-		RuleReport rr = null;
+		List<Table> mockTables = new Vector<Table>();
+		mockTables.add(mockTable);
 		
-		rr = TableHasPrimaryKey.runOn(tables);
-		assertEquals(rr.getScore(), 0.0F);
+		Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTables()).thenReturn(mockTables);
 		
-		PGTable t2 = new PGTable("public", "my_table");
-		t2.addPrimaryKey("id");
-		tables.add(t2);
+		RuleReport rr = new TableHasPrimaryKey().run(mockDatabase);
+		assertEquals(0.0F, rr.getScore());
 		
-		rr = TableHasPrimaryKey.runOn(tables);
-		assertEquals(rr.getScore(), 50.0F);
+		when(mockTable.hasPrimaryKey()).thenReturn(true);
+		
+		rr = new TableHasPrimaryKey().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
 	}
 }

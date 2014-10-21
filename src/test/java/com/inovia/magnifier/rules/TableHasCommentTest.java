@@ -1,10 +1,12 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.*;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.rule.TableHasComment;
 
 import junit.framework.*;
 
@@ -18,24 +20,35 @@ public class TableHasCommentTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Table> tables = new Vector<Table>();
-		Vector<Comment> comments = new Vector<Comment>();
+		final Table mockTable1 = mock(Table.class);
+		when(mockTable1.getSchemaName()).thenReturn("public");
+		when(mockTable1.getName()).thenReturn("my_table");
 		
-		// We just create a table without adding any comment
-		PGTable t = new PGTable("public", "my_table");
-		tables.add(t);
+		List<Table> mockTables = new Vector<Table>();
+		mockTables.add(mockTable1);
 		
-		RuleReport rr = null;
+		final Comment mockComment = mock(Comment.class);
+		when(mockComment.getSchemaName()).thenReturn("public");
+		when(mockComment.getEntityName()).thenReturn("my_table");
+		when(mockComment.getEntityType()).thenReturn(Comment.TABLE_TYPE);
 		
-		rr = TableHasComment.runOn(tables, comments);
-		// We test it
-		assertEquals(rr.getScore(), 0F);
+		List<Comment> mockComments = new Vector<Comment>();
+		mockComments.add(mockComment);
 		
-		// Now we create a comment
-		PGComment c = new PGComment("public", "my_table", "cool comment about my_table", "table");
-		comments.add(c);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTables()).thenReturn(mockTables);
+		when(mockDatabase.getComments()).thenReturn(mockComments);
 		
-		rr = TableHasComment.runOn(tables, comments);
-		assertEquals(rr.getScore(), 100F);
+		RuleReport rr = new TableHasComment().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final Table mockTable2 = mock(Table.class);
+		when(mockTable2.getSchemaName()).thenReturn("public");
+		when(mockTable2.getName()).thenReturn("your_table");
+		
+		mockTables.add(mockTable2);
+		
+		rr = new TableHasComment().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }
