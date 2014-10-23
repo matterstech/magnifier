@@ -31,15 +31,13 @@ public class RuleReport {
 		
 		Float tmp = MIN_SCORE;
 		
-		if(score == null) {
-			for(ReportEntry e : entries) {
-				if(e.isSuccess()) {
-					tmp++;
-				}
+		for(ReportEntry e : entries) {
+			if(e.isSuccess()) {
+				tmp++;
 			}
-			
-			score = tmp * MAX_SCORE / ((float) entries.size());
 		}
+			
+		score = tmp * MAX_SCORE / ((float) entries.size());
 		
 		return score;
 	}

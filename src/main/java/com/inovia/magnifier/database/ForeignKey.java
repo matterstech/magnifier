@@ -27,10 +27,6 @@ public class ForeignKey {
 		this.foreignColumnName = foreignColumnName;
 	}
 	
-	public String getSchemaName() {
-		return table.getSchemaName();
-	}
-	
 	public Table getTable() {
 		return table;
 	}

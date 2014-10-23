@@ -1,7 +1,7 @@
 package com.inovia.magnifier.database;
 
 import junit.framework.*;
-
+import static org.mockito.Mockito.*;
 
 public class TableTest extends TestCase {
 	public TableTest(String testName) {
@@ -32,10 +32,12 @@ public class TableTest extends TestCase {
 		
 		assertEquals(0, t.getForeignKeys().size());
 		
-		ForeignKey fk = new ForeignKey(t, "table2_field2", "public", "table2", "field2");
-		t.addForeignKey(fk);
+		ForeignKey mockForeignKey = mock(ForeignKey.class);
+		when(mockForeignKey.getTable()).thenReturn(t);
+		
+		t.addForeignKey(mockForeignKey);
 		
 		assertEquals(1, t.getForeignKeys().size());
-		assertEquals(fk, t.getForeignKeys().get(0));
+		assertEquals(mockForeignKey, t.getForeignKeys().get(0));
 	}
 }

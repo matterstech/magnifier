@@ -191,4 +191,8 @@ public class Report {
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
 	}
+	
+	public List<RuleReport> getRuleReports() {
+		return ruleReports;
+	}
 }
