@@ -22,11 +22,11 @@ public class Report {
 	/**
 	 * generates an Html report
 	 * 
-	 * @param report_file_path the report file to generate
-	 * @param startTime        the time when the database analysis started
-	 * @param endTime          the time when the database analysis ended
+	 * @param reportFilePath the report file to generate
+	 * @param startTime      the time when the database analysis started
+	 * @param endTime        the time when the database analysis ended
 	 */
-	public void generateHtml(String report_file_path, Date startTime, Date endTime) {
+	public void generateHtml(String reportFilePath, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
 				if(r1.getScore() > r2.getScore()) {
@@ -41,7 +41,7 @@ public class Report {
 
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(report_file_path, ENCODING);
+			writer = new PrintWriter(reportFilePath, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -184,7 +184,7 @@ public class Report {
 
 			writer.println(html);
 		} catch (FileNotFoundException e) {
-			System.err.println("File couldn't be found: " + report_file_path);
+			System.err.println("File couldn't be found: " + reportFilePath);
 		} catch (UnsupportedEncodingException e) {
 			System.err.println("Unsupported Encoding: " + ENCODING);
 		} finally {
