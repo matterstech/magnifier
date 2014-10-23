@@ -208,20 +208,20 @@ public class PostgreSqlDatabase implements Database {
 				results = statement.executeQuery(query);
 
 				functions = new Vector<Function>();
-				String schema_name_field = "routine_schema";
-				String routine_name_field = "routine_name";
-				String parameter_name_field = "parameter_name";
-				String parameter_type_field = "parameter_mode";
+				String schemaNameField = "routine_schema";
+				String routineNameField = "routine_name";
+				String parameterNameField = "parameter_name";
+				String parameterTypeField = "parameter_mode";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
-					Function function = new Function(results.getString(schema_name_field), results.getString(routine_name_field));
+					Function function = new Function(results.getString(schemaNameField), results.getString(routineNameField));
 
 					List<FunctionParameter> parameters = new Vector<FunctionParameter>();
 
 					FunctionParameter parameter = null;
-					String parameterName = results.getString(parameter_name_field);
-					String parameterMode = results.getString(parameter_type_field);
+					String parameterName = results.getString(parameterNameField);
+					String parameterMode = results.getString(parameterTypeField);
 
 					if(parameterName != null && parameterMode != null) {
 						parameter = new FunctionParameter(function, parameterName, parameterMode);
@@ -230,15 +230,15 @@ public class PostgreSqlDatabase implements Database {
 						function.addParameter(parameter);
 					}
 
-					String schemaName = results.getString(schema_name_field);
-					String routineName = results.getString(routine_name_field);
+					String schemaName = results.getString(schemaNameField);
+					String routineName = results.getString(routineNameField);
 
 					doLoop = results.next();
-					while(doLoop && results.getString(schema_name_field).equals(schemaName) && results.getString(routine_name_field).equals(routineName)) {
-						schemaName = results.getString(schema_name_field);
-						routineName = results.getString(routine_name_field);
+					while(doLoop && results.getString(schemaNameField).equals(schemaName) && results.getString(routineNameField).equals(routineName)) {
+						schemaName = results.getString(schemaNameField);
+						routineName = results.getString(routineNameField);
 
-						parameter = new FunctionParameter(function, results.getString(parameter_name_field), results.getString(parameter_type_field));
+						parameter = new FunctionParameter(function, results.getString(parameterNameField), results.getString(parameterTypeField));
 						function.addParameter(parameter);
 						doLoop = results.next();
 					}
@@ -280,12 +280,12 @@ public class PostgreSqlDatabase implements Database {
 				results = statement.executeQuery(query);
 
 				views = new Vector<View>();
-				String schema_name_field = "table_schema";
-				String routine_name_field = "table_name";
+				String schemaNameField = "table_schema";
+				String routineNameField = "table_name";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
-					views.add(new View(results.getString(schema_name_field), results.getString(routine_name_field)));
+					views.add(new View(results.getString(schemaNameField), results.getString(routineNameField)));
 					
 					doLoop = results.next();
 				}
@@ -485,29 +485,29 @@ public class PostgreSqlDatabase implements Database {
 				statement = connection.createStatement();
 				results = statement.executeQuery(query);
 				tables = new Vector<Table>();
-				String local_schema_field   = "local_schema";
-				String local_table_field    = "local_table";
-				String local_column_field   = "local_column";
-				String foreign_schema_field = "foreign_schema";
-				String foreign_table_field  = "foreign_table";
-				String foreign_column_field = "foreign_column";
-				String key_type_field       = "key_type";
+				String localSchemaField   = "local_schema";
+				String localTableField    = "local_table";
+				String localColumnField   = "local_column";
+				String foreignSchemaField = "foreign_schema";
+				String foreignTableField  = "foreign_table";
+				String foreignColumnField = "foreign_column";
+				String keyTypeField       = "key_type";
 
 				Boolean doLoop = results.next();
 				// Loop on tables
 				while(doLoop) {
-					String localSchemaName  = results.getString(local_schema_field);
-					String localTableName   = results.getString(local_table_field);
+					String localSchemaName  = results.getString(localSchemaField);
+					String localTableName   = results.getString(localTableField);
 
 					Table table = new Table(localSchemaName, localTableName);
 
 					// Loop on columns
-					while(doLoop && localSchemaName.equals(results.getString(local_schema_field)) && localTableName.equals(results.getString(local_table_field))) {
-						String keyType           = results.getString(key_type_field);
-						String localColumn       = results.getString(local_column_field);
-						String foreignSchemaName = results.getString(foreign_schema_field);
-						String foreignTableName  = results.getString(foreign_table_field);
-						String foreignColumnName = results.getString(foreign_column_field);
+					while(doLoop && localSchemaName.equals(results.getString(localSchemaField)) && localTableName.equals(results.getString(localTableField))) {
+						String keyType           = results.getString(keyTypeField);
+						String localColumn       = results.getString(localColumnField);
+						String foreignSchemaName = results.getString(foreignSchemaField);
+						String foreignTableName  = results.getString(foreignTableField);
+						String foreignColumnName = results.getString(foreignColumnField);
 						
 						if(keyType.equals("PRIMARY KEY")) {
 							table.addPrimaryKey(localColumn);
