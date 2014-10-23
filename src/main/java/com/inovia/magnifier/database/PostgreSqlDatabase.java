@@ -97,13 +97,13 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadSchemas() {
 		if(schemas == null) {
-			String SQL = "SELECT schema_name FROM information_schema.schemata";
+			String query = "SELECT schema_name FROM information_schema.schemata";
 
 			Statement statement = null;
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				schemas = new Vector<Schema>();
 
@@ -136,7 +136,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTriggers() {
 		if(triggers == null) {
-			String SQL = "select"
+			String query = "select"
 					+ " trigger_schema,"
 					+ " trigger_name,"
 					+ " event_manipulation,"
@@ -150,7 +150,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				triggers = new Vector<Trigger>();
 
@@ -189,7 +189,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadFunctions() {
 		if(functions == null) {
-			String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
+			String query = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
 					+ " FROM information_schema.routines r"
 					+ " LEFT OUTER JOIN information_schema.parameters p"
 					+ " ON r.specific_name   = p.specific_name"
@@ -202,7 +202,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				functions = new Vector<Function>();
 				String SCHEMA_NAME_FIELD = "routine_schema";
@@ -265,7 +265,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadViews() {
 		if(views == null) {
-			String SQL = "SELECT table_schema, table_name"
+			String query = "SELECT table_schema, table_name"
 					+ " FROM information_schema.views"
 					+ " WHERE table_schema"
 					+ " NOT IN ('pg_catalog', 'information_schema')";
@@ -274,7 +274,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				views = new Vector<View>();
 				String SCHEMA_NAME_FIELD = "table_schema";
@@ -309,7 +309,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadFunctionComments() {
 		if(functionComments == null) {
-			String SQL = "SELECT nspname, proname, description"
+			String query = "SELECT nspname, proname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_proc"
 					+ " ON pg_description.objoid = pg_proc.oid"
@@ -322,7 +322,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				functionComments = new Vector<Comment>();
 
@@ -357,7 +357,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadViewComments() {
 			if(viewComments == null) {
-				String SQL = "SELECT nspname, relname, description"
+				String query = "SELECT nspname, relname, description"
 						+ " FROM pg_class c"
 						+ " JOIN pg_namespace n ON n.oid = c.relnamespace"
 						+ " JOIN pg_description d ON relfilenode = d.objoid"
@@ -369,7 +369,7 @@ public class PostgreSqlDatabase implements Database {
 				ResultSet results = null;
 				try {
 					statement = connection.createStatement();
-					results = statement.executeQuery(SQL);
+					results = statement.executeQuery(query);
 
 					viewComments = new Vector<Comment>();
 
@@ -404,7 +404,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTableComments() {
 		if(tableComments == null) {
-			String SQL = "SELECT nspname, relname, description"
+			String query = "SELECT nspname, relname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_class"
 					+ " ON pg_description.objoid = pg_class.oid"
@@ -417,7 +417,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				tableComments = new Vector<Comment>();
 
@@ -452,7 +452,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTables() {
 		if(tables == null) {
-			String SQL = "select distinct"
+			String query = "select distinct"
 					+ "   tc.table_schema    as local_schema,"
 					+ "   tc.table_name      as local_table,"
 					+ "   kcu.column_name    as local_column,"
@@ -480,7 +480,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 				tables = new Vector<Table>();
 				String LOCAL_SCHEMA_FIELD   = "local_schema";
 				String LOCAL_TABLE_FIELD    = "local_table";
@@ -540,7 +540,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTriggerComments() {
 		if(triggerComments == null) {
-			String SQL = "SELECT"
+			String query = "SELECT"
 					+ "   n.nspname     AS schema_name,"
 					+ "   c.relname     AS table_name,"
 					+ "   t.tgname      AS trigger_name,"
@@ -554,7 +554,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				triggerComments = new Vector<Comment>();
 
@@ -589,7 +589,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadIndexes() {
 		if(indexes == null) {
-			String SQL = "SELECT schemaname, tablename, indexname"
+			String query = "SELECT schemaname, tablename, indexname"
 					+ " FROM pg_indexes"
 					+ " WHERE schemaname NOT IN ('pg_catalog', 'information_schema')";
 
@@ -597,7 +597,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				indexes = new Vector<Index>();
 

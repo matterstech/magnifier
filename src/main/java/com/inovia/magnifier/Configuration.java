@@ -122,15 +122,15 @@ public class Configuration {
 			}
 
 			// We check if the DBMS is acceptable
-			Boolean is_expected_dbms = false;
+			Boolean isExpectedDBMS = false;
 			// Try to find the provided DBMS inside the supported ones.
-			for(Integer i = EXPECTED_DBMS.length-1 ; i >= 0 && !is_expected_dbms; i--) {
+			for(Integer i = EXPECTED_DBMS.length-1 ; i >= 0 && !isExpectedDBMS; i--) {
 				if(EXPECTED_DBMS[i].equals(databaseType)) {
-					is_expected_dbms = true;
+					isExpectedDBMS = true;
 				}
 			}
 
-			if(!is_expected_dbms) {
+			if(!isExpectedDBMS) {
 				System.err.println(ABORT_MESSAGE + ": Your DBMS is wrong or not yet supported");
 				System.exit(1);
 			}

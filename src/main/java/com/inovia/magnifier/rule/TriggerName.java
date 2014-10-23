@@ -28,7 +28,6 @@ public class TriggerName implements Rule {
 	}
 
 	private Boolean assertion(Trigger t) {
-		String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
-		return t.getName().equalsIgnoreCase(PATTERN);
+		return t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
 	}
 }
