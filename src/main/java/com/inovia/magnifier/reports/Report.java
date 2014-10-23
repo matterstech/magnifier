@@ -5,9 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * A report is a report on a specific database.
+ * it is a report on a specific database.
  * It includes a set of rule reports
- * 
  */
 public class Report {
 	private final String ENCODING = "UTF-8";
@@ -20,7 +19,14 @@ public class Report {
 		this.databaseName = databaseName;
 	}
 
-	public void generateHtml(String path, Date startTime, Date endTime) {
+	/**
+	 * generates an Html report
+	 * 
+	 * @param report_file_path the report file to generate
+	 * @param startTime        the time when the database analysis started
+	 * @param endTime          the time when the database analysis ended
+	 */
+	public void generateHtml(String report_file_path, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
 				if(r1.getScore() > r2.getScore()) {
@@ -35,7 +41,7 @@ public class Report {
 
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(path, ENCODING);
+			writer = new PrintWriter(report_file_path, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -178,7 +184,7 @@ public class Report {
 
 			writer.println(html);
 		} catch (FileNotFoundException e) {
-			System.err.println("File couldn't be found: " + path);
+			System.err.println("File couldn't be found: " + report_file_path);
 		} catch (UnsupportedEncodingException e) {
 			System.err.println("Unsupported Encoding: " + ENCODING);
 		} finally {
@@ -187,7 +193,12 @@ public class Report {
 			}
 		}
 	}
-
+	
+	/**
+	 * add a rule report to the report
+	 * 
+	 * @param ruleReport 
+	 */
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
 	}

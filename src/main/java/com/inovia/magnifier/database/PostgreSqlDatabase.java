@@ -4,7 +4,10 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
-
+/**
+ * it connects to a database and retrieve sets of entities from it (tables, views, triggers).
+ * those entities are then available via getters for each kind of entity
+ */
 public class PostgreSqlDatabase implements Database {
 	private Connection connection;
 	private String name;

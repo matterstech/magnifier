@@ -9,8 +9,7 @@ import com.inovia.magnifier.reports.ReportEntry;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The TriggerHasComment class aims at checking if
- * the provided triggers all have a comment
+ * Checks if triggers all have a comment
  */
 public class TriggerHasComment implements Rule {
 	public static final String RULE_NAME = "TriggerHasComment";

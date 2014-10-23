@@ -10,8 +10,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * The Configuration class deals with parsing and
- * providing the command line parameters 
+ * it parses the command line parameters, check if all required ones are provided and make them available via getters 
  */
 public class Configuration {
 	private static final String[] EXPECTED_DBMS = {"postgresql"};
@@ -24,13 +23,16 @@ public class Configuration {
 	private String host;
 	private String port;
 	private String databaseName;
-	private String schema;
 	private String databaseType;
 	private String driverPath;
 	private String user;
 	private String password;
 	private String reportPath;
 
+	/**
+	 * 
+	 * @param args the arguments provided when Magnifier was run
+	 */
 	public Configuration(String[] args) {
 		Options options = new Options();
 
@@ -150,42 +152,74 @@ public class Configuration {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return the host on which the database runs
+	 */
 	public String getHost() {
 		return host;
 	}
 
+	/**
+	 * 
+	 * @return the port on which the database is listening
+	 */
 	public String getPort() {
 		return port;
 	}
 
+	/**
+	 * 
+	 * @return the name of the database
+	 */
 	public String getDatabaseName() {
 		return databaseName;
 	}
 
-	public String getSchema() {
-		return schema;
-	}
-
+	/**
+	 * 
+	 * @return the database management system
+	 */
 	public String getDatabaseType() {
 		return databaseType;
 	}
 
+	/**
+	 * 
+	 * @return the JDBC driver file url
+	 */
 	public String getDriverPath() {
 		return driverPath;
 	}
 
+	/**
+	 * 
+	 * @return the user with which to authenticate to the database
+	 */
 	public String getUser() {
 		return user;
 	}
 
+	/**
+	 * 
+	 * @return the password with which to authenticate to the database
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * 
+	 * @return the desired path in which the report will be generated
+	 */
 	public String getReportPath() {
 		return reportPath;
 	}
 
+	/**
+	 * 
+	 * @return the URL JDBC will need to connect to the database
+	 */
 	public String getConnectionURL() {
 		return connectionURL;
 	}

@@ -3,8 +3,7 @@ package com.inovia.magnifier.database;
 import java.util.*;
 
 /**
- * The class PGTable deals with the PostgreSql
- * implementation of the Table interface
+ * it represents a database table
  */
 public class Table {
 	private String schemaName;

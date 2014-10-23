@@ -3,8 +3,7 @@ package com.inovia.magnifier.database;
 import java.util.*;
 
 /**
- * The class PGFunction deals with the PostgreSql
- * implementation of the Function interface
+ * it represents a database function
  */
 public class Function {
 	private String name;

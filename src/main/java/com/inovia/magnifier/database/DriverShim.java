@@ -5,8 +5,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * The DriverShim class is a delegator for an object implementing
- * the Driver interface to allow dynamically loaded database drivers
+ * The DriverShim class is a delegator for an object implementing the Driver interface to allow dynamically loaded database drivers
  */
 public class DriverShim implements Driver {
 	private Driver driver;

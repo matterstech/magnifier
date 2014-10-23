@@ -1,11 +1,8 @@
 package com.inovia.magnifier.reports;
 
 /**
- * A report entry is the result of the execution of a rule
- * on an entity.
- * For example: performing rule "TableHasPrimaryKey" on table "User"
- * will be summarized in a report entry
- *
+ * it is the result of the execution of a rule on a single database entity.
+ * for example: performing rule "TableHasPrimaryKey" on table "User" is summarized in a report entry
  */
 public class ReportEntry {
 	private String entityDescription;

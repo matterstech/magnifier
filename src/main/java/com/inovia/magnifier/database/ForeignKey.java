@@ -2,8 +2,7 @@ package com.inovia.magnifier.database;
 
 
 /**
- * The class PGForeignKey deals with the PostgreSql
- * implementation of the ForeignKey interface
+ * it represents a database foreign key constraint
  */
 public class ForeignKey {
 	private Table table;

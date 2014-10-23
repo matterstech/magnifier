@@ -1,8 +1,7 @@
 package com.inovia.magnifier;
 
 import com.inovia.magnifier.database.DatabaseFactory;
-import com.inovia.magnifier.rule.InoviaRuleset;
-import com.inovia.magnifier.rule.Ruleset;
+import com.inovia.magnifier.rule.*;
 
 /**
  * The Magnifier class contains Magnifier's main method.

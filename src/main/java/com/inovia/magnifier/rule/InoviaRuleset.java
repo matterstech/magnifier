@@ -7,8 +7,7 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.reports.Report;
 
 /**
- * The InoviaRuleset class deals with checking
- * Inovia specific rules over a database
+ * it checks if Inovia's convention is followed on a database
  */
 public class InoviaRuleset extends Ruleset {
 	public InoviaRuleset(Database database) {

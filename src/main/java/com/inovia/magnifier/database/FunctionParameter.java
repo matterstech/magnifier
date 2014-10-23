@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGFunctionParameter deals with the PostgreSql
- * implementation of the FunctionParameter interface
+ * it represents a database function parameter 
  */
 public class FunctionParameter {
 	private Function function;

@@ -2,8 +2,7 @@ package com.inovia.magnifier.database;
 
 
 /**
- * The class PGComment deals with the PostgreSql
- * implementation of the Comment interface
+ * it represents a database comment
  */
 public class Comment {
 	public static final String TRIGGER_TYPE  = "trigger";

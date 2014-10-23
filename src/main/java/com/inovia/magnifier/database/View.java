@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGView deals with the PostgreSql
- * implementation of the View interface
+ * it represents a database view
  */
 public class View {
 	public String schemaName;

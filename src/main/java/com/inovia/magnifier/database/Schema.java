@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGSchema deals with the PostgreSql
- * implementation of the Schema interface
+ * it represents a database schema
  */
 public class Schema {
 	private String name;
