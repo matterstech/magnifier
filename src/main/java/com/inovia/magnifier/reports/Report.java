@@ -9,7 +9,7 @@ import java.util.*;
  * It includes a set of rule reports
  */
 public class Report {
-	private final String ENCODING = "UTF-8";
+	private final static String ENCODING = "UTF-8";
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;

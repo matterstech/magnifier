@@ -7,8 +7,8 @@ import java.util.*;
  * it includes a set of report entries
  */
 public class RuleReport {
-	private Float MAX_SCORE = 100.0F;
-	private Float MIN_SCORE =   0.0F;
+	private final static Float MAX_SCORE = 100.0F;
+	private final static Float MIN_SCORE =   0.0F;
 	
 	private String ruleName;
 	private String suggestion;
