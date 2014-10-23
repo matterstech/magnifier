@@ -4,8 +4,8 @@ package com.inovia.magnifier.database;
  * it represents a database view
  */
 public class View {
-	public String schemaName;
-	public String name;
+	private String schemaName;
+	private String name;
 	
 	/**
 	 * @param schemaName The name of the schema containing the view
