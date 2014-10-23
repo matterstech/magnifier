@@ -45,16 +45,16 @@ public class Report {
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-			Integer hours_in_day           = 24;
-			Integer minutes_in_hour        = 60;
-			Integer seconds_in_minute      = 60;
-			Integer milliseconds_in_second = 1000;
+			Integer hoursPerDay           = 24;
+			Integer minutesPerHour        = 60;
+			Integer secondsPerMinute      = 60;
+			Integer millisecondsPerSecond = 1000;
 			
 			Long timeDiff = endTime.getTime() - startTime.getTime();
-			Long seconds = timeDiff / milliseconds_in_second;
-			Long minutes = seconds  / seconds_in_minute;
-			Long hours   = minutes  / minutes_in_hour;
-			Long days    = hours    / hours_in_day;
+			Long seconds = timeDiff / millisecondsPerSecond;
+			Long minutes = seconds  / secondsPerMinute;
+			Long hours   = minutes  / minutesPerHour;
+			Long days    = hours    / hoursPerDay;
 
 			String html = "";
 			html = html + "<html>"
