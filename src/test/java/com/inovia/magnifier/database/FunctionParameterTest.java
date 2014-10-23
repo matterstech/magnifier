@@ -15,8 +15,8 @@ public class FunctionParameterTest extends TestCase {
 		Function f = new Function("public", "my_function");
 		FunctionParameter p = new FunctionParameter(f, "param_in", "IN");
 		
-		assertEquals(p.getFunction(), f);
-		assertEquals(p.getName(), "param_in");
-		assertEquals(p.getMode(), "IN");
+		assertEquals(f, p.getFunction());
+		assertEquals("param_in", p.getName());
+		assertEquals("IN", p.getMode());
 	}
 }

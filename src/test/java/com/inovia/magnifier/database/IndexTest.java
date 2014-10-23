@@ -17,8 +17,8 @@ public class IndexTest extends TestCase {
 	public void testConstructorWithRightParameters() {
 		Index i = new Index("public", "my_table", "my_index");
 		
-		assertEquals(i.getSchemaName(), "public");
-		assertEquals(i.getTableName(), "my_table");
-		assertEquals(i.getName(), "my_index");
+		assertEquals("public", i.getSchemaName());
+		assertEquals("my_table", i.getTableName());
+		assertEquals("my_index", i.getName());
 	}
 }

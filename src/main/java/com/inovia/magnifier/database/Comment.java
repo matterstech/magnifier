@@ -48,4 +48,8 @@ public class Comment {
 	public String getEntityType() {
 		return entityType;
 	}
+
+	public String getContent() {
+		return content;
+	}
 }
