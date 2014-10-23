@@ -1,10 +1,8 @@
 package com.inovia.magnifier.rule;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.reports.Report;
 
 /**
  * it checks if Inovia's convention is followed on a database
@@ -12,9 +10,6 @@ import com.inovia.magnifier.reports.Report;
 public class InoviaRuleset extends Ruleset {
 	public InoviaRuleset(Database database) {
 		super(database);
-		
-		rules = new Vector<Rule>();
-		report = new Report(database.getName());
 	}
 	
 	protected List<Rule> getRules() {
