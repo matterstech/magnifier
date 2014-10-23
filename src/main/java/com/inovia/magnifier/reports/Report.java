@@ -10,6 +10,11 @@ import java.util.*;
  */
 public class Report {
 	private final static String ENCODING = "UTF-8";
+	
+	private final static Integer HOURS_PER_DAY           = 24;
+	private final static Integer MINUTES_PER_HOUR        = 60;
+	private final static Integer SECONDS_PER_MINUTE      = 60;
+	private final static Integer MILLISECONDS_PER_SECOND = 1000;
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
@@ -44,17 +49,12 @@ public class Report {
 			writer = new PrintWriter(reportFilePath, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-			Integer hoursPerDay           = 24;
-			Integer minutesPerHour        = 60;
-			Integer secondsPerMinute      = 60;
-			Integer millisecondsPerSecond = 1000;
 			
 			Long timeDiff = endTime.getTime() - startTime.getTime();
-			Long seconds = timeDiff / millisecondsPerSecond;
-			Long minutes = seconds  / secondsPerMinute;
-			Long hours   = minutes  / minutesPerHour;
-			Long days    = hours    / hoursPerDay;
+			Long seconds  = timeDiff / MILLISECONDS_PER_SECOND;
+			Long minutes  = seconds  / SECONDS_PER_MINUTE;
+			Long hours    = minutes  / MINUTES_PER_HOUR;
+			Long days     = hours    / HOURS_PER_DAY;
 
 			String html = "";
 			html = html + "<html>"
