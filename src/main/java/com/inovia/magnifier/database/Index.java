@@ -21,7 +21,7 @@ public class Index {
 	}
 	
 	public String getEntityDescription() {
-		return name + " ON TABLE " + name;
+		return "index \"" + name + "\" on table \"" + tableName + "\"";
 	}
 
 	public String getName() {

@@ -23,6 +23,6 @@ public class Schema {
 	}
 
 	public String getEntityDescription() {
-		return "SCHEMA " + name;
+		return "schema \"" + name + "\"";
 	}
 }

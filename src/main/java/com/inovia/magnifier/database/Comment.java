@@ -42,7 +42,7 @@ public class Comment {
 	}
 
 	public String getEntityDescription() {
-		return "COMMENT ON " + entityName;
+		return "comment on \"" + entityName + "\"";
 	}
 
 	public String getEntityType() {

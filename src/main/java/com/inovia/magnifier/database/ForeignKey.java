@@ -52,6 +52,6 @@ public class ForeignKey {
 	}
 
 	public String getEntityDescription() {
-		return table + "." + columnName;
+		return "field \"" + columnName + "\" in table \"" + table.getName() + "\" in schema \"" + table.getSchemaName() + "\" referencing field \"" + foreignColumnName + "\" in table \"" + foreignTableName + "\" in schema \"" + foreignSchemaName + "\"";
 	}
 }

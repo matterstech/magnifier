@@ -25,13 +25,7 @@ public class FunctionParameter {
 	}
 
 	public String getEntityDescription() {
-		String result = function.getSchemaName() + "." + function.getName() + "(";
-		for(FunctionParameter fp : function.getParameters()) {
-			result = result + (fp.getName() != null ? fp.getName() : "<noname>") + " " + fp.getMode();
-		}
-		result = result + ")";
-		
-		return result;
+		return "parameter \"" + name + "\" for function \"" + function.getName() + "\" in schema \"" + function.getSchemaName() + "\"";
 	}
 	
 	public String toString() {

@@ -24,7 +24,7 @@ public class Table {
 	}
 	
 	public String getEntityDescription() {
-		return schemaName + "." + name;
+		return "Table \"" + name + "\" in schema \"" + schemaName + "\"";
 	}
 
 	public String getSchemaName() {

@@ -27,7 +27,7 @@ public class Trigger {
 	}
 	
 	public String getEntityDescription() {
-		return name + "() ON TABLE " + schemaName + "." + tableName;
+		return "Trigger \"" + name + "\" on table \"" + tableName + "\" in schema \"" + schemaName + "\"";
 	}
 
 	public String getName() {

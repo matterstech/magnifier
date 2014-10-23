@@ -18,7 +18,7 @@ public class View {
 	}
 	
 	public String getEntityDescription() {
-		return schemaName + "." + name;
+		return "View \"" + name + "\" in schema \"" + schemaName + "\"";
 	}
 
 	public String getSchemaName() {
