@@ -4,9 +4,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
-import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.database.objects.*;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.IndexName;
 
 import junit.framework.*;
 
