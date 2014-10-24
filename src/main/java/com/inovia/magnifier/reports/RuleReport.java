@@ -13,7 +13,6 @@ public class RuleReport {
 	
 	private Rule rule;
 	private String suggestion;
-	private Float score;
 	private List<ReportEntry> entries;
 	private Float debt;
 	
@@ -29,17 +28,15 @@ public class RuleReport {
 			return MAX_SCORE;
 		}
 		
-		Float tmp = MIN_SCORE;
+		Float score = MIN_SCORE;
 		
 		for(ReportEntry e : entries) {
 			if(e.isSuccess()) {
-				tmp++;
+				score++;
 			}
 		}
-			
-		score = tmp * MAX_SCORE / ((float) entries.size());
 		
-		return score;
+		return score * MAX_SCORE / ((float) entries.size());
 	}
 	
 	public boolean addEntry(ReportEntry entry) {
