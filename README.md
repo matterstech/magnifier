@@ -37,6 +37,21 @@ Analyze the distant "magnifier__dev" postgresql database, listening on port 5432
 
 	java -jar magnifier.jar -h 192.168.0.15 -p 5432 -t postgresql -dp ./jdbc_pgsql.jar -d my__database -u john -pw john_password -o report.html
 
+## Analysis
+	Rule                  | Checkings                                                    | Example
+	----------------------+--------------------------------------------------------------+---------------
+	TableHasPrimaryKey    | tables have a primary key                                    | 
+	TableHasComment       | tables have a comment                                        | 
+	ViewHasComment        | views have a comment                                         | 
+	TriggerHasComment     | triggers have a comment                                      | 
+	FunctionHasComment    | functions have a comment                                     | 
+	TriggerName           | triggers have name matching "on_$when_$action_$table"        | on_before_update_user
+	ViewName              | views have name ending with "_view"                          | user_view
+	IndexName             | indexes have name ending with "_pkey" or "_idx"              | user_idx
+	ForeignKeyName        | FKs have column name composed of referenced table and column | user_id
+	FunctionParameterName | function parameter names ending with "_in" or "_out"         | add(val1_in, val2_in, res_out)
+
+	
 
 ## Contributing
 
