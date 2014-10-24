@@ -1,5 +1,7 @@
 package com.inovia.magnifier;
 
+import org.apache.commons.cli.ParseException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -15,17 +17,19 @@ public class ConfigurationTest extends TestCase {
 	
 	public void testConstructorAndGetters() {
 		final String[] ARGS = {
-				"-h",  "127.0.0.1",
-				"-p",  "5432",
-				"-t",  "postgresql",
-				"-dp", "TODO",
-				"-d",  "magnifier_dev",
-				"-u",  "postgres",
-				"-pw", "postgres",
-				"-o",  "TODO"
+				"-host",     "127.0.0.1",
+				"-port",     "5432",
+				"-dbms",     "postgresql",
+				"-driver",   "TODO",
+				"-database", "magnifier_dev",
+				"-user",     "postgres",
+				"-password", "postgres",
+				"-output",   "TODO"
 		};
     	
+		try {
 		Configuration c = new Configuration(ARGS);
+		c.parseCommandLine();
 		
 		assertEquals(c.getHost(),         "127.0.0.1");
 		assertEquals(c.getPort(),         "5432");
@@ -35,5 +39,8 @@ public class ConfigurationTest extends TestCase {
 		assertEquals(c.getUser(),         "postgres");
 		assertEquals(c.getPassword(),     "postgres");
 		assertEquals(c.getReportPath(),   "TODO");
+		} catch(ParseException e) {
+			fail("should not throw ParseException");
+		}
     }
 }
