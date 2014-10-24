@@ -6,8 +6,7 @@ import com.inovia.magnifier.reports.ReportEntry;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The TriggerName class aims at checking if the provided
- * trigger names have the right format
+ * Checks if the trigger names follow the convention
  */
 public class TriggerName implements Rule {
 	public static final String RULE_NAME = "TriggerName";
@@ -28,7 +27,6 @@ public class TriggerName implements Rule {
 	}
 
 	private Boolean assertion(Trigger t) {
-		String PATTERN = "on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName();
-		return t.getName().equalsIgnoreCase(PATTERN);
+		return t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
 	}
 }

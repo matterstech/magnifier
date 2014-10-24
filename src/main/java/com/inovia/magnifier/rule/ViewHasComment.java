@@ -9,8 +9,7 @@ import com.inovia.magnifier.reports.ReportEntry;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The ViewHasComment class aims at checking if
- * the provided views all have a comment
+ * Check if all the views have a comment
  */
 public class ViewHasComment implements Rule {
 	public static final String RULE_NAME = "ViewHasComment";

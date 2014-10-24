@@ -3,8 +3,7 @@ package com.inovia.magnifier.database;
 import java.util.List;
 
 /**
- * The Database interface deals with the expected
- * behaviour of any kind of relational databases
+ * it represents a generic database with methods to retrieve entities from it
  */
 public interface Database {
 	public void connect();

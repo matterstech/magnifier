@@ -1,21 +1,15 @@
 package com.inovia.magnifier.rule;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.reports.Report;
 
 /**
- * The InoviaRuleset class deals with checking
- * Inovia specific rules over a database
+ * it checks if Inovia's convention is followed on a database
  */
 public class InoviaRuleset extends Ruleset {
 	public InoviaRuleset(Database database) {
 		super(database);
-		
-		rules = new Vector<Rule>();
-		report = new Report(database.getName());
 	}
 	
 	protected List<Rule> getRules() {

@@ -4,9 +4,13 @@ import com.inovia.magnifier.database.Database;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The Rule abstract class deals with
- * the expected behaviour of rules.
+ * Checks if the convention is followed
  */
 public interface Rule {
+	/**
+	 * 
+	 * @param database the database to analyze
+	 * @return a report about the execution of the rule on the database
+	 */
 	abstract public RuleReport run(Database database);
 }

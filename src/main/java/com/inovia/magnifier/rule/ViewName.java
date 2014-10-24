@@ -1,13 +1,10 @@
 package com.inovia.magnifier.rule;
 
-import com.inovia.magnifier.database.Database;
-import com.inovia.magnifier.database.View;
-import com.inovia.magnifier.reports.ReportEntry;
-import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.reports.*;
 
 /**
- * The ViewName class aims at checking if the provided
- * view names have the right format
+ * Checks if view names follow the convention
  */
 public class ViewName implements Rule {
 	public static final String RULE_NAME = "ViewName";

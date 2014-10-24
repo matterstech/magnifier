@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGIndex deals with the PostgreSql
- * implementation of the Index interface
+ * it represents a database index
  */
 public class Index {
 	private String schemaName;
@@ -21,7 +20,7 @@ public class Index {
 	}
 	
 	public String getEntityDescription() {
-		return name + " ON TABLE " + name;
+		return "index \"" + name + "\" on table \"" + tableName + "\"";
 	}
 
 	public String getName() {

@@ -2,8 +2,7 @@ package com.inovia.magnifier.database;
 
 
 /**
- * The class PGForeignKey deals with the PostgreSql
- * implementation of the ForeignKey interface
+ * it represents a database foreign key constraint
  */
 public class ForeignKey {
 	private Table table;
@@ -25,10 +24,6 @@ public class ForeignKey {
 		this.foreignSchemaName = foreignSchemaName;
 		this.foreignTableName = foreignTableName;
 		this.foreignColumnName = foreignColumnName;
-	}
-	
-	public String getSchemaName() {
-		return table.getSchemaName();
 	}
 	
 	public Table getTable() {
@@ -56,6 +51,6 @@ public class ForeignKey {
 	}
 
 	public String getEntityDescription() {
-		return table + "." + columnName;
+		return "field \"" + columnName + "\" in table \"" + table.getName() + "\" in schema \"" + table.getSchemaName() + "\" referencing field \"" + foreignColumnName + "\" in table \"" + foreignTableName + "\" in schema \"" + foreignSchemaName + "\"";
 	}
 }

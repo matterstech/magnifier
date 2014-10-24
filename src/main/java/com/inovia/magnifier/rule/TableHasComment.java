@@ -9,8 +9,7 @@ import com.inovia.magnifier.reports.ReportEntry;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The TableHasComment class aims at checking if
- * the provided tables all have a comment
+ * Checks if all tables have a comment
  */
 public class TableHasComment implements Rule {
 	public static final String RULE_NAME = "TableHasComment";

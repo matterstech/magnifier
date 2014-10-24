@@ -3,13 +3,12 @@ package com.inovia.magnifier.reports;
 import java.util.*;
 
 /**
- * A rule report is a report on a specific rule.
- * It includes a set of report entries
- *
+ * it is a report about the execution of a rule on the database.
+ * it includes a set of report entries
  */
 public class RuleReport {
-	private Float MAX_SCORE = 100.0F;
-	private Float MIN_SCORE =   0.0F;
+	private final static Float MAX_SCORE = 100.0F;
+	private final static Float MIN_SCORE =   0.0F;
 	
 	private String ruleName;
 	private String suggestion;
@@ -31,15 +30,13 @@ public class RuleReport {
 		
 		Float tmp = MIN_SCORE;
 		
-		if(score == null) {
-			for(ReportEntry e : entries) {
-				if(e.isSuccess()) {
-					tmp++;
-				}
+		for(ReportEntry e : entries) {
+			if(e.isSuccess()) {
+				tmp++;
 			}
-			
-			score = tmp * MAX_SCORE / ((float) entries.size());
 		}
+			
+		score = tmp * MAX_SCORE / ((float) entries.size());
 		
 		return score;
 	}

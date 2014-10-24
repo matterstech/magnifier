@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGFunctionParameter deals with the PostgreSql
- * implementation of the FunctionParameter interface
+ * it represents a database function parameter 
  */
 public class FunctionParameter {
 	private Function function;
@@ -25,13 +24,7 @@ public class FunctionParameter {
 	}
 
 	public String getEntityDescription() {
-		String result = function.getSchemaName() + "." + function.getName() + "(";
-		for(FunctionParameter fp : function.getParameters()) {
-			result = result + (fp.getName() != null ? fp.getName() : "<noname>") + " " + fp.getMode();
-		}
-		result = result + ")";
-		
-		return result;
+		return "parameter \"" + name + "\" for function \"" + function.getName() + "\" in schema \"" + function.getSchemaName() + "\"";
 	}
 	
 	public String toString() {

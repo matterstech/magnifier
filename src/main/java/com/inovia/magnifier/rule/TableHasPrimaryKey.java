@@ -6,8 +6,7 @@ import com.inovia.magnifier.reports.ReportEntry;
 import com.inovia.magnifier.reports.RuleReport;
 
 /**
- * The TableHasComment class aims at checking if
- * the provided tables all have a primary key
+ * Check if all tables have a primary key
  */
 public class TableHasPrimaryKey implements Rule {
 	public static final String RULE_NAME = "TableHasPrimaryKey";

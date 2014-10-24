@@ -1,8 +1,7 @@
 package com.inovia.magnifier.database;
 
 /**
- * The class PGTrigger deals with the PostgreSql
- * implementation of the Trigger interface
+ * it represents a database trigger
  */
 public class Trigger {
 	private String schemaName;
@@ -27,7 +26,7 @@ public class Trigger {
 	}
 	
 	public String getEntityDescription() {
-		return name + "() ON TABLE " + schemaName + "." + tableName;
+		return "Trigger \"" + name + "\" on table \"" + tableName + "\" in schema \"" + schemaName + "\"";
 	}
 
 	public String getName() {

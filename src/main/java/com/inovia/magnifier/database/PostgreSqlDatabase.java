@@ -4,7 +4,10 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
-
+/**
+ * it connects to a database and retrieve sets of entities from it (tables, views, triggers).
+ * those entities are then available via getters for each kind of entity
+ */
 public class PostgreSqlDatabase implements Database {
 	private Connection connection;
 	private String name;
@@ -97,13 +100,13 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadSchemas() {
 		if(schemas == null) {
-			String SQL = "SELECT schema_name FROM information_schema.schemata";
+			String query = "SELECT schema_name FROM information_schema.schemata";
 
 			Statement statement = null;
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				schemas = new Vector<Schema>();
 
@@ -136,7 +139,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTriggers() {
 		if(triggers == null) {
-			String SQL = "select"
+			String query = "select"
 					+ " trigger_schema,"
 					+ " trigger_name,"
 					+ " event_manipulation,"
@@ -150,7 +153,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				triggers = new Vector<Trigger>();
 
@@ -189,7 +192,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadFunctions() {
 		if(functions == null) {
-			String SQL = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
+			String query = "SELECT routine_schema, routine_name, p.parameter_name, p.parameter_mode"
 					+ " FROM information_schema.routines r"
 					+ " LEFT OUTER JOIN information_schema.parameters p"
 					+ " ON r.specific_name   = p.specific_name"
@@ -202,23 +205,23 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				functions = new Vector<Function>();
-				String SCHEMA_NAME_FIELD = "routine_schema";
-				String ROUTINE_NAME_FIELD = "routine_name";
-				String PARAMETER_NAME_FIELD = "parameter_name";
-				String PARAMETER_TYPE_FIELD = "parameter_mode";
+				String schemaNameField = "routine_schema";
+				String routineNameField = "routine_name";
+				String parameterNameField = "parameter_name";
+				String parameterTypeField = "parameter_mode";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
-					Function function = new Function(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD));
+					Function function = new Function(results.getString(schemaNameField), results.getString(routineNameField));
 
 					List<FunctionParameter> parameters = new Vector<FunctionParameter>();
 
 					FunctionParameter parameter = null;
-					String parameterName = results.getString(PARAMETER_NAME_FIELD);
-					String parameterMode = results.getString(PARAMETER_TYPE_FIELD);
+					String parameterName = results.getString(parameterNameField);
+					String parameterMode = results.getString(parameterTypeField);
 
 					if(parameterName != null && parameterMode != null) {
 						parameter = new FunctionParameter(function, parameterName, parameterMode);
@@ -227,15 +230,15 @@ public class PostgreSqlDatabase implements Database {
 						function.addParameter(parameter);
 					}
 
-					String schemaName = results.getString(SCHEMA_NAME_FIELD);
-					String routineName = results.getString(ROUTINE_NAME_FIELD);
+					String schemaName = results.getString(schemaNameField);
+					String routineName = results.getString(routineNameField);
 
 					doLoop = results.next();
-					while(doLoop && results.getString(SCHEMA_NAME_FIELD).equals(schemaName) && results.getString(ROUTINE_NAME_FIELD).equals(routineName)) {
-						schemaName = results.getString(SCHEMA_NAME_FIELD);
-						routineName = results.getString(ROUTINE_NAME_FIELD);
+					while(doLoop && results.getString(schemaNameField).equals(schemaName) && results.getString(routineNameField).equals(routineName)) {
+						schemaName = results.getString(schemaNameField);
+						routineName = results.getString(routineNameField);
 
-						parameter = new FunctionParameter(function, results.getString(PARAMETER_NAME_FIELD), results.getString(PARAMETER_TYPE_FIELD));
+						parameter = new FunctionParameter(function, results.getString(parameterNameField), results.getString(parameterTypeField));
 						function.addParameter(parameter);
 						doLoop = results.next();
 					}
@@ -265,7 +268,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadViews() {
 		if(views == null) {
-			String SQL = "SELECT table_schema, table_name"
+			String query = "SELECT table_schema, table_name"
 					+ " FROM information_schema.views"
 					+ " WHERE table_schema"
 					+ " NOT IN ('pg_catalog', 'information_schema')";
@@ -274,15 +277,15 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				views = new Vector<View>();
-				String SCHEMA_NAME_FIELD = "table_schema";
-				String ROUTINE_NAME_FIELD = "table_name";
+				String schemaNameField = "table_schema";
+				String routineNameField = "table_name";
 
 				Boolean doLoop = results.next();
 				while(doLoop) {
-					views.add(new View(results.getString(SCHEMA_NAME_FIELD), results.getString(ROUTINE_NAME_FIELD)));
+					views.add(new View(results.getString(schemaNameField), results.getString(routineNameField)));
 					
 					doLoop = results.next();
 				}
@@ -309,7 +312,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadFunctionComments() {
 		if(functionComments == null) {
-			String SQL = "SELECT nspname, proname, description"
+			String query = "SELECT nspname, proname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_proc"
 					+ " ON pg_description.objoid = pg_proc.oid"
@@ -322,7 +325,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				functionComments = new Vector<Comment>();
 
@@ -357,7 +360,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadViewComments() {
 			if(viewComments == null) {
-				String SQL = "SELECT nspname, relname, description"
+				String query = "SELECT nspname, relname, description"
 						+ " FROM pg_class c"
 						+ " JOIN pg_namespace n ON n.oid = c.relnamespace"
 						+ " JOIN pg_description d ON relfilenode = d.objoid"
@@ -369,7 +372,7 @@ public class PostgreSqlDatabase implements Database {
 				ResultSet results = null;
 				try {
 					statement = connection.createStatement();
-					results = statement.executeQuery(SQL);
+					results = statement.executeQuery(query);
 
 					viewComments = new Vector<Comment>();
 
@@ -404,7 +407,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTableComments() {
 		if(tableComments == null) {
-			String SQL = "SELECT nspname, relname, description"
+			String query = "SELECT nspname, relname, description"
 					+ " FROM pg_description"
 					+ " JOIN pg_class"
 					+ " ON pg_description.objoid = pg_class.oid"
@@ -417,7 +420,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				tableComments = new Vector<Comment>();
 
@@ -452,7 +455,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTables() {
 		if(tables == null) {
-			String SQL = "select distinct"
+			String query = "select distinct"
 					+ "   tc.table_schema    as local_schema,"
 					+ "   tc.table_name      as local_table,"
 					+ "   kcu.column_name    as local_column,"
@@ -480,31 +483,31 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 				tables = new Vector<Table>();
-				String LOCAL_SCHEMA_FIELD   = "local_schema";
-				String LOCAL_TABLE_FIELD    = "local_table";
-				String LOCAL_COLUMN_FIELD   = "local_column";
-				String FOREIGN_SCHEMA_FIELD = "foreign_schema";
-				String FOREIGN_TABLE_FIELD  = "foreign_table";
-				String FOREIGN_COLUMN_FIELD = "foreign_column";
-				String KEY_TYPE_FIELD       = "key_type";
+				String localSchemaField   = "local_schema";
+				String localTableField    = "local_table";
+				String localColumnField   = "local_column";
+				String foreignSchemaField = "foreign_schema";
+				String foreignTableField  = "foreign_table";
+				String foreignColumnField = "foreign_column";
+				String keyTypeField       = "key_type";
 
 				Boolean doLoop = results.next();
 				// Loop on tables
 				while(doLoop) {
-					String localSchemaName  = results.getString(LOCAL_SCHEMA_FIELD);
-					String localTableName   = results.getString(LOCAL_TABLE_FIELD);
+					String localSchemaName  = results.getString(localSchemaField);
+					String localTableName   = results.getString(localTableField);
 
 					Table table = new Table(localSchemaName, localTableName);
 
 					// Loop on columns
-					while(doLoop && localSchemaName.equals(results.getString(LOCAL_SCHEMA_FIELD)) && localTableName.equals(results.getString(LOCAL_TABLE_FIELD))) {
-						String keyType           = results.getString(KEY_TYPE_FIELD);
-						String localColumn       = results.getString(LOCAL_COLUMN_FIELD);
-						String foreignSchemaName = results.getString(FOREIGN_SCHEMA_FIELD);
-						String foreignTableName  = results.getString(FOREIGN_TABLE_FIELD);
-						String foreignColumnName = results.getString(FOREIGN_COLUMN_FIELD);
+					while(doLoop && localSchemaName.equals(results.getString(localSchemaField)) && localTableName.equals(results.getString(localTableField))) {
+						String keyType           = results.getString(keyTypeField);
+						String localColumn       = results.getString(localColumnField);
+						String foreignSchemaName = results.getString(foreignSchemaField);
+						String foreignTableName  = results.getString(foreignTableField);
+						String foreignColumnName = results.getString(foreignColumnField);
 						
 						if(keyType.equals("PRIMARY KEY")) {
 							table.addPrimaryKey(localColumn);
@@ -540,7 +543,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadTriggerComments() {
 		if(triggerComments == null) {
-			String SQL = "SELECT"
+			String query = "SELECT"
 					+ "   n.nspname     AS schema_name,"
 					+ "   c.relname     AS table_name,"
 					+ "   t.tgname      AS trigger_name,"
@@ -554,7 +557,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				triggerComments = new Vector<Comment>();
 
@@ -589,7 +592,7 @@ public class PostgreSqlDatabase implements Database {
 	 */
 	private void loadIndexes() {
 		if(indexes == null) {
-			String SQL = "SELECT schemaname, tablename, indexname"
+			String query = "SELECT schemaname, tablename, indexname"
 					+ " FROM pg_indexes"
 					+ " WHERE schemaname NOT IN ('pg_catalog', 'information_schema')";
 
@@ -597,7 +600,7 @@ public class PostgreSqlDatabase implements Database {
 			ResultSet results = null;
 			try {
 				statement = connection.createStatement();
-				results = statement.executeQuery(SQL);
+				results = statement.executeQuery(query);
 
 				indexes = new Vector<Index>();
 

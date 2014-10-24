@@ -3,8 +3,7 @@ package com.inovia.magnifier.database;
 import java.util.*;
 
 /**
- * The class PGFunction deals with the PostgreSql
- * implementation of the Function interface
+ * it represents a database function
  */
 public class Function {
 	private String name;
@@ -42,13 +41,6 @@ public class Function {
 	}
 
 	public String getEntityDescription() {
-		
-		String result = schemaName + "." + name + "(";
-		for(FunctionParameter fp : parameters) {
-			result = result + (fp.getName() != null ? fp.getName() : "<noname>") + " " + fp.getMode();
-		}
-		result = result + ")";
-		
-		return result;
+		return "function \"" + name + "\"(...) in schema \"" + schemaName + "\"";
 	}
 }

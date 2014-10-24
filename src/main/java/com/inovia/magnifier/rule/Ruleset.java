@@ -11,16 +11,14 @@ import com.inovia.magnifier.reports.Report;
  * behaviour of rule sets.
  */
 public abstract class Ruleset {
-	protected List<Rule> rules;
-	protected Report report;
-	protected Database database;
-	protected Date startDate;
-    protected Date endDate;
+	private Report report;
+	private Database database;
+	private Date startDate;
+	private Date endDate;
 	
 	public Ruleset(Database database) {
 		this.database = database;
 		
-		rules = this.getRules();
 		report = new Report(database.getName());
 	}
 	

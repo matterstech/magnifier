@@ -5,12 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * A report is a report on a specific database.
+ * it is a report on a specific database.
  * It includes a set of rule reports
- * 
  */
 public class Report {
-	private final String ENCODING = "UTF-8";
+	private final static String ENCODING = "UTF-8";
+	
+	private final static Integer HOURS_PER_DAY           = 24;
+	private final static Integer MINUTES_PER_HOUR        = 60;
+	private final static Integer SECONDS_PER_MINUTE      = 60;
+	private final static Integer MILLISECONDS_PER_SECOND = 1000;
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
@@ -20,7 +24,14 @@ public class Report {
 		this.databaseName = databaseName;
 	}
 
-	public void generateHtml(String path, Date startTime, Date endTime) {
+	/**
+	 * generates an Html report
+	 * 
+	 * @param reportFilePath the report file to generate
+	 * @param startTime      the time when the database analysis started
+	 * @param endTime        the time when the database analysis ended
+	 */
+	public void generateHtml(String reportFilePath, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
 				if(r1.getScore() > r2.getScore()) {
@@ -35,20 +46,15 @@ public class Report {
 
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(path, ENCODING);
+			writer = new PrintWriter(reportFilePath, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-			Integer HOURS_IN_DAY           = 24;
-			Integer MINUTES_IN_HOUR        = 60;
-			Integer SECONDS_IN_MINUTE      = 60;
-			Integer MILLISECONDS_IN_SECOND = 1000;
 			
 			Long timeDiff = endTime.getTime() - startTime.getTime();
-			Long seconds = timeDiff / MILLISECONDS_IN_SECOND;
-			Long minutes = seconds  / SECONDS_IN_MINUTE;
-			Long hours   = minutes  / MINUTES_IN_HOUR;
-			Long days    = hours    / HOURS_IN_DAY;
+			Long seconds  = timeDiff / MILLISECONDS_PER_SECOND;
+			Long minutes  = seconds  / SECONDS_PER_MINUTE;
+			Long hours    = minutes  / MINUTES_PER_HOUR;
+			Long days     = hours    / HOURS_PER_DAY;
 
 			String html = "";
 			html = html + "<html>"
@@ -178,7 +184,7 @@ public class Report {
 
 			writer.println(html);
 		} catch (FileNotFoundException e) {
-			System.err.println("File couldn't be found: " + path);
+			System.err.println("File couldn't be found: " + reportFilePath);
 		} catch (UnsupportedEncodingException e) {
 			System.err.println("Unsupported Encoding: " + ENCODING);
 		} finally {
@@ -187,8 +193,17 @@ public class Report {
 			}
 		}
 	}
-
+	
+	/**
+	 * add a rule report to the report
+	 * 
+	 * @param ruleReport 
+	 */
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
+	}
+	
+	public List<RuleReport> getRuleReports() {
+		return ruleReports;
 	}
 }

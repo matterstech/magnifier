@@ -14,6 +14,6 @@ public class SchemaTest extends TestCase {
 	public void testConstructorWithRightParameters() {
 		Schema s = new Schema("public");
 		
-		assertEquals(s.getName(), "public");
+		assertEquals("public", s.getName());
 	}
 }

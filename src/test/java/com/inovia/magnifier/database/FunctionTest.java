@@ -19,14 +19,14 @@ public class FunctionTest extends TestCase {
 		
 		Vector<FunctionParameter> parameters = new Vector<FunctionParameter>();
 		
-		assertEquals(f.getSchemaName(), "public");
-		assertEquals(f.getName(), "my_function");
-		assertEquals(f.getParameters(), parameters);
+		assertEquals("public", f.getSchemaName());
+		assertEquals("my_function", f.getName());
+		assertEquals(parameters, f.getParameters());
 		
 		FunctionParameter p = new FunctionParameter(f, "param_in", "IN");
 		f.addParameter(p);
 		parameters.add(p);
 		
-		assertEquals(f.getParameters(), parameters);
+		assertEquals(parameters, f.getParameters());
 	}
 }
