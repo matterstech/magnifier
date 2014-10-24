@@ -1,12 +1,13 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import com.inovia.magnifier.database.objects.Comment;
-import com.inovia.magnifier.database.objects.View;
-import com.inovia.magnifier.database.postgresql.PGComment;
-import com.inovia.magnifier.database.postgresql.PGView;
+import java.util.*;
+
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.rule.ViewName;
 
 import junit.framework.*;
 
@@ -21,16 +22,26 @@ public class ViewNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<View> views = new Vector<View>();
-
-		views.add(new PGView("public", "my_view"));
-
-		RuleReport rr = null;
-		rr = ViewName.runOn(views);
-		assertEquals(rr.getScore(), 100.0F);
-
-		views.add(new PGView("public", "my_view_bis"));
-		rr = ViewName.runOn(views);
-		assertEquals(rr.getScore(), 50.0F);
+		final View mockView1 = mock(View.class);
+		when(mockView1.getSchemaName()).thenReturn("public");
+		when(mockView1.getName()).thenReturn("my_view");
+		
+		List<View> mockViews = new Vector<View>();
+		mockViews.add(mockView1);
+		
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getViews()).thenReturn(mockViews);
+		
+		RuleReport rr = new ViewName().run(mockDatabase);
+		assertEquals(100.0F, rr.getScore());
+		
+		final View mockView2 = mock(View.class);
+		when(mockView2.getSchemaName()).thenReturn("public");
+		when(mockView2.getName()).thenReturn("view_of_something");
+		
+		mockViews.add(mockView2);
+		
+		rr = new ViewName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

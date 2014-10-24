@@ -1,14 +1,13 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import java.util.*;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.PGForeignKey;
-import com.inovia.magnifier.database.postgresql.PGTable;
-import com.inovia.magnifier.reports.RuleReport;
+import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.ForeignKeyName;
 
 import junit.framework.*;
-
+import static org.mockito.Mockito.*;
 
 public class ForeignKeyNameTest extends TestCase {
 	public ForeignKeyNameTest(String testName) {
@@ -20,22 +19,30 @@ public class ForeignKeyNameTest extends TestCase {
     }
 	
 	public void testRule() {
-		Vector<Table> tables = new Vector<Table>();
+		List<ForeignKey> mockForeignKeys = new Vector<ForeignKey>();
 		
-		PGTable t = new PGTable("public", "my_table");
+		final ForeignKey mockForeignKey1 = mock(ForeignKey.class);
+		when(mockForeignKey1.getColumnName()).thenReturn("my_foreign_key");
+		when(mockForeignKey1.getForeignTableName()).thenReturn("user");
+		when(mockForeignKey1.getForeignColumnName()).thenReturn("id");
+		mockForeignKeys.add(mockForeignKey1);
 		
-		t.addForeignKey(new PGForeignKey(t, "table2_field2_stuff", "public", "table2", "field2"));
-		tables.add(t);
+		final ForeignKey mockForeignKey2 = mock(ForeignKey.class);
+		when(mockForeignKey2.getColumnName()).thenReturn("user_id");
+		when(mockForeignKey2.getForeignTableName()).thenReturn("user");
+		when(mockForeignKey2.getForeignColumnName()).thenReturn("id");
+		mockForeignKeys.add(mockForeignKey2);
 		
-		RuleReport rr = null;
+		final Table mockTable = mock(Table.class);
+		when(mockTable.getForeignKeys()).thenReturn(mockForeignKeys);
+		when(mockTable.getName()).thenReturn("group");
+		List<Table> mockTables = new Vector<Table>();
+		mockTables.add(mockTable);
 		
-		rr = ForeignKeyName.runOn(tables);
-		assertEquals(rr.getScore(), 0.0F);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getTables()).thenReturn(mockTables);
 		
-		
-		t.addForeignKey(new PGForeignKey(t, "table2_field2", "public", "table2", "field2"));
-		
-		rr = ForeignKeyName.runOn(tables);
-		assertEquals(rr.getScore(), 50.0F);
+		RuleReport rr = new ForeignKeyName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }

@@ -1,13 +1,19 @@
 package com.inovia.magnifier.reports;
 
-import java.util.Vector;
+import java.util.*;
 
-
+/**
+ * it is a report about the execution of a rule on the database.
+ * it includes a set of report entries
+ */
 public class RuleReport {
+	private final static Float MAX_SCORE = 100.0F;
+	private final static Float MIN_SCORE =   0.0F;
+	
 	private String ruleName;
 	private String suggestion;
 	private Float score;
-	private Vector<ReportEntry> entries;
+	private List<ReportEntry> entries;
 	private Float debt;
 	
 	public RuleReport(String ruleName, String suggestion, Float debt) {
@@ -19,20 +25,18 @@ public class RuleReport {
 	
 	public Float getScore() {
 		if(entries.size() == 0) {
-			return 100.0F;
+			return MAX_SCORE;
 		}
 		
-		Float tmp = 0F;
+		Float tmp = MIN_SCORE;
 		
-		if(score == null) {
-			for(ReportEntry e : entries) {
-				if(e.isSuccess()) {
-					tmp++;
-				}
+		for(ReportEntry e : entries) {
+			if(e.isSuccess()) {
+				tmp++;
 			}
-			
-			score = tmp * 100F / ((float) entries.size());
 		}
+			
+		score = tmp * MAX_SCORE / ((float) entries.size());
 		
 		return score;
 	}
@@ -41,7 +45,7 @@ public class RuleReport {
 		return entries.add(entry);
 	}
 	
-	public Vector<ReportEntry> getEntries() {
+	public List<ReportEntry> getEntries() {
 		return entries;
 	}
 	

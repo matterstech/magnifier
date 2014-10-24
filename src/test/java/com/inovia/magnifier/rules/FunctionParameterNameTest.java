@@ -1,39 +1,52 @@
 package com.inovia.magnifier.rules;
 
-import java.util.Vector;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
 
 import junit.framework.*;
 
-import com.inovia.magnifier.database.objects.*;
-import com.inovia.magnifier.database.postgresql.*;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.reports.*;
+import com.inovia.magnifier.rule.FunctionParameterName;
 
 public class FunctionParameterNameTest extends TestCase {
 	public FunctionParameterNameTest(String testName) {
-        super(testName);
-    }
-	
+		super(testName);
+	}
+
 	public static Test suite() {
-        return new TestSuite(FunctionParameterNameTest.class);
-    }
-	
+		return new TestSuite(FunctionParameterNameTest.class);
+	}
+
 	public void testRule() {
-		Vector<Function> functions = new Vector<Function>();
+		final FunctionParameter mockFunctionParameter = mock(FunctionParameter.class);
+		when(mockFunctionParameter.getName()).thenReturn("param1");
+		when(mockFunctionParameter.getMode()).thenReturn("IN");
 		
-		PGFunction f = new PGFunction("public", "my_function");
-		functions.add(f);
+		List<FunctionParameter> mockFunctionParameters = new Vector<FunctionParameter>();
+		mockFunctionParameters.add(mockFunctionParameter);
 		
-		RuleReport rr = null;
-		rr = FunctionParameterName.runOn(functions);
-		System.out.println(rr.getScore());
-		assertEquals(rr.getScore(), 100.0F); // Because no parameters in the function
+		final Function mockFunction = mock(Function.class);
+		when(mockFunction.getParameters()).thenReturn(mockFunctionParameters);
 		
-		f.addParameter(new PGFunctionParameter(f, "param1_in", "IN"));
-		rr = FunctionParameterName.runOn(functions);
-		assertEquals(rr.getScore(), 100.0F);
+		List<Function> mockFunctions = new Vector<Function>();
+		mockFunctions.add(mockFunction);
 		
-		f.addParameter(new PGFunctionParameter(f, "param2", "OUT"));
-		rr = FunctionParameterName.runOn(functions);
-		assertEquals(rr.getScore(), 50.0F);
+		final Database mockDatabase = mock(Database.class);
+		when(mockDatabase.getFunctions()).thenReturn(mockFunctions);
+
+		RuleReport rr = new FunctionParameterName().run(mockDatabase);
+		assertEquals(0.0F, rr.getScore());
+		
+		final FunctionParameter mockFunctionParameter2 = mock(FunctionParameter.class);
+		when(mockFunctionParameter.getName()).thenReturn("param2_out");
+		when(mockFunctionParameter.getMode()).thenReturn("out");
+		
+		mockFunctionParameters.add(mockFunctionParameter2);
+		
+		rr = new FunctionParameterName().run(mockDatabase);
+		assertEquals(50.0F, rr.getScore());
 	}
 }
