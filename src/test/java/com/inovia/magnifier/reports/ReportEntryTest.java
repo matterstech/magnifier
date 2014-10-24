@@ -12,12 +12,11 @@ public class ReportEntryTest extends TestCase {
     }
 	
 	public void testConstructorAndGetters() {
-		ReportEntry goodEntry = new ReportEntry("TABLE public.user",  true);
-		assertEquals("TABLE public.user", goodEntry.getEntityDescription());
+		String[] dataToDisplay = {"fake", "oki"};
+		ReportEntry goodEntry = new ReportEntry(dataToDisplay,  true);
 		assertTrue(goodEntry.isSuccess());
 		
-		ReportEntry badEntry  = new ReportEntry("TABLE public.group", false);
-		assertEquals("TABLE public.group", badEntry.getEntityDescription());
+		ReportEntry badEntry  = new ReportEntry(dataToDisplay, false);
 		assertFalse(badEntry.isSuccess());
 	}
 }

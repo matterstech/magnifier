@@ -13,15 +13,17 @@ public class IndexName implements Rule {
 	public static final String RULE_NAME = "IndexName";
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";
 	public static final Float DEBT = 1F;
+	public static final String[] FORMAT = {"schema", "table", "index"};
 
 	public IndexName() { }
-	
+
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Index i : database.getIndexes()) {
 			Boolean isSuccess = assertion(i);
-			ruleReport.addEntry(new ReportEntry(i.getEntityDescription(), isSuccess));
+			String[] dataToDisplay = {i.getSchemaName(), i.getTableName(), i.getName()};
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
 		}
 
 		return ruleReport;
@@ -36,5 +38,13 @@ public class IndexName implements Rule {
 			return true;
 		}
 		return false;
+	}
+	
+	public String[] getRuleReportFormat() {
+		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }

@@ -12,5 +12,7 @@ public interface Rule {
 	 * @param database the database to analyze
 	 * @return a report about the execution of the rule on the database
 	 */
-	abstract public RuleReport run(Database database);
+	public RuleReport run(Database database);
+	public String[] getRuleReportFormat();
+	public String getName();
 }

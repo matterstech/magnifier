@@ -1,6 +1,5 @@
 package com.inovia.magnifier.database;
 
-
 /**
  * it represents a database foreign key constraint
  */
@@ -44,13 +43,5 @@ public class ForeignKey {
 	
 	public String getForeignColumnName() {
 		return foreignColumnName;
-	}
-	
-	public String toString() {
-		return table + "." + columnName + " -> " + foreignSchemaName + "." + foreignTableName + "." + foreignColumnName;
-	}
-
-	public String getEntityDescription() {
-		return "field \"" + columnName + "\" in table \"" + table.getName() + "\" in schema \"" + table.getSchemaName() + "\" referencing field \"" + foreignColumnName + "\" in table \"" + foreignTableName + "\" in schema \"" + foreignSchemaName + "\"";
 	}
 }
