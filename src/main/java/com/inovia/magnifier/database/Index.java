@@ -18,10 +18,6 @@ public class Index {
 		this.tableName = tableName;
 		this.name = name;
 	}
-	
-	public String getEntityDescription() {
-		return "index \"" + name + "\" on table \"" + tableName + "\"";
-	}
 
 	public String getName() {
 		return name;

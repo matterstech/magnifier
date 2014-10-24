@@ -15,15 +15,17 @@ public class TableHasComment implements Rule {
 	public static final String RULE_NAME = "TableHasComment";
 	public static final String SUGGESTION = "Each table should have a comment explaining what it contains";
 	public static final Float DEBT = 1F;
+	public static final String[] FORMAT = {"schema", "table"};
 
 	public TableHasComment() { }
-	
+
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Table t : database.getTables()) {
 			Boolean isSuccess = assertion(t, database.getComments());
-			ruleReport.addEntry(new ReportEntry(t.getEntityDescription(), isSuccess));
+			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -37,5 +39,13 @@ public class TableHasComment implements Rule {
 		}
 		
 		return false;
+	}
+	
+	public String[] getRuleReportFormat() {
+		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }

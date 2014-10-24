@@ -1,6 +1,7 @@
 package com.inovia.magnifier.reports;
 
 import java.util.*;
+import com.inovia.magnifier.rule.Rule;
 
 /**
  * it is a report about the execution of a rule on the database.
@@ -10,35 +11,32 @@ public class RuleReport {
 	private final static Float MAX_SCORE = 100.0F;
 	private final static Float MIN_SCORE =   0.0F;
 	
-	private String ruleName;
+	private Rule rule;
 	private String suggestion;
-	private Float score;
 	private List<ReportEntry> entries;
 	private Float debt;
 	
-	public RuleReport(String ruleName, String suggestion, Float debt) {
+	public RuleReport(Rule rule, String suggestion, Float debt) {
 		entries = new Vector<ReportEntry>();
-		this.ruleName = ruleName;
 		this.suggestion = suggestion;
 		this.debt = debt;
+		this.rule = rule;
 	}
-	
+
 	public Float getScore() {
 		if(entries.size() == 0) {
 			return MAX_SCORE;
 		}
 		
-		Float tmp = MIN_SCORE;
+		Float score = MIN_SCORE;
 		
 		for(ReportEntry e : entries) {
 			if(e.isSuccess()) {
-				tmp++;
+				score++;
 			}
 		}
-			
-		score = tmp * MAX_SCORE / ((float) entries.size());
 		
-		return score;
+		return score * MAX_SCORE / ((float) entries.size());
 	}
 	
 	public boolean addEntry(ReportEntry entry) {
@@ -49,12 +47,12 @@ public class RuleReport {
 		return entries;
 	}
 	
-	public String getRuleName() {
-		return ruleName;
-	}
-	
 	public String getSuggestion() {
 		return suggestion;
+	}
+	
+	public Rule getRule() {
+		return rule;
 	}
 	
 	public Float getDebt() {
@@ -67,5 +65,9 @@ public class RuleReport {
 		}
 		
 		return debt * failingEntityCount;
+	}
+	
+	public String[] getColumns() {
+		return rule.getRuleReportFormat();
 	}
 }

@@ -5,23 +5,19 @@ package com.inovia.magnifier.reports;
  * for example: performing rule "TableHasPrimaryKey" on table "User" is summarized in a report entry
  */
 public class ReportEntry {
-	private String entityDescription;
+	private String[] dataToDisplay;
 	private Boolean isSuccess;
 	
-	public ReportEntry(String entityDescription, Boolean isSuccess) {
-		this.entityDescription = entityDescription;
+	public ReportEntry(String[] dataToDisplay, Boolean isSuccess) {
+		this.dataToDisplay = dataToDisplay.clone();
 		this.isSuccess = isSuccess;
 	}
 	
 	public Boolean isSuccess() {
 		return isSuccess;
 	}
-	
-	public String toString() {
-		return "{ " + entityDescription + ", success: " + isSuccess + "}";
-	}
 
-	public String getEntityDescription() {
-		return entityDescription;
+	public String[] getDataToDisplay() {
+		return dataToDisplay;
 	}
 }

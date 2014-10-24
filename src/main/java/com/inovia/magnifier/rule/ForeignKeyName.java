@@ -14,18 +14,18 @@ public class ForeignKeyName implements Rule {
 	public static final String RULE_NAME = "ForeignKeyName";
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
 	public static final Float DEBT = 1F;
-
-	public ForeignKeyName() {
-		super();
-	}
+	public static final String[] FORMAT = {"schema", "table", "column", "referenced schema", "referenced table", "referenced column"};
 	
+	public ForeignKeyName() { }
+
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Table t : database.getTables()) {
 			for(ForeignKey fk : t.getForeignKeys()) {
 				Boolean isSuccess = assertion(fk);
-				ruleReport.addEntry(new ReportEntry(fk.getEntityDescription(), isSuccess));
+				String[] dataToDisplay = {t.getSchemaName(), t.getName(), fk.getColumnName(), fk.getForeignSchemaName(), fk.getForeignTableName(), fk.getForeignColumnName()};
+				ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
 			}
 		}
 
@@ -40,5 +40,13 @@ public class ForeignKeyName implements Rule {
 		}
 
 		return false;
+	}
+
+	public String[] getRuleReportFormat() {
+		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }
