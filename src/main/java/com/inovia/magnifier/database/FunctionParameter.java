@@ -23,14 +23,6 @@ public class FunctionParameter {
 		return function;
 	}
 
-	public String getEntityDescription() {
-		return "parameter \"" + name + "\" for function \"" + function.getName() + "\" in schema \"" + function.getSchemaName() + "\"";
-	}
-	
-	public String toString() {
-		return name + " " + mode;
-	}
-
 	public String getName() {
 		return name;
 	}
