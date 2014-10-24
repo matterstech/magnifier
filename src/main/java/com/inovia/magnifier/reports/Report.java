@@ -34,13 +34,15 @@ public class Report {
 	public void generateHtml(String reportFilePath, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
-				if(r1.getScore() > r2.getScore()) {
-					return 1;
-				} else if(r1.getScore() < r2.getScore()) {
-					return -1;
-				} else {
-					return 0;
+				if(r1.getScore() <= r2.getScore()) {
+					if(r1.getDebt() >= r2.getDebt()) {
+						return -1;
+					} else {
+						return 1;
+					}
 				}
+
+				return 1;
 			}
 		});
 
