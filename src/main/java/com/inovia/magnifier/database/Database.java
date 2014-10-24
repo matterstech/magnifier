@@ -6,7 +6,7 @@ import java.util.List;
  * it represents a generic database with methods to retrieve entities from it
  */
 public interface Database {
-	public void connect();
+	public Boolean connect(String driverFile, String host, String port, String user, String password);
 	public void disconnect();
 	public void load();
 	

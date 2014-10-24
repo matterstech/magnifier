@@ -47,7 +47,7 @@ public class Configuration {
 		this.options = new Options();
 		this.args = args.clone();
 
-		// We describe the parameters Magnifier can be given
+		// We describe the parameters Magnifier can be provided
 		options.addOption(PARAM_HELP,     false, "print this message");
 		options.addOption(PARAM_HOST,     true, "The database host, default is localhost");
 		options.addOption(PARAM_PORT,     true, "The database listening port, default is the specified DBMS default port");
@@ -63,7 +63,7 @@ public class Configuration {
 	 * parses the command line parameters and performs validation
 	 * 
 	 * @return whether the program should continue or not
-	 * @throws ParseException
+	 * @throws ParseException when an required parameter is not provided
 	 */
 	public Boolean parseCommandLine() throws ParseException {
 		BasicParser parser = new BasicParser();
@@ -105,8 +105,8 @@ public class Configuration {
 
 		// Check if report file already exists
 		File f = new File(reportPath);
-		// Report path is a directory
 		if(f.exists() && f.isDirectory()) {
+			// Provided report file is actually a directory
 			reportPath = reportPath + "/" + DEFAULT_REPORT_FILE;
 			System.err.println("The report will be called: " + DEFAULT_REPORT_FILE);
 		}
@@ -127,6 +127,7 @@ public class Configuration {
 
 		connectionURL = "jdbc:" + databaseType + "://" + host + ":" + port + "/" + databaseName;
 
+		// We inform the called that the required parameters are provided, so it can proceed
 		return true;
 	}
 

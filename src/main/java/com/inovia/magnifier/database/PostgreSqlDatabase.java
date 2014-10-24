@@ -11,10 +11,6 @@ import java.util.*;
 public class PostgreSqlDatabase implements Database {
 	private Connection connection;
 	private String name;
-	private String host;
-	private String port;
-	private String user;
-	private String password;
 
 	private List<Schema>   schemas;
 	private List<Index>    indexes;
@@ -32,46 +28,41 @@ public class PostgreSqlDatabase implements Database {
 	private List<Comment>  viewComments;
 
 	/**
-	 * @param driverFile   The JDBC driver file
+	 * 
 	 * @param databaseName The name of the database to analyze
-	 * @param host         The host on which the database is running (default:  127.0.0.1)
-	 * @param port         The port on which the database is listening (default: default for DBMS)
-	 * @param user
-	 * @param password
 	 */
-	public PostgreSqlDatabase(String driverFile, String databaseName, String host, String port, String user, String password) {
+	public PostgreSqlDatabase(String databaseName) {
 		this.name = databaseName;
-		this.host = host;
-		this.port = port;
-		this.user = user;
-		this.password = password;
-
-		try {
-			URL url = new URL("jar:file:" + driverFile + "!/");
-			
-			String classname = "org.postgresql.Driver";
-			URLClassLoader urlcl = new URLClassLoader(new URL[] { url });
-			
-			Driver d = (Driver) Class.forName(classname, true, urlcl).newInstance();
-			DriverManager.registerDriver((Driver) new DriverShim(d));
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
 	}
 
 	/**
 	 * Establish the connection to the database specified in constructor.
+	 * 
+	 * @param driverFile   The JDBC driver file
+	 * @param host         The host on which the database is running (default:  127.0.0.1)
+	 * @param port         The port on which the database is listening (default: default for DBMS)
+	 * @param user         The username used to connect to the database
+	 * @param password     The password used to connect to the database
 	 */
-	public void connect() {
+	public Boolean connect(String driverFile, String host, String port, String user, String password) {
 		if(connection == null) {
 			try {
+				URL url = new URL("jar:file:" + driverFile + "!/");
+				
+				String classname = "org.postgresql.Driver";
+				URLClassLoader urlcl = new URLClassLoader(new URL[] { url });
+				
+				Driver d = (Driver) Class.forName(classname, true, urlcl).newInstance();
+				DriverManager.registerDriver((Driver) new DriverShim(d));
+				
 				connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, user, password);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				System.err.println(e.getMessage());
-				System.exit(1);
+				return false;
 			}
 		}
+		
+		return true;
 	}
 
 	/**

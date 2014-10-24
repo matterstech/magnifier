@@ -10,32 +10,32 @@ import com.inovia.magnifier.rule.*;
  */
 public class Magnifier {
   public static void main(String[] args) {
-    Configuration configuration = new Configuration(args);
+    Configuration cfg = new Configuration(args);
+    
     try {
-      if(!configuration.parseCommandLine()) {
+      if(!cfg.parseCommandLine()) {
         System.exit(1);
       }
     } catch(ParseException e) {
       System.out.println(e.getMessage());
       System.exit(1);
     }
-    Database database = DatabaseFactory.getDatabase(
-        configuration.getDriverPath(),
-        configuration.getDatabaseType(),
-        configuration.getHost(),
-        configuration.getPort(),
-        configuration.getDatabaseName(),
-        configuration.getUser(),
-        configuration.getPassword());
+    
+    Database database = DatabaseFactory.getDatabase(cfg.getDatabaseName(), cfg.getDatabaseType());
 
-    // Bootstrap
-    database.connect();
+    // Creating a session to the database
+    if(!database.connect(cfg.getDriverPath(), cfg.getHost(), cfg.getPort(), cfg.getUser(), cfg.getPassword())) {
+    	System.exit(1);
+    }
+    
+    // Load all the entities from the database since Magnifier is READ ONLY and don't push or edit data from the database
     database.load();
 
     Ruleset inoviaRuleset = new InoviaRuleset(database);
     inoviaRuleset.run();
-    inoviaRuleset.generateHtml(configuration.getReportPath());
+    inoviaRuleset.generateHtml(cfg.getReportPath());
     
+    // Closing the database session
     database.disconnect();
   }
 }

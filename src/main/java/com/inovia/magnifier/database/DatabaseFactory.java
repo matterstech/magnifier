@@ -5,17 +5,17 @@ package com.inovia.magnifier.database;
  * this class applies the factory pattern.
  */
 public class DatabaseFactory {
-	public static Database getDatabase(String driverPath, String type, String host, String port, String database, String user, String password) {
-		if(type != null && !type.isEmpty()) {
+	public static Database getDatabase(String database, String dbms) {
+		if(dbms != null && !dbms.isEmpty()) {
 			
 			// If PostgreSql
-			if(type.equals("postgresql")) {
-				return (Database) new PostgreSqlDatabase(driverPath, database, host, port, user, password);
+			if(dbms.equals("postgresql")) {
+				return (Database) new PostgreSqlDatabase(database);
 			}
 			
 			throw new IllegalArgumentException("args[type]");
 		}
 		
-		throw new IllegalArgumentException("no type");
+		throw new IllegalArgumentException("no dbms");
 	}
 }
