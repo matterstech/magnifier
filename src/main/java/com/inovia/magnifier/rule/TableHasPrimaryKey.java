@@ -32,7 +32,7 @@ public class TableHasPrimaryKey implements Rule {
 		return table.hasPrimaryKey();
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

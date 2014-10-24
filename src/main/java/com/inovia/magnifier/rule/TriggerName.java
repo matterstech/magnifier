@@ -32,7 +32,7 @@ public class TriggerName implements Rule {
 		return t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

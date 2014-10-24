@@ -9,7 +9,7 @@ public class ReportEntry {
 	private Boolean isSuccess;
 	
 	public ReportEntry(String[] dataToDisplay, Boolean isSuccess) {
-		this.dataToDisplay = dataToDisplay;
+		this.dataToDisplay = dataToDisplay.clone();
 		this.isSuccess = isSuccess;
 	}
 	

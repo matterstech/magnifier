@@ -36,7 +36,7 @@ public class ViewName implements Rule {
 		return false;
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

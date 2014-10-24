@@ -40,7 +40,7 @@ public class IndexName implements Rule {
 		return false;
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

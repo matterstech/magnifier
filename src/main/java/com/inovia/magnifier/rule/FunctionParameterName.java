@@ -38,7 +38,7 @@ public class FunctionParameterName implements Rule {
 				&& p.getName().endsWith("_" + p.getMode().toLowerCase());
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

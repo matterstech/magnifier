@@ -41,7 +41,7 @@ public class TableHasComment implements Rule {
 		return false;
 	}
 	
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 

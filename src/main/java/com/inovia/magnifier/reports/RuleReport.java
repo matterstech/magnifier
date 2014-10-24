@@ -71,6 +71,6 @@ public class RuleReport {
 	}
 	
 	public String[] getColumns() {
-		return rule.getReportableData();
+		return rule.getRuleReportFormat();
 	}
 }

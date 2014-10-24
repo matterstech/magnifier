@@ -42,7 +42,7 @@ public class ForeignKeyName implements Rule {
 		return false;
 	}
 
-	public String[] getReportableData() {
+	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
 
