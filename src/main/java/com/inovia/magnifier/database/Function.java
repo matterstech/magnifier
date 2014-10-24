@@ -35,12 +35,4 @@ public class Function {
 	public void addParameter(FunctionParameter parameter) {
 		parameters.add(parameter);
 	}
-
-	public String toString() {
-		return "schema: "+ schemaName + ", name: "+ name;
-	}
-
-	public String getEntityDescription() {
-		return "function \"" + name + "\"(...) in schema \"" + schemaName + "\"";
-	}
 }

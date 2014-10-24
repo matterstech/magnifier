@@ -1,6 +1,5 @@
 package com.inovia.magnifier.database;
 
-
 /**
  * it represents a database comment
  */
@@ -34,14 +33,6 @@ public class Comment {
 	
 	public String getEntityName() {
 		return entityName;
-	}
-	
-	public String toString() {
-		return "schema: " + schemaName + ", entity: " + entityName + ", content: \"" + content + "\"";
-	}
-
-	public String getEntityDescription() {
-		return "comment on \"" + entityName + "\"";
 	}
 
 	public String getEntityType() {

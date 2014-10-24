@@ -21,10 +21,6 @@ public class Table {
 		primaryKey = new Vector<String>();
 		foreignKeys = new Vector<ForeignKey>();
 	}
-	
-	public String getEntityDescription() {
-		return "Table \"" + name + "\" in schema \"" + schemaName + "\"";
-	}
 
 	public String getSchemaName() {
 		return schemaName;
@@ -52,9 +48,5 @@ public class Table {
 
 	public List<ForeignKey> getForeignKeys() {
 		return foreignKeys;
-	}
-	
-	public String toString() {
-		return schemaName + "." + name;
 	}
 }

@@ -24,10 +24,6 @@ public class Trigger {
 		this.action = action;
 		this.timing = timing;
 	}
-	
-	public String getEntityDescription() {
-		return "Trigger \"" + name + "\" on table \"" + tableName + "\" in schema \"" + schemaName + "\"";
-	}
 
 	public String getName() {
 		return name;
@@ -47,9 +43,5 @@ public class Trigger {
 
 	public String getTiming() {
 		return timing;
-	}
-	
-	public String toString() {
-		return name;
 	}
 }

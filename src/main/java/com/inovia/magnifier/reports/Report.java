@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class Report {
 	private final static String ENCODING = "UTF-8";
-	
+
 	private final static Integer HOURS_PER_DAY           = 24;
 	private final static Integer MINUTES_PER_HOUR        = 60;
 	private final static Integer SECONDS_PER_MINUTE      = 60;
@@ -49,7 +49,7 @@ public class Report {
 			writer = new PrintWriter(reportFilePath, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			
+
 			Long timeDiff = endTime.getTime() - startTime.getTime();
 			Long seconds  = timeDiff / MILLISECONDS_PER_SECOND;
 			Long minutes  = seconds  / SECONDS_PER_MINUTE;
@@ -81,6 +81,15 @@ public class Report {
 					+ "      }"
 					+ "      table.rule-table th {"
 					+ "        background-color: rgb(179, 203, 255);"
+					+ "        color: rgb(0, 36, 116);"
+					+ "      }"
+					+ "      table.rule-entries {"
+					+ "        width: 100%;"
+					+ "      }"
+					+ "      table.rule-entries th {"
+					+ "        padding: 3px;"
+					+ "        text-align: left;"
+					+ "        background-color: white;"
 					+ "        color: rgb(0, 36, 116);"
 					+ "      }"
 					+ "      table td {"
@@ -144,22 +153,42 @@ public class Report {
 						+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
 						+ "</tr>";
 				if(rr.getScore() < 100F) {
-					html = html + "<tr id=\"" + rr.getRuleName() + "-plus\">"
-							+ "  <td colspan=\"3\">"
-							+ "  <td colspan=\"2\">"
-							+ "  <table id=\"" + rr.getRuleName() + "-table\" class=\"rule-entries\" style=\"display: none\">"
-							+ "<tbody>";
-				}
-				for(ReportEntry e : rr.getEntries()) {
-					if(!e.isSuccess()) {
-						html = html + "<tr data-rule=\"" + rr.getRuleName() + "\">"
-								+ "  <td>" + e.getEntityDescription() + "</td>"
-								+ "</tr>";
+					html = html
+							+ "<tr id=\"" + rr.getRuleName() + "-plus\">"
+							+ "  <td colspan=\"5\">"
+							+ "    <table id=\"" + rr.getRuleName() + "-table\" class=\"rule-entries\" style=\"display: none;\">"
+							+ "        <thead>"
+							+ "          <tr>";
+
+					for(String column : rr.getColumns()) {
+						html = html + "<th>" + column + "</th>";
 					}
-				}
-				if(rr.getScore() < 100F) {
-					html = html + "</tbody>"
-							+ "  </table>"
+
+					html = html
+							+ "        </tr>"
+							+ "      </thead>";
+
+					for(ReportEntry e : rr.getEntries()) {
+
+						html = html
+								+ "<tbody>";
+
+						if(!e.isSuccess()) {
+							html = html
+									+ "<tr>";
+							for(String data : e.getDataToDisplay()) {
+								html = html
+										+ "<td>" + data + "</td>";
+							}
+							html = html
+									+ "</tr>";
+						}
+						html = html
+								+ "</tbody>";
+					}
+
+					html = html
+							+ "    </table>"
 							+ "  </td>"
 							+ "</tr>";
 				}
@@ -193,7 +222,7 @@ public class Report {
 			}
 		}
 	}
-	
+
 	/**
 	 * add a rule report to the report
 	 * 
@@ -202,7 +231,7 @@ public class Report {
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
 	}
-	
+
 	public List<RuleReport> getRuleReports() {
 		return ruleReports;
 	}

@@ -15,10 +15,6 @@ public class View {
 		this.schemaName = schemaName;
 		this.name = name;
 	}
-	
-	public String getEntityDescription() {
-		return "View \"" + name + "\" in schema \"" + schemaName + "\"";
-	}
 
 	public String getSchemaName() {
 		return schemaName;

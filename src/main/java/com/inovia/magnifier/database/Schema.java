@@ -16,12 +16,4 @@ public class Schema {
 	public String getName() {
 		return name;
 	}
-	
-	public String toString() {
-		return "name: " + name;
-	}
-
-	public String getEntityDescription() {
-		return "schema \"" + name + "\"";
-	}
 }

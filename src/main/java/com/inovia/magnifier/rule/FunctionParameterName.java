@@ -14,16 +14,19 @@ public class FunctionParameterName implements Rule {
 	public static final String RULE_NAME = "FunctionParameterName";
 	public static final String SUGGESTION = "Each parameter should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
+	public static final String[] FORMAT = {"schema", "function", "parameter", "IN/OUT"};
 
 	public FunctionParameterName() { }
-	
+
+	@SuppressWarnings("unchecked")
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(RULE_NAME, SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport((Class<Rule>) this.getClass(), SUGGESTION, DEBT);
 		
 		for(Function f : database.getFunctions()) {
 			for(FunctionParameter p : f.getParameters()) {
 				Boolean isSuccess = assertion(p);
-				ruleReport.addEntry(new ReportEntry(p.getEntityDescription(), isSuccess));
+				String[] dataToDisplay = {f.getSchemaName(), f.getName(), p.getName() == null ? "<noname>" : p.getName(), p.getMode()};
+				ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
 			}
 		}
 		
@@ -34,5 +37,9 @@ public class FunctionParameterName implements Rule {
 		return p.getName() != null
 				&& !p.getName().isEmpty()
 				&& p.getName().endsWith("_" + p.getMode().toLowerCase());
+	}
+	
+	public String[] getFormat() {
+		return FORMAT;
 	}
 }
