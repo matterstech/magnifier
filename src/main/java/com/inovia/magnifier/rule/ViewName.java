@@ -16,9 +16,8 @@ public class ViewName implements Rule {
 
 	public ViewName() { }
 	
-	@SuppressWarnings("unchecked")
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport((Class<Rule>) this.getClass(), SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v);
@@ -37,7 +36,11 @@ public class ViewName implements Rule {
 		return false;
 	}
 	
-	public String[] getFormat() {
+	public String[] getReportableData() {
 		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }

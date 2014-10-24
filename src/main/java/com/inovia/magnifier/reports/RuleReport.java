@@ -11,17 +11,17 @@ public class RuleReport {
 	private final static Float MAX_SCORE = 100.0F;
 	private final static Float MIN_SCORE =   0.0F;
 	
-	private Class<? extends Rule> ruleClass;
+	private Rule rule;
 	private String suggestion;
 	private Float score;
 	private List<ReportEntry> entries;
 	private Float debt;
 	
-	public RuleReport(Class<? extends Rule> ruleClass, String suggestion, Float debt) {
+	public RuleReport(Rule rule, String suggestion, Float debt) {
 		entries = new Vector<ReportEntry>();
 		this.suggestion = suggestion;
 		this.debt = debt;
-		this.ruleClass = ruleClass;
+		this.rule = rule;
 	}
 
 	public Float getScore() {
@@ -54,12 +54,8 @@ public class RuleReport {
 		return suggestion;
 	}
 	
-	public String getRuleName() {
-		try {
-			return (String) ruleClass.getField("RULE_NAME").get(null);
-		} catch (Exception e) {
-			return e.getMessage();
-		}
+	public Rule getRule() {
+		return rule;
 	}
 	
 	public Float getDebt() {
@@ -75,14 +71,6 @@ public class RuleReport {
 	}
 	
 	public String[] getColumns() {
-		try {
-			return (String[]) ruleClass.getMethod("getFormat").invoke(ruleClass.newInstance(), (Object[]) null);
-		}
-		catch(Exception e)  {
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
-		
-		return null; // ?
+		return rule.getReportableData();
 	}
 }

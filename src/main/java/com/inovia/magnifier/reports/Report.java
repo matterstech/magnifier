@@ -141,22 +141,22 @@ public class Report {
 					+ "  <tbody>";
 
 			for(RuleReport rr : ruleReports) {
-				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRuleName() + "-plus\">";
+				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRule().getName() + "-plus\">";
 				if(rr.getScore() < 100F) {
-					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRuleName() + "\"> +/- </button></td>";
+					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\"> +/- </button></td>";
 				} else {
 					html = html + "<td></td>";
 				}
 				html = html + "  <td title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</td>"
 						+ "  <td class=\"debt\" title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
-						+ "  <td>" + rr.getRuleName() + "</td>"
+						+ "  <td>" + rr.getRule().getName() + "</td>"
 						+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
 						+ "</tr>";
 				if(rr.getScore() < 100F) {
 					html = html
-							+ "<tr id=\"" + rr.getRuleName() + "-plus\">"
+							+ "<tr id=\"" + rr.getRule().getName() + "-plus\">"
 							+ "  <td colspan=\"5\">"
-							+ "    <table id=\"" + rr.getRuleName() + "-table\" class=\"rule-entries\" style=\"display: none;\">"
+							+ "    <table id=\"" + rr.getRule().getName() + "-table\" class=\"rule-entries\" style=\"display: none;\">"
 							+ "        <thead>"
 							+ "          <tr>";
 

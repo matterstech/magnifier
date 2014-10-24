@@ -16,9 +16,8 @@ public class TableHasPrimaryKey implements Rule {
 
 	public TableHasPrimaryKey() { }
 
-	@SuppressWarnings("unchecked")
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport((Class<Rule>) this.getClass(), SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Table t : database.getTables()) {
 			Boolean isSuccess = assertion(t);
@@ -33,7 +32,11 @@ public class TableHasPrimaryKey implements Rule {
 		return table.hasPrimaryKey();
 	}
 	
-	public String[] getFormat() {
+	public String[] getReportableData() {
 		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }

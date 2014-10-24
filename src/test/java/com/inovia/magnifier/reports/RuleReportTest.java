@@ -1,6 +1,6 @@
 package com.inovia.magnifier.reports;
 
-import com.inovia.magnifier.rule.ViewName;
+import com.inovia.magnifier.rule.Rule;
 
 import junit.framework.*;
 import static org.mockito.Mockito.*;
@@ -15,9 +15,9 @@ public class RuleReportTest extends TestCase {
     }
 	
 	public void testConstructorAndGetters() {
-		RuleReport ruleReport = new RuleReport(ViewName.class, "should be like that", 5F);
+		Rule mockRule = mock(Rule.class);
+		RuleReport ruleReport = new RuleReport(mockRule, "should be like that", 5F);
 		
-		assertEquals("ViewName", ruleReport.getRuleName());
 		assertEquals("should be like that", ruleReport.getSuggestion());
 		assertEquals(100F, ruleReport.getScore());
 		

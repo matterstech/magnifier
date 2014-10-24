@@ -16,9 +16,8 @@ public class TriggerName implements Rule {
 
 	public TriggerName() { }
 
-	@SuppressWarnings("unchecked")
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport((Class<Rule>) this.getClass(), SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Trigger t : database.getTriggers()) {
 			Boolean isSuccess = assertion(t);
@@ -33,7 +32,11 @@ public class TriggerName implements Rule {
 		return t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
 	}
 	
-	public String[] getFormat() {
+	public String[] getReportableData() {
 		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }

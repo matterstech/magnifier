@@ -20,9 +20,8 @@ public class FunctionHasComment implements Rule {
 
 	public FunctionHasComment() {  }
 	
-	@SuppressWarnings("unchecked")
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport((Class<Rule>) this.getClass(), SUGGESTION, DEBT);
+		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Function f : database.getFunctions()) {
 			Boolean isSuccess = assertion(f, database.getComments());
@@ -45,7 +44,11 @@ public class FunctionHasComment implements Rule {
 		return false;
 	}
 	
-	public String[] getFormat() {
+	public String[] getReportableData() {
 		return FORMAT;
+	}
+
+	public String getName() {
+		return RULE_NAME;
 	}
 }
