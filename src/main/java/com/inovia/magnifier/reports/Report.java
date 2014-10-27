@@ -127,7 +127,7 @@ public class Report {
 					+ "    </style>"
 					+ "  </head>"
 					+ "  <body>"
-					+ "    <h1>Magnifier Report on \"" + databaseName + "</h1>"
+					+ "    <h1>Magnifier Report on \"" + databaseName + "\"</h1>"
 					+ "    <h4>Started " + dateFormat.format(startTime) + "</h4>"
 					+ "    <h4>Execution time " + (days == 0 ? "" : (days+"d")) + (hours == 0 ? "" : (hours+"h")) + ((minutes == 0 ? "" : (minutes+"m"))) + seconds+"s" + "</h4>"
 					+ "    <table class=\"rule-table\">"
