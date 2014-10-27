@@ -18,4 +18,6 @@ public class DatabaseFactory {
 		
 		throw new IllegalArgumentException("no dbms");
 	}
+	
+	private DatabaseFactory() { }
 }
