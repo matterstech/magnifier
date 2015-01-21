@@ -19,6 +19,8 @@ public class TableHasComment implements Rule {
 
 	public TableHasComment() { }
 
+	public Boolean hasSuggestions() { return false; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		

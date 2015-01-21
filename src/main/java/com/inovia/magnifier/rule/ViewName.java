@@ -16,6 +16,8 @@ public class ViewName implements Rule {
 
 	public ViewName() { }
 	
+	public Boolean hasSuggestions() { return false; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 

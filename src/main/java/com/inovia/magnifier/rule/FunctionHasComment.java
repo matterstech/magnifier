@@ -19,6 +19,8 @@ public class FunctionHasComment implements Rule {
 	public static final String[] FORMAT = {"schema", "function"};
 
 	public FunctionHasComment() {  }
+
+	public Boolean hasSuggestions() { return false; }
 	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);

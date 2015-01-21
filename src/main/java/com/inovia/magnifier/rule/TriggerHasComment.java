@@ -19,6 +19,8 @@ public class TriggerHasComment implements Rule {
 
 	public TriggerHasComment() { }
 
+	public Boolean hasSuggestions() { return false; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		

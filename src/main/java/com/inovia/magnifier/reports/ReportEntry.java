@@ -20,7 +20,7 @@ public class ReportEntry {
 	public Boolean isSuccess() {
 		return this.isSuccess;
 	}
-	
+
 	public String getDetails() {
 		return this.details;
 	}

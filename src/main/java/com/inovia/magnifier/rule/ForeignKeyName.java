@@ -18,6 +18,8 @@ public class ForeignKeyName implements Rule {
 	
 	public ForeignKeyName() { }
 
+	public Boolean hasSuggestions() { return true; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
@@ -35,7 +37,7 @@ public class ForeignKeyName implements Rule {
 	private RuleResult assertion(ForeignKey fk) {
 		if(fk.getColumnName().equals(fk.getForeignTableName() + "_" + fk.getForeignColumnName())
 		|| fk.getColumnName().endsWith("_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
-			return new RuleResult(true, null);
+			return new RuleResult(true, "");
 		}
 		
 		String message = fk.getForeignTableName() + "_" + fk.getForeignColumnName();
