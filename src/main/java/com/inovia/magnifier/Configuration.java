@@ -13,15 +13,15 @@ public class Configuration {
 	private static final String ABORT_MESSAGE = "Cannot continue";
 	private static final String DEFAULT_HOST = "127.0.0.1";
 
-	private static final String PARAM_HELP     = "help";
-	private static final String PARAM_HOST     = "host";
-	private static final String PARAM_PORT     = "port";
-	private static final String PARAM_DBMS     = "dbms";
-	private static final String PARAM_DRIVER   = "driver";
-	private static final String PARAM_DATABASE = "database";
-	private static final String PARAM_USER     = "user";
-	private static final String PARAM_PASSWORD = "password";
-	private static final String PARAM_OUTPUT   = "output";
+	private static final String PARAM_HELP           = "help";
+	private static final String PARAM_HOST           = "host";
+	private static final String PARAM_PORT           = "port";
+	private static final String PARAM_DBMS           = "dbms";
+	private static final String PARAM_DRIVER         = "driver";
+	private static final String PARAM_DATABASE       = "database";
+	private static final String PARAM_USER           = "user";
+	private static final String PARAM_PASSWORD       = "password";
+	private static final String PARAM_OUTPUT         = "output";
 
 	private static final String POSTGRESQL_TYPE = "postgresql";
 	private static final Integer POSTGRESQL_DEFAULT_PORT = 5432;
@@ -48,15 +48,15 @@ public class Configuration {
 		this.args = args.clone();
 
 		// We describe the parameters Magnifier can be provided
-		options.addOption(PARAM_HELP,     false, "print this message");
-		options.addOption(PARAM_HOST,     true, "The database host, default is localhost");
-		options.addOption(PARAM_PORT,     true, "The database listening port, default is the specified DBMS default port");
-		options.addOption(PARAM_DBMS,     true, "The database type");
-		options.addOption(PARAM_DRIVER,   true, "The JDBC driver package");
-		options.addOption(PARAM_DATABASE, true, "The database name");
-		options.addOption(PARAM_USER,     true, "The username");
-		options.addOption(PARAM_PASSWORD, true, "The password");
-		options.addOption(PARAM_OUTPUT,   true, "The report output path/name, default is ./report.html");
+		options.addOption(null, PARAM_HELP,     false, "print this message");
+		options.addOption(null, PARAM_HOST,     true, "The database host, default is localhost");
+		options.addOption(null, PARAM_PORT,     true, "The database listening port, default is the specified DBMS default port");
+		options.addOption(null, PARAM_DBMS,     true, "The database type");
+		options.addOption(null, PARAM_DRIVER,   true, "The JDBC driver package");
+		options.addOption(null, PARAM_DATABASE, true, "The database name");
+		options.addOption(null, PARAM_USER,     true, "The username");
+		options.addOption(null, PARAM_PASSWORD, true, "The password");
+		options.addOption(null, PARAM_OUTPUT,   true, "The report output path/name, default is ./report.html");
 	}
 
 	/**
