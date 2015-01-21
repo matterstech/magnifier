@@ -134,7 +134,7 @@ public class Report {
 					+ "      <thead>"
 					+ "        <tr>"
 					+ "        <th></th>"
-					+ "        <th>Score</th>"
+					+ "        <th title=\"The percentage of compliant entities\">Score</th>"
 					+ "        <th class=\"debt-header\">Debt</th>"
 					+ "        <th>Rule</th>"
 					+ "        <th>Suggestions</th>"
