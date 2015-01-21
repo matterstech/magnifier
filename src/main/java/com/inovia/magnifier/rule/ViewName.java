@@ -20,20 +20,20 @@ public class ViewName implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(View v : database.getViews()) {
-			Boolean isSuccess = assertion(v);
+			RuleResult result = assertion(v);
 			String[] dataToDisplay = {v.getSchemaName(), v.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 
 		return ruleReport;
 	}
 
-	private Boolean assertion(View view) {
+	private RuleResult assertion(View view) {
 		if(view.getName().endsWith(SUFFIX)) {
-			return true;
+			return new RuleResult(true, null);
 		}
 
-		return false;
+		return new RuleResult(false, null);
 	}
 	
 	public String[] getRuleReportFormat() {

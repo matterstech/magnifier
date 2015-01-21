@@ -165,8 +165,8 @@ public class Report {
 					for(String column : rr.getColumns()) {
 						html = html + "<th>" + column + "</th>";
 					}
-
 					html = html
+							+ "          <th>suggestions</th>"
 							+ "        </tr>"
 							+ "      </thead>";
 
@@ -183,6 +183,7 @@ public class Report {
 										+ "<td>" + data + "</td>";
 							}
 							html = html
+									+ "  <td>" + (e.getDetails() != null ? e.getDetails() : "") + "</td>"
 									+ "</tr>";
 						}
 						html = html

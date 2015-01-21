@@ -20,16 +20,16 @@ public class TableHasPrimaryKey implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Table t : database.getTables()) {
-			Boolean isSuccess = assertion(t);
+			RuleResult result = assertion(t);
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(Table table) {
-		return table.hasPrimaryKey();
+	private RuleResult assertion(Table table) {
+		return new RuleResult(table.hasPrimaryKey(), null);
 	}
 	
 	public String[] getRuleReportFormat() {

@@ -21,23 +21,23 @@ public class IndexName implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Index i : database.getIndexes()) {
-			Boolean isSuccess = assertion(i);
+			RuleResult result = assertion(i);
 			String[] dataToDisplay = {i.getSchemaName(), i.getTableName(), i.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 
 		return ruleReport;
 	}
 
-	private Boolean assertion(Index i) {
+	private RuleResult assertion(Index i) {
 		if(i.getName().endsWith("_idx")) {
 			// Inovia convention
-			return true;
+			return new RuleResult(true, "");
 		} else if(i.getName().endsWith("_pkey") || i.getName().endsWith("_key")) {
 			// Postgres Convention
-			return true;
+			return new RuleResult(true, "");
 		}
-		return false;
+		return new RuleResult(false, "");
 	}
 	
 	public String[] getRuleReportFormat() {

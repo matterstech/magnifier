@@ -23,22 +23,22 @@ public class TriggerHasComment implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Trigger t : database.getTriggers()) {
-			Boolean isSuccess = assertion(t, database.getComments());
+			RuleResult result = assertion(t, database.getComments());
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(Trigger trigger, List<Comment> comments) {
+	private RuleResult assertion(Trigger trigger, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getEntityType().equals("trigger") && c.getSchemaName().equals(trigger.getSchemaName()) && c.getEntityName().equals(trigger.getName())) {
-				return true;
+				return new RuleResult(true, null);
 			}
 		}
 		
-		return false;
+		return new RuleResult(false, null);
 	}
 
 	public String[] getRuleReportFormat() {

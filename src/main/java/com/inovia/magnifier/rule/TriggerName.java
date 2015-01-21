@@ -20,16 +20,18 @@ public class TriggerName implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Trigger t : database.getTriggers()) {
-			Boolean isSuccess = assertion(t);
+			RuleResult result = assertion(t);
 			String[] dataToDisplay = {t.getSchemaName(), t.getTableName(), t.getName(), t.getTiming(), t.getAction()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 
 		return ruleReport;
 	}
 
-	private Boolean assertion(Trigger t) {
-		return t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
+	private RuleResult assertion(Trigger t) {
+		Boolean isSuccess = t.getName().equalsIgnoreCase("on_" + t.getTiming() + "_" + t.getAction() + "_" + t.getTableName());
+		
+		return new RuleResult(isSuccess, null);
 	}
 	
 	public String[] getRuleReportFormat() {

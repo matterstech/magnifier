@@ -23,22 +23,22 @@ public class TableHasComment implements Rule {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Table t : database.getTables()) {
-			Boolean isSuccess = assertion(t, database.getComments());
+			RuleResult result = assertion(t, database.getComments());
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(Table table, List<Comment> comments) {
+	private RuleResult assertion(Table table, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getEntityType().equals("table") && c.getSchemaName().equals(table.getSchemaName()) && c.getEntityName().equals(table.getName())) {
-				return true;
+				return new RuleResult(true, null);
 			}
 		}
 		
-		return false;
+		return new RuleResult(false, null);
 	}
 	
 	public String[] getRuleReportFormat() {

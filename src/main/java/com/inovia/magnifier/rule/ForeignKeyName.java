@@ -23,23 +23,24 @@ public class ForeignKeyName implements Rule {
 
 		for(Table t : database.getTables()) {
 			for(ForeignKey fk : t.getForeignKeys()) {
-				Boolean isSuccess = assertion(fk);
+				RuleResult result = assertion(fk);
 				String[] dataToDisplay = {t.getSchemaName(), t.getName(), fk.getColumnName(), fk.getForeignSchemaName(), fk.getForeignTableName(), fk.getForeignColumnName()};
-				ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+				ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 			}
 		}
 
 		return ruleReport;
 	}
 
-	private Boolean assertion(ForeignKey fk) {
-		if(fk.getColumnName().equals(fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
-			return true;
-		} else if(fk.getColumnName().endsWith("_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
-			return true;
+	private RuleResult assertion(ForeignKey fk) {
+		if(fk.getColumnName().equals(fk.getForeignTableName() + "_" + fk.getForeignColumnName())
+		|| fk.getColumnName().endsWith("_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName())) {
+			return new RuleResult(true, null);
 		}
+		
+		String message = fk.getForeignTableName() + "_" + fk.getForeignColumnName();
 
-		return false;
+		return new RuleResult(false, message);
 	}
 
 	public String[] getRuleReportFormat() {
