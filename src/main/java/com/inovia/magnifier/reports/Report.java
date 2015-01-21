@@ -121,9 +121,6 @@ public class Report {
 					+ "      .debt {"
 					+ "        text-align: right;"
 					+ "      }"
-					+ "      .debt-header {"
-					+ "        text-align: right;"
-					+ "      }"
 					+ "    </style>"
 					+ "  </head>"
 					+ "  <body>"
@@ -134,8 +131,7 @@ public class Report {
 					+ "      <thead>"
 					+ "        <tr>"
 					+ "        <th></th>"
-					+ "        <th title=\"The percentage of compliant entities\">Score</th>"
-					+ "        <th class=\"debt-header\">Debt</th>"
+					+ "        <th title=\"The percentage of compliant entities\">Debt</th>"
 					+ "        <th>Rule</th>"
 					+ "        <th>Suggestions</th>"
 					+ "      </tr>"
@@ -149,8 +145,10 @@ public class Report {
 				} else {
 					html = html + "<td></td>";
 				}
-				html = html + "  <td title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</td>"
-						+ "  <td class=\"debt\" title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
+				html = html + "  <td>"
+						+ "    <span title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</span>"
+						+ "    (<span class=\"debt\" title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</span>)"
+						+ "  </td>"
 						+ "  <td>" + rr.getRule().getName() + "</td>"
 						+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
 						+ "</tr>";
