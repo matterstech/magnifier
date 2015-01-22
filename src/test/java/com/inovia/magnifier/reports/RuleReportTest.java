@@ -19,7 +19,7 @@ public class RuleReportTest extends TestCase {
 		RuleReport ruleReport = new RuleReport(mockRule, "should be like that", 5F);
 		
 		assertEquals("should be like that", ruleReport.getSuggestion());
-		assertEquals(100F, ruleReport.getScore());
+		assertEquals(null, ruleReport.getScore());
 		
 		ReportEntry mockReportEntry = mock(ReportEntry.class);
 		when(mockReportEntry.isSuccess()).thenReturn(true);
