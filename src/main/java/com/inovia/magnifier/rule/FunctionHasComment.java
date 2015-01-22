@@ -51,4 +51,8 @@ public class FunctionHasComment implements Rule {
 	public String getName() {
 		return RULE_NAME;
 	}
+
+	public String[] getExample() {
+		return null;
+	}
 }

@@ -15,6 +15,12 @@ public class FunctionParameterName implements Rule {
 	public static final String SUGGESTION = "Each parameter should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "function", "parameter", "IN/OUT"};
+	public static final String[] EXAMPLE = {
+		"the following function is not valid:",
+		"CREATE FUNCTION dup(in a, in b, out c) ...",
+		"the parameters should contain IN or OUT like this:",
+		"CREATE FUNCTION dup(in a_IN, in b_IN, out c_OUT) ..."
+	};
 
 	public FunctionParameterName() { }
 
@@ -44,5 +50,9 @@ public class FunctionParameterName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

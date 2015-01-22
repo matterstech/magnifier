@@ -10,9 +10,13 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class TriggerName implements Rule {
 	public static final String RULE_NAME = "TriggerName";
-	public static final String SUGGESTION = "Each trigger name should match on_when_what_tablename (example: on_before_update_user)";
+	public static final String SUGGESTION = "Each trigger name should match on_when_what_tablename";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "trigger", "timing", "action"};
+	public static final String[] EXAMPLE = {
+		"a trigger should be explicitly named",
+		"a trigger executing before an update on the table user should be named: \"on_before_update_user\""
+	};
 
 	public TriggerName() { }
 
@@ -38,5 +42,9 @@ public class TriggerName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

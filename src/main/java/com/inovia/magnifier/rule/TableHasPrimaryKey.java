@@ -39,4 +39,8 @@ public class TableHasPrimaryKey implements Rule {
 	public String getName() {
 		return RULE_NAME;
 	}
+	
+	public String[] getExample() {
+		return null;
+	}
 }

@@ -11,6 +11,10 @@ public class ViewName implements Rule {
 	public static final String SUGGESTION = "Each view should have a name ending with _view";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "view"};
+	public static final String[] EXAMPLE = {
+		"\"only_managers\" is not a compliant name for a view",
+		"\"user_view\" is compliant because it ends with \"_wiew\""
+	};
 	
 	private static final String SUFFIX = "_view";
 
@@ -42,5 +46,9 @@ public class ViewName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

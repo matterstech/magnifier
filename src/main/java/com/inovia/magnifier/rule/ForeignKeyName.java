@@ -12,9 +12,15 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class ForeignKeyName implements Rule {
 	public static final String RULE_NAME = "ForeignKeyName";
-	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
+	public static final String SUGGESTION = "Each foreign key should have a name representing the table and column it references";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "column", "referenced schema", "referenced table", "referenced column"};
+	public static final String[] EXAMPLE = {
+		"a \"user\" has many \"posts\"",
+		"a \"post\" belongs to a \"user\"",
+		"the table user has a primary key called \"uid\"",
+		"the foreign key in the table post should be \"user_uid\""
+	};
 	
 	public ForeignKeyName() { }
 
@@ -48,5 +54,9 @@ public class ForeignKeyName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

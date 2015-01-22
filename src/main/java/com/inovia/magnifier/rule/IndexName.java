@@ -14,7 +14,12 @@ public class IndexName implements Rule {
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "index"};
-
+	public static final String[] EXAMPLE = {
+		"an index name should end with _idx",
+		"\"my_index\" is not valid",
+		"\"user_id_idx\" is valid"
+	};
+	
 	public IndexName() { }
 
 	public RuleReport run(Database database) {
@@ -46,5 +51,9 @@ public class IndexName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }
