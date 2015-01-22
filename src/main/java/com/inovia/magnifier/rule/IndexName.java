@@ -15,6 +15,9 @@ public class IndexName implements Rule {
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "index"};
 
+	String SUFFIX_SEPARATOR = "_";
+	String[] SUFFIXES = { "idx", "primary", "pkey", "pk", "fkey", "fk", "naturalkey", "unique", "key" };
+	
 	public IndexName() { }
 
 	public RuleReport run(Database database) {
@@ -30,13 +33,12 @@ public class IndexName implements Rule {
 	}
 
 	private Boolean assertion(Index i) {
-		if(i.getName().endsWith("_idx")) {
-			// Inovia convention
-			return true;
-		} else if(i.getName().endsWith("_pkey") || i.getName().endsWith("_key")) {
-			// Postgres Convention
-			return true;
+		for(String suffix : SUFFIXES) {
+			if(i.getName().endsWith(SUFFIX_SEPARATOR + suffix)) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
