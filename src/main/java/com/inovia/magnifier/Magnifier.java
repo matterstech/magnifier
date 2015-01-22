@@ -1,58 +1,43 @@
 package com.inovia.magnifier;
 
-import com.inovia.magnifier.databaseObjects.*;
+import org.apache.commons.cli.*;
+
+import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.rule.*;
 
 /**
- * 
- * @author joeyrogues
- *
+ * The Magnifier class contains Magnifier's main method.
  */
 public class Magnifier {
 	public static void main(String[] args) {
-		Configuration conf = null;
-		Database database = null;
-		try { // This is for testing
+		Configuration cfg = new Configuration(args);
 
-			conf = new Configuration(args);
-			database = new Database(conf);
-
-			System.out.println("Functions");
-			for(Function f : database.getFunctions()) {
-				System.out.println(f);
+		try {
+			if(!cfg.parseCommandLine()) {
+				System.exit(1);
 			}
-			System.out.println("Triggers");
-			for(Trigger t : database.getTriggers()) {
-				System.out.println(t);
-			}
-			
-			System.out.println("Foreign Keys");
-			for(ForeignKey fk : database.getForeignKeys()) {
-				System.out.println(fk);
-			}
-			System.out.println("PrimaryKeys");
-			for(PrimaryKey pk : database.getPrimaryKeys()) {
-				System.out.println(pk);
-			}
-			System.out.println("Uniques");
-			for(Unique u : database.getUniques()) {
-				System.out.println(u);
-			}
-			System.out.println();
-
-			System.out.println("Indexes");
-			for(Index i : database.getIndexes()) {
-				System.out.println(i);
-			}
-			System.out.println();
-
-			System.out.println("Alright");
-		} catch(UnsupportedOperationException e) {
-			e.printStackTrace();
+		} catch(ParseException e) {
+			System.out.println(e.getMessage());
 			System.exit(1);
-		} finally {
-			if(database != null) {
-				database.disconnect();
-			}
 		}
+
+		Database database = DatabaseFactory.getDatabase(cfg.getDatabaseName(), cfg.getDatabaseType());
+
+		// Creating a session to the database
+		if(!database.connect(cfg.getDriverPath(), cfg.getHost(), cfg.getPort(), cfg.getUser(), cfg.getPassword())) {
+			System.exit(1);
+		}
+
+		// Load all the entities from the database since Magnifier is READ ONLY and don't push or edit data from the database
+		database.load();
+
+		Ruleset inoviaRuleset = new InoviaRuleset(database);
+		inoviaRuleset.run();
+		inoviaRuleset.generateHtml(cfg.getReportPath());
+
+		// Closing the database session
+		database.disconnect();
 	}
+	
+	private Magnifier() { }
 }
