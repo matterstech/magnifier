@@ -35,7 +35,7 @@ public class FunctionParameterName implements Rule {
 	private Boolean assertion(FunctionParameter p) {
 		return p.getName() != null
 				&& !p.getName().isEmpty()
-				&& p.getName().endsWith("_" + p.getMode().toLowerCase());
+				&& p.getName().toLowerCase().endsWith("_" + p.getMode().toLowerCase());
 	}
 	
 	public String[] getRuleReportFormat() {
