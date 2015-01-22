@@ -1,8 +1,11 @@
 package com.inovia.magnifier;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.cli.*;
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 
 /**
  * it parses the command line parameters, check if all required ones are provided and make them available via getters 
@@ -22,9 +25,14 @@ public class Configuration {
 	private static final String PARAM_USER     = "user";
 	private static final String PARAM_PASSWORD = "password";
 	private static final String PARAM_OUTPUT   = "output";
+	
+	private static final String SECTION_CREDENTIALS = "credentials";
 
 	private static final String POSTGRESQL_TYPE = "postgresql";
 	private static final Integer POSTGRESQL_DEFAULT_PORT = 5432;
+	
+	private static final String LOCAL_PATH = "./";
+	static final String DEFAULT_INI = "magnifier.ini";
 
 	private String connectionURL;
 	private String host = DEFAULT_HOST;
@@ -38,7 +46,7 @@ public class Configuration {
 
 	private String[] args;
 	private Options options;
-
+	
 	/**
 	 * 
 	 * @param args the arguments provided when Magnifier was run
@@ -84,11 +92,21 @@ public class Configuration {
 		if(!params.hasOption(PARAM_DRIVER)) { throw new ParseException("Please provide a JDBC driver to connect to the database"); }
 		driverPath = params.getOptionValue(PARAM_DRIVER);
 
-		if(!params.hasOption(PARAM_USER)) { throw new ParseException("Please provide a username to connect to the database"); }
-		user = params.getOptionValue(PARAM_USER);
+		if(params.hasOption(PARAM_USER)) {
+			user = params.getOptionValue(PARAM_USER);
+		} else {
+			if(user == null) {
+				throw new ParseException("Please provide a username to connect to the database");
+			}
+		}
 
-		if(!params.hasOption(PARAM_PASSWORD)) { throw new ParseException("Please provide a password to connect to the database"); }
-		password = params.getOptionValue(PARAM_PASSWORD);
+		if(params.hasOption(PARAM_PASSWORD)) {
+			password = params.getOptionValue(PARAM_PASSWORD);
+		} else {
+			if(password == null) {
+				throw new ParseException("Please provide a username to connect to the database");
+			}
+		}
 
 		if(params.hasOption(PARAM_OUTPUT)) {
 			reportPath = params.getOptionValue(PARAM_OUTPUT);
@@ -128,6 +146,40 @@ public class Configuration {
 		connectionURL = "jdbc:" + databaseType + "://" + host + ":" + port + "/" + databaseName;
 
 		// We inform the called that the required parameters are provided, so it can proceed
+		return true;
+	}
+	
+	/**
+	 * parses the ini configuration
+	 * 
+	 * @return false if no file could be found/read
+	 */
+	public Boolean parseIni(File iniFile) {
+		if(!iniFile.exists() || iniFile.isDirectory()) {
+			return false;
+		}
+		
+		try {
+			Wini ini = new Wini(iniFile);
+			
+			String user = ini.get(SECTION_CREDENTIALS, PARAM_USER, String.class);
+			String password = ini.get(SECTION_CREDENTIALS, PARAM_PASSWORD, String.class);
+			
+			if(user != null) {
+				this.user = user;
+			}
+			if(password != null) {
+				this.password = password;
+			}
+			
+		} catch (InvalidFileFormatException e) {
+			System.err.println("Configuration file couldn't be read");
+			System.exit(1);
+		} catch (IOException e) {
+			System.err.println("Configuration file couldn't be read");
+			System.exit(1);
+		}
+		
 		return true;
 	}
 
