@@ -10,7 +10,7 @@ Magnifier is a database analyzer able to perform convention validations. Its goa
 
 To build and run Magnifier you need:
 
-* Recommended: Java JDK 1.6+
+* Recommended: Java Oracle JDK 1.6+
 * [Maven](https://github.com/apache/maven).
 * The JDBC Driver for your DBMS.
 
