@@ -1,11 +1,16 @@
 ## Magnifier
 
-Magnifier is a database analyzer able to perform convention validations. Its goal is to allow the developers to check the consistency of their database over a set of configurable rules. 
+Magnifier is a database analyzer able to perform convention validations. Its goal is to allow the developers to check the consistency of their database over a set of configurable rules.
+
+## Supported DBMS
+
+* PostgreSql
 
 ## Build
 
 To build and run Magnifier you need:
 
+* Recommended: Java JDK 1.6+
 * [Maven](https://github.com/apache/maven).
 * The JDBC Driver for your DBMS.
 
@@ -20,8 +25,9 @@ Magnifier is ready to be executed
 
 ## Deployment
 
+* Install Java JRE 1.6+
 * Retrieve the magnifier.jar file
-* Download the JDBC driver for your database
+* Download the JDBC driver for your database ([postgresql](https://jdbc.postgresql.org/download.html))
 * Run Magnifier
 
 ## Usage
