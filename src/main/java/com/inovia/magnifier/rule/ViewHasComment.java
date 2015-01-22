@@ -14,7 +14,7 @@ import com.inovia.magnifier.reports.RuleReport;
 public class ViewHasComment implements Rule {
 	public static final String RULE_NAME = "ViewHasComment";
 	public static final String SUGGESTION = "Each view should have a comment explaining what it does";
-	public static final Float DEBT = 1F;
+	public static final Float DEBT = 0.15F;
 	public static final String[] FORMAT = {"schema", "view"};
 
 	public ViewHasComment() { }
