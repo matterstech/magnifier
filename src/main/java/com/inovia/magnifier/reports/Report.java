@@ -18,12 +18,28 @@ public class Report {
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
+	
+	private Date startTime = null;
+	private Date endTime = null;
 
 	public Report(String databaseName) {
 		ruleReports = new Vector<RuleReport>();
 		this.databaseName = databaseName;
 	}
+	
+	public String[] getDetails() {
+		
+		return null;
+	}
 
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+	
 	/**
 	 * generates an Html report
 	 * 
@@ -31,7 +47,7 @@ public class Report {
 	 * @param startTime      the time when the database analysis started
 	 * @param endTime        the time when the database analysis ended
 	 */
-	public void generateHtml(String reportFilePath, Date startTime, Date endTime) {
+	public void generateHtml(String reportFilePath) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
 				if(r1.getScore() <= r2.getScore()) {
@@ -50,13 +66,22 @@ public class Report {
 		try {
 			writer = new PrintWriter(reportFilePath, ENCODING);
 
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-			Long timeDiff = endTime.getTime() - startTime.getTime();
-			Long seconds  = timeDiff / MILLISECONDS_PER_SECOND;
-			Long minutes  = seconds  / SECONDS_PER_MINUTE;
-			Long hours    = minutes  / MINUTES_PER_HOUR;
-			Long days     = hours    / HOURS_PER_DAY;
+			SimpleDateFormat dateFormat = null;
+			Long timeDiff = null;
+			Long seconds  = null;
+			Long minutes  = null;
+			Long hours    = null;
+			Long days     = null;
+			
+			if(startTime != null) {
+				dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	
+				timeDiff = endTime.getTime() - startTime.getTime();
+				seconds  = timeDiff / MILLISECONDS_PER_SECOND;
+				minutes  = seconds  / SECONDS_PER_MINUTE;
+				hours    = minutes  / MINUTES_PER_HOUR;
+				days     = hours    / HOURS_PER_DAY;
+			}
 
 			String html = "";
 			html = html + "<html>"
@@ -128,8 +153,8 @@ public class Report {
 					+ "  </head>"
 					+ "  <body>"
 					+ "    <h1>Magnifier Report on \"" + databaseName + "\"</h1>"
-					+ "    <h4>Started " + dateFormat.format(startTime) + "</h4>"
-					+ "    <h4>Execution time " + (days == 0 ? "" : (days+"d")) + (hours == 0 ? "" : (hours+"h")) + ((minutes == 0 ? "" : (minutes+"m"))) + seconds+"s" + "</h4>"
+					+ "    <h4>Started " + (startTime == null ? "<none>" : dateFormat.format(startTime)) + "</h4>"
+					+ "    <h4>Execution time " + (startTime == null ? "<none>" : (days == 0 ? "" : (days+"d")) + (hours == 0 ? "" : (hours+"h")) + ((minutes == 0 ? "" : (minutes+"m"))) + seconds+"s") + "</h4>"
 					+ "    <table class=\"rule-table\">"
 					+ "      <thead>"
 					+ "        <tr>"
@@ -236,5 +261,33 @@ public class Report {
 
 	public List<RuleReport> getRuleReports() {
 		return ruleReports;
+	}
+
+	public void printSummary() {
+		String databaseName = this.databaseName;
+		Integer rulesCount = ruleReports.size();
+		
+		Integer entitiesCount = 0;
+		Float compliance = 0.0F;
+		Float debt = 0.0F;
+		
+		for(RuleReport rr : getRuleReports()) {
+			entitiesCount = entitiesCount + rr.getEntries().size();
+			compliance += rr.getScore();
+			debt += rr.getDebt();
+		}
+		compliance = compliance / getRuleReports().size();
+		
+		String[] messages = {
+				"Database: " + databaseName,
+				"Rules count: " + rulesCount,
+				"Entities count: " + entitiesCount,
+				"Compliance: " + compliance.intValue() + "%",
+				"Technical debt: " + debt.intValue() + "h"
+		};
+		
+		for(String message : messages) {
+			System.out.println(message);
+		}
 	}
 }

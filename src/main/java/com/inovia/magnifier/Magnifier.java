@@ -3,6 +3,7 @@ package com.inovia.magnifier;
 import org.apache.commons.cli.*;
 
 import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.reports.Report;
 import com.inovia.magnifier.rule.*;
 
 /**
@@ -32,8 +33,11 @@ public class Magnifier {
 		database.load();
 
 		Ruleset inoviaRuleset = new InoviaRuleset(database);
-		inoviaRuleset.run();
-		inoviaRuleset.generateHtml(cfg.getReportPath());
+		Report report = inoviaRuleset.run();
+		
+		report.generateHtml(cfg.getReportPath());
+		
+		report.printSummary();
 
 		// Closing the database session
 		database.disconnect();
