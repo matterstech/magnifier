@@ -25,7 +25,7 @@ public class RuleReport {
 
 	public Float getScore() {
 		if(entries.size() == 0) {
-			return MAX_SCORE;
+			return null;
 		}
 		
 		Float score = MIN_SCORE;
