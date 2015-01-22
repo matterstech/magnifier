@@ -13,8 +13,6 @@ import com.inovia.magnifier.reports.Report;
 public abstract class Ruleset {
 	private Report report;
 	private Database database;
-	private Date startDate;
-	private Date endDate;
 	
 	public Ruleset(Database database) {
 		this.database = database;
@@ -23,18 +21,14 @@ public abstract class Ruleset {
 	}
 	
 	final public Report run() {
-		startDate = new Date();
+		report.setStartTime(new Date());
 		
 		for(Rule r : this.getRules()) {
 			report.addRuleReport(r.run(database));
 		}
 		
-		endDate = new Date();
+		report.setEndTime(new Date());
 		return report;
-	}
-	
-	final public void generateHtml(String path) {
-		report.generateHtml(path, startDate, endDate);
 	}
 	
 	final public Database getDatabase() {
