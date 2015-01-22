@@ -12,7 +12,6 @@ import org.ini4j.Wini;
  */
 public class Configuration {
 	private static final String DEFAULT_REPORT_PATH = "./";
-	private static final String DEFAULT_REPORT_FILE = "report.html";
 	private static final String DEFAULT_HOST = "localhost";
 
 	private static final String PARAM_HELP     = "help";
@@ -23,7 +22,7 @@ public class Configuration {
 	private static final String PARAM_DATABASE = "database";
 	private static final String PARAM_USER     = "user";
 	private static final String PARAM_PASSWORD = "password";
-	private static final String PARAM_OUTPUT   = "output";
+	private static final String PARAM_REPORT_PATH   = "output";
 	
 	private static final String SECTION_CREDENTIALS = "credentials";
 	private static final String SECTION_DATABASE = "database";
@@ -38,7 +37,7 @@ public class Configuration {
 	private String driverFile;
 	private String user;
 	private String password;
-	private String reportPath = DEFAULT_REPORT_FILE;
+	private String reportPath = DEFAULT_REPORT_PATH;
 	private Boolean isHelp = false;
 
 	private Options options;
@@ -59,7 +58,7 @@ public class Configuration {
 		options.addOption(PARAM_DATABASE, true, "The database name");
 		options.addOption(PARAM_USER,     true, "The username");
 		options.addOption(PARAM_PASSWORD, true, "The password");
-		options.addOption(PARAM_OUTPUT,   true, "The report output path/name, default is ./report.html");
+		options.addOption(PARAM_REPORT_PATH,   true, "The report output path/name, default is ./report.html");
 	}
 
 	/**
@@ -80,7 +79,7 @@ public class Configuration {
 			String tmpDatabaseName = params.getOptionValue(PARAM_DATABASE);
 			String tmpUser         = params.getOptionValue(PARAM_USER);
 			String tmpPassword     = params.getOptionValue(PARAM_PASSWORD);
-			String tmpReportPath   = params.getOptionValue(PARAM_OUTPUT);
+			String tmpReportPath   = params.getOptionValue(PARAM_REPORT_PATH);
 			
 			this.isHelp = params.hasOption(PARAM_HELP);
 			
@@ -114,7 +113,7 @@ public class Configuration {
 		if(null == getDatabaseName()) { System.out.println(PARAM_DATABASE); }
 		if(null == getUser()) { System.out.println(PARAM_USER); }
 		if(null == getPassword()) { System.out.println(PARAM_PASSWORD); }
-		if(null == getReportPath()) { System.out.println(PARAM_OUTPUT); }
+		if(null == getReportPath()) { System.out.println(PARAM_REPORT_PATH); }
 	}
 	
 	/**
@@ -135,7 +134,7 @@ public class Configuration {
 			String tmpDatabaseName = ini.get(SECTION_DATABASE, PARAM_DATABASE, String.class);
 			String tmpDatabaseType = ini.get(SECTION_DATABASE, PARAM_DBMS, String.class);
 			String tmpDriverFile   = ini.get(SECTION_DATABASE, PARAM_DRIVER, String.class);
-			String tmpReportPath   = ini.get(SECTION_MISC, PARAM_OUTPUT, String.class);
+			String tmpReportPath   = ini.get(SECTION_MISC, PARAM_REPORT_PATH, String.class);
 			
 			if(tmpUser != null) { this.user = tmpUser; }
 			if(tmpPassword != null) { this.password = tmpPassword; }
@@ -219,7 +218,7 @@ public class Configuration {
 	 */
 	public String getReportPath() {
 		if(this.reportPath == null) {
-			return DEFAULT_REPORT_PATH + DEFAULT_REPORT_FILE;
+			return DEFAULT_REPORT_PATH;
 		}
 		return this.reportPath;
 	}

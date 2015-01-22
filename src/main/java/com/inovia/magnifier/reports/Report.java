@@ -15,6 +15,8 @@ public class Report {
 	private final static Integer MINUTES_PER_HOUR        = 60;
 	private final static Integer SECONDS_PER_MINUTE      = 60;
 	private final static Integer MILLISECONDS_PER_SECOND = 1000;
+	private final static String  DEFAULT_DIRECTORY = "magnifier_report/";
+	private final static String  DEFAULT_REPORT = "index.html";
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
@@ -48,7 +50,19 @@ public class Report {
 
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(reportFilePath, ENCODING);
+			File f = new File(DEFAULT_DIRECTORY);
+			if(f.exists()) { // It exists and ... 
+				if(!f.isDirectory()) { // ... it's a file
+					System.out.println("A file already exists with name \"" + DEFAULT_DIRECTORY + "\"");
+				}
+			} else { // the directory doesn't exist so we create it
+				f.mkdir();
+				System.err.println("created...");
+			}
+			
+			String reportToWrite = reportFilePath + DEFAULT_DIRECTORY + DEFAULT_REPORT;
+			f = new File(reportToWrite);
+			writer = new PrintWriter(f, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
