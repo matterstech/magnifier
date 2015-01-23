@@ -229,7 +229,8 @@ public class Configuration {
 	 */
 	public String getConnectionURL() {
 		if(this.isValid()) {
-			return "jdbc:" + this.databaseType + "://" + this.host + ":" + this.port + "/" + this.databaseName;
+			String url = "jdbc:" + this.databaseType + "://" + this.host + ":" + this.port + "/" + this.databaseName;
+			return url;
 		}
 		return null;
 	}

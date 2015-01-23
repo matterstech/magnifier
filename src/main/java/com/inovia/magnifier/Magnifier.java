@@ -26,7 +26,7 @@ public class Magnifier {
 
 		//Creating a session to the database
 		Database database = DatabaseFactory.getDatabase(cfg.getDatabaseName(), cfg.getDatabaseType());
-		if(!database.connect(cfg.getDriverFile(), cfg.getHost(), cfg.getPort(), cfg.getUser(), cfg.getPassword())) {
+		if(!database.connect(cfg.getDriverFile(), cfg.getHost(), cfg.getPort(), cfg.getUser(), cfg.getPassword(), cfg.getConnectionURL())) {
 			System.err.println("Couldn't connect to the database");
 			return;
 		}

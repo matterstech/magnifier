@@ -46,7 +46,7 @@ public class PostgreSqlDatabase implements Database {
 	 * @param user         The username used to connect to the database
 	 * @param password     The password used to connect to the database
 	 */
-	public Boolean connect(String driverFile, String host, String port, String user, String password) {
+	public Boolean connect(String driverFile, String host, String port, String user, String password, String connectionUrl) {
 		if(connection == null) {
 			try {
 				URL url = new URL("jar:file:" + driverFile + "!/");
@@ -57,7 +57,9 @@ public class PostgreSqlDatabase implements Database {
 				Driver d = (Driver) Class.forName(classname, true, urlcl).newInstance();
 				DriverManager.registerDriver((Driver) new DriverShim(d));
 
-				connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, user, password);
+				connection = DriverManager.getConnection(connectionUrl, user, password);
+				
+				System.out.println();
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
 				return false;
@@ -451,9 +453,24 @@ public class PostgreSqlDatabase implements Database {
 				+ " join information_schema.table_constraints tc"
 				+ "      on kcu.constraint_schema = tc.constraint_schema"
 				+ "     and kcu.constraint_name = tc.constraint_name"
-				+ " join information_schema.constraint_column_usage ccu"
-				+ "      on tc.constraint_schema = ccu.constraint_schema"
-				+ "     and tc.constraint_name = ccu.constraint_name"
+				+ " join ("
+				+ "   SELECT current_database()::information_schema.sql_identifier AS table_catalog, x.tblschema::information_schema.sql_identifier AS table_schema, x.tblname::information_schema.sql_identifier AS table_name, x.colname::information_schema.sql_identifier AS column_name, current_database()::information_schema.sql_identifier AS constraint_catalog, x.cstrschema::information_schema.sql_identifier AS constraint_schema, x.cstrname::information_schema.sql_identifier AS constraint_name"
+				+ "   FROM ("
+				+ "       SELECT DISTINCT nr.nspname, r.relname, r.relowner, a.attname, nc.nspname, c.conname"
+				+ "       FROM pg_namespace nr, pg_class r, pg_attribute a, pg_depend d, pg_namespace nc, pg_constraint c"
+				+ "       WHERE nr.oid = r.relnamespace AND r.oid = a.attrelid AND d.refclassid = 'pg_class'::regclass::oid AND d.refobjid = r.oid AND d.refobjsubid = a.attnum AND d.classid = 'pg_constraint'::regclass::oid AND d.objid = c.oid AND c.connamespace = nc.oid AND c.contype = 'c'::\"char\" AND r.relkind = 'r'::\"char\" AND NOT a.attisdropped"
+				+ "     UNION ALL"
+				+ "       SELECT nr.nspname, r.relname, r.relowner, a.attname, nc.nspname, c.conname"
+				+ "       FROM pg_namespace nr, pg_class r, pg_attribute a, pg_namespace nc, pg_constraint c"
+				+ "       WHERE nr.oid = r.relnamespace AND r.oid = a.attrelid AND nc.oid = c.connamespace AND"
+				+ "       CASE"
+				+ "         WHEN c.contype = 'f'::\"char\" THEN r.oid = c.confrelid AND (a.attnum = ANY (c.confkey))"
+				+ "         ELSE r.oid = c.conrelid AND (a.attnum = ANY (c.conkey))"
+				+ "       END"
+				+ "       AND NOT a.attisdropped AND (c.contype = ANY (ARRAY['p'::\"char\", 'u'::\"char\", 'f'::\"char\"])) AND r.relkind = 'r'::\"char\") x(tblschema, tblname, tblowner, colname, cstrschema, cstrname)"
+				+ "   ) ccu"
+				+ "   on tc.constraint_schema = ccu.constraint_schema"
+				+ "   and tc.constraint_name = ccu.constraint_name"
 				+ " where constraint_type in ('FOREIGN KEY', 'PRIMARY KEY')"
 				+ " order by"
 				+ "   local_schema asc,"
