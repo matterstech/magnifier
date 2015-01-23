@@ -99,7 +99,7 @@ public class Report {
 			for(RuleReport rr : ruleReports) {
 				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRule().getName() + "-plus\">";
 				if(rr.getScore() < 100F) {
-					html = html + "<td><img title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\" src=\"./images/down.png\"></button></td>";
+					html = html + "<td><img title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\" src=\"./images/minus_plus.ico\"></button></td>";
 				} else {
 					html = html + "<td></td>";
 				}
@@ -182,7 +182,7 @@ public class Report {
 				} else {
 					scripts.mkdir();
 				}
-				Magnifier.exportResource("/images/down.png",       rootDirectory + "images/down.png");
+				Magnifier.exportResource("/images/minus_plus.ico",       rootDirectory + "images/minus_plus.ico");
 				Magnifier.exportResource("/stylesheets/index.css", rootDirectory + "stylesheets/index.css");
 				Magnifier.exportResource("/scripts/index.js",      rootDirectory + "scripts/index.js");
 			} catch (Exception e) {
