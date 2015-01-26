@@ -78,3 +78,34 @@ table td {
 .debt-header {
   text-align: right;
 }
+
+
+
+table.table-description {
+  border: 1px grey solid;
+  border-collapse: collapse;
+}
+
+table.table-description > thead {
+  border-bottom: 1px grey solid;
+}
+
+table.table-description th,
+table.table-description td {
+  padding: 2px;
+}
+
+.foreign-key::after {
+  content: " -> ";
+}
+
+.primary-key {
+  text-decoration: underline;
+}
+
+.function-description {
+  display: inline-block;
+  border: 1px black solid;
+
+  padding: 2px;
+}

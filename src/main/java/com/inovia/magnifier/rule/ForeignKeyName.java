@@ -15,7 +15,7 @@ public class ForeignKeyName implements Rule {
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "column", "referenced schema", "referenced table", "referenced column"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"table"};
 	
 	public ForeignKeyName() { }
 

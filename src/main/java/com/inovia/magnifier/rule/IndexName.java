@@ -14,7 +14,7 @@ public class IndexName implements Rule {
 	public static final String SUGGESTION = "Each index should have a name ending with _idx";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "index"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"table"};
 
 	public IndexName() { }
 

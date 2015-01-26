@@ -16,7 +16,7 @@ public class ViewHasComment implements Rule {
 	public static final String SUGGESTION = "Each view should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "view"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"view"};
 
 	public ViewHasComment() { }
 

@@ -15,7 +15,7 @@ public class FunctionParameterName implements Rule {
 	public static final String SUGGESTION = "Each parameter should have its name ending with \"_IN\", or \"_OUT\", or whatever mode it is";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "function", "parameter", "IN/OUT"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"function"};
 
 	public FunctionParameterName() { }
 
@@ -26,7 +26,7 @@ public class FunctionParameterName implements Rule {
 			for(FunctionParameter p : f.getParameters()) {
 				Boolean isSuccess = assertion(p);
 				String[] dataToDisplay = {f.getSchemaName(), f.getName(), p.getName() == null ? "<noname>" : p.getName(), p.getMode()};
-				ruleReport.addEntry(new ReportEntry(p, dataToDisplay, isSuccess));
+				ruleReport.addEntry(new ReportEntry(f, dataToDisplay, isSuccess));
 			}
 		}
 		

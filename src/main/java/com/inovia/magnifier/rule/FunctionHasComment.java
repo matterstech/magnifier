@@ -17,7 +17,7 @@ public class FunctionHasComment implements Rule {
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "function"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"function"};
 
 	public FunctionHasComment() {  }
 	

@@ -11,7 +11,7 @@ public class ViewName implements Rule {
 	public static final String SUGGESTION = "Each view should have a name ending with _view";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "view"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"view"};
 	
 	private static final String SUFFIX = "_view";
 

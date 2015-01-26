@@ -1,9 +1,8 @@
 package com.inovia.magnifier.reports;
 
 import com.inovia.magnifier.*;
-import com.inovia.magnifier.database.Table;
+import com.inovia.magnifier.database.*;
 import com.inovia.magnifier.rule.Rule;
-import com.inovia.magnifier.rule.TableHasComment;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -130,7 +129,7 @@ public class Report {
 									
 									Object[] problem = new Object[2];
 									problem[0] = rr.getRule();  // the rule that checked the object
-									problem[1] = e.getObject(); // the database object that was checked 
+									problem[1] = e.getObject(); // the database object that was checked
 									
 									if(detailPages.containsKey(data)) { // already in the collection
 										List<Object[]> list = detailPages.get(data);
@@ -232,9 +231,16 @@ public class Report {
 		
 		String objectName = "";
 		Object object = problems.get(0)[1];
+		Class<? extends Object> c = object.getClass();
 		
-		if(object.getClass() == Table.class) {
+		if(c == Table.class) {
 			objectName = ((Table) object).getName();
+		} else if(c == View.class) { 
+			objectName = ((View) object).getName();
+		} else if(c == Trigger.class) {
+			objectName = ((Trigger) object).getName();
+		} else if(c == Function.class) {
+			objectName = ((Function) object).getName();
 		}
 		
 		String html = ""
@@ -244,18 +250,33 @@ public class Report {
 				+ "  </head>"
 				+ "  <body>"
 				+ "    <h1>" + objectName + "</h1>"
+				+ "      <div>";
+		if(c == Table.class) {
+			html = html
+					+ ((Table) object).getDetails();
+		} else if(c == Function.class) {
+			html = html
+					+ ((Function) object).getDetails();
+		}
+		html = html
+				+ "      </div>"
 				+ "    <table>"
 				+ "      <thead>"
-				+ "        <tr><th>Rule</th><th>Suggestion</th></tr>"
+				+ "        <tr><th>Rule</th><th>Suggestion</th><th>Problem</th></tr>"
 				+ "      </thead>"
 				+ "      <tbody>";
 		
 		for(Object[] problem : problems) {
+			Rule rule = (Rule) problem[0];
+			
 			if(object.getClass() == Table.class) {
-				Rule rule = (Rule) problem[0];
-				Table t = (Table) object;
-				html = html
-						+ "<tr><td>" + rule.getName() + "</td><td>" + rule.getSuggestion() + "</td></tr>";
+				html = html + getTableRow(rule);
+			} else if(object.getClass() == View.class) { 
+				html = html + getViewRow(rule);
+			} else if(object.getClass() == Trigger.class) {
+				html = html + getTriggerRow(rule);
+			} else if(object.getClass() == Function.class) {
+				html = html + getFunctionRow(rule);
 			}
 		}
 		
@@ -266,6 +287,44 @@ public class Report {
 				+ "</html>";
 		
 		writer.write(html);
+	}
+	
+	private String getTableRow(Rule rule) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				
+				+ "  <td>" + "no idea" + "</td>"
+				
+				+ "</tr>";
+	}
+	
+	private String getViewRow(Rule rule) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + "no idea" + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getTriggerRow(Rule rule) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + "no idea" + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getFunctionRow(Rule rule) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + "no idea" + "</td>"
+				+ "</tr>";
 	}
 
 	/**

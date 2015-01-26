@@ -13,7 +13,7 @@ public class TriggerName implements Rule {
 	public static final String SUGGESTION = "Each trigger name should match on_when_what_tablename (example: on_before_update_user)";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "trigger", "timing", "action"};
-	public static final String[] LINKS = {};
+	public static final String[] LINKS = {"table"};
 
 	public TriggerName() { }
 
