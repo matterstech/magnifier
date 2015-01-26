@@ -9,10 +9,10 @@ public class ReportEntry {
 	private Boolean isSuccess;
 	private Object object;
 	
-	public ReportEntry(Object o, String[] dataToDisplay, Boolean isSuccess) {
+	public ReportEntry(Object object, String[] dataToDisplay, Boolean isSuccess) {
 		this.dataToDisplay = dataToDisplay.clone();
 		this.isSuccess = isSuccess;
-		this.object = o;
+		this.object = object;
 	}
 	
 	public Boolean isSuccess() {
