@@ -1,6 +1,9 @@
 package com.inovia.magnifier.reports;
 
 import com.inovia.magnifier.*;
+import com.inovia.magnifier.database.Table;
+import com.inovia.magnifier.rule.Rule;
+import com.inovia.magnifier.rule.TableHasComment;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -49,24 +52,11 @@ public class Report {
 				return 1;
 			}
 		});
-
-		String rootDirectory = reportFilePath + DEFAULT_DIRECTORY;
-		String reportToWrite = rootDirectory + DEFAULT_REPORT;
+		
+		Map<String, List<Object[]>> detailPages = new HashMap<String, List<Object[]>>();
+		
 		PrintWriter writer = null;
 		try {
-			File f = new File(DEFAULT_DIRECTORY);
-			if(f.exists()) { // It exists and ... 
-				if(!f.isDirectory()) { // ... it's a file
-					System.out.println("A file already exists with name \"" + DEFAULT_DIRECTORY + "\"");
-				}
-			} else { // the directory doesn't exist so we create it
-				f.mkdir();
-				System.err.println("created...");
-			}
-
-			f = new File(reportToWrite);
-			writer = new PrintWriter(f, ENCODING);
-
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 			Long timeDiff = endTime.getTime() - startTime.getTime();
@@ -132,9 +122,34 @@ public class Report {
 						if(!e.isSuccess()) {
 							html = html
 									+ "<tr>";
+							Integer i = 0;
 							for(String data : e.getDataToDisplay()) {
-								html = html
-										+ "<td>" + data + "</td>";
+								if(Arrays.asList(rr.getRule().getLinks()).contains(rr.getColumns()[i])) {
+									html = html
+											+ "<td><a href=\"./details/" + data + ".html\">" + data + "</a></td>";
+									
+									Object[] problem = new Object[2];
+									problem[0] = rr.getRule();  // the rule that checked the object
+									problem[1] = e.getObject(); // the database object that was checked 
+									
+									if(detailPages.containsKey(data)) { // already in the collection
+										List<Object[]> list = detailPages.get(data);
+										list.add(problem);
+										
+										detailPages.put(data, list);
+									} else {
+										List<Object[]> list = new ArrayList<Object[]>();
+										list.add(problem);
+										
+										detailPages.put(data, list);
+									}
+									
+								} else {
+									html = html
+											+ "<td>" + data + "</td>";
+								}
+								
+								i++;
 							}
 							html = html
 									+ "</tr>";
@@ -155,36 +170,48 @@ public class Report {
 					+ "  <script type=\"text/javascript\" src=\"./scripts/index.js\"></script>"
 					+ "<html>";
 
+			String rootDirectory = reportFilePath + DEFAULT_DIRECTORY; // /users_choice/magnifier_report
+			String indexFile = rootDirectory + DEFAULT_REPORT;         // /users_choice/magnifier_report/index.html
+			
+			File f = new File(rootDirectory);
+			if(!f.exists()) { f.mkdirs(); }
+			if(!f.isDirectory()) { System.err.println("A file already exists with name \"" + rootDirectory + "\""); }
+
+			f = new File(indexFile);
+			writer = new PrintWriter(f, ENCODING);
 			writer.println(html);
 
 			try {
 				File images = new File(rootDirectory + "images");
 				File stylesheets = new File(rootDirectory + "stylesheets");
 				File scripts = new File(rootDirectory + "scripts");
-				if(images.exists()) {
-					if(!images.isDirectory()) {
-						System.err.println("Couldn't load assets (1): " + rootDirectory); 
-					}
-				} else {
-					images.mkdir();
-				}
-				if(stylesheets.exists()) {
-					if(!stylesheets.isDirectory()) {
-						System.err.println("Couldn't load assets (1): " + rootDirectory); 
-					}
-				} else {
-					stylesheets.mkdir();
-				}
-				if(scripts.exists()) {
-					if(!scripts.isDirectory()) {
-						System.err.println("Couldn't load assets (1): " + rootDirectory); 
-					}
-				} else {
-					scripts.mkdir();
-				}
-				Magnifier.exportResource("/images/minus_plus.ico",       rootDirectory + "images/minus_plus.ico");
+				File details = new File(rootDirectory + "details");
+				
+				if(!images.exists()) { images.mkdir(); }
+				if(!images.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!stylesheets.exists()) { stylesheets.mkdir(); }
+				if(!stylesheets.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!scripts.exists()) { scripts.mkdir(); }
+				if(!scripts.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!details.exists()) { details.mkdir(); }
+				if(!details.isDirectory()) { System.err.println("Couldn't load details: " + rootDirectory); }
+				
+				Magnifier.exportResource("/images/minus_plus.ico", rootDirectory + "images/minus_plus.ico");
 				Magnifier.exportResource("/stylesheets/index.css", rootDirectory + "stylesheets/index.css");
 				Magnifier.exportResource("/scripts/index.js",      rootDirectory + "scripts/index.js");
+				
+				for(String key : detailPages.keySet()) {
+					String detailsDirectory = rootDirectory + "details/";
+					File detailFile = new File(detailsDirectory + key + ".html");
+					PrintWriter detailWriter = new PrintWriter(detailFile, ENCODING);
+					
+					generateDetails(detailWriter, detailPages.get(key));
+					
+					detailWriter.close();
+				}
 			} catch (Exception e) {
 				System.err.println("Couldn't load assets in (2): " + rootDirectory); 
 				e.printStackTrace();
@@ -199,11 +226,52 @@ public class Report {
 			}
 		}
 	}
+	
+	private void generateDetails(Writer writer, List<Object[]> problems) throws IOException {
+		if(problems.size() == 0) { return; }
+		
+		String objectName = "";
+		Object object = problems.get(0)[1];
+		
+		if(object.getClass() == Table.class) {
+			objectName = ((Table) object).getName();
+		}
+		
+		String html = ""
+				+ "<html>"
+				+ "  <head>"
+				+ "    <link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheets/index.css\">"
+				+ "  </head>"
+				+ "  <body>"
+				+ "    <h1>" + objectName + "</h1>"
+				+ "    <table>"
+				+ "      <thead>"
+				+ "        <tr><th>Rule</th><th>Suggestion</th></tr>"
+				+ "      </thead>"
+				+ "      <tbody>";
+		
+		for(Object[] problem : problems) {
+			if(object.getClass() == Table.class) {
+				Rule rule = (Rule) problem[0];
+				Table t = (Table) object;
+				html = html
+						+ "<tr><td>" + rule.getName() + "</td><td>" + rule.getSuggestion() + "</td></tr>";
+			}
+		}
+		
+		html = html
+				+ "      </tbody>"
+				+ "    </table>"
+				+ "  </body>"
+				+ "</html>";
+		
+		writer.write(html);
+	}
 
 	/**
 	 * add a rule report to the report
 	 * 
-	 * @param ruleReport 
+	 * @param ruleReport
 	 */
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);

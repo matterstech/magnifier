@@ -15,4 +15,6 @@ public interface Rule {
 	public RuleReport run(Database database);
 	public String[] getRuleReportFormat();
 	public String getName();
+	public String[] getLinks();
+	public String getSuggestion();
 }

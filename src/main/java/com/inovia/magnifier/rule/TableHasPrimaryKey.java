@@ -13,6 +13,7 @@ public class TableHasPrimaryKey implements Rule {
 	public static final String SUGGESTION = "Each table should have a primary key";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table"};
+	public static final String[] LINKS = {"table"};
 
 	public TableHasPrimaryKey() { }
 
@@ -22,7 +23,7 @@ public class TableHasPrimaryKey implements Rule {
 		for(Table t : database.getTables()) {
 			Boolean isSuccess = assertion(t);
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(t, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -38,5 +39,13 @@ public class TableHasPrimaryKey implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }

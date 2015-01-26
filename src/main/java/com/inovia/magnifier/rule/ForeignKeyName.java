@@ -15,6 +15,7 @@ public class ForeignKeyName implements Rule {
 	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "column", "referenced schema", "referenced table", "referenced column"};
+	public static final String[] LINKS = {};
 	
 	public ForeignKeyName() { }
 
@@ -25,7 +26,7 @@ public class ForeignKeyName implements Rule {
 			for(ForeignKey fk : t.getForeignKeys()) {
 				Boolean isSuccess = assertion(fk);
 				String[] dataToDisplay = {t.getSchemaName(), t.getName(), fk.getColumnName(), fk.getForeignSchemaName(), fk.getForeignTableName(), fk.getForeignColumnName()};
-				ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+				ruleReport.addEntry(new ReportEntry(t, dataToDisplay, isSuccess));
 			}
 		}
 
@@ -48,5 +49,13 @@ public class ForeignKeyName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }

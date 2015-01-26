@@ -11,6 +11,7 @@ public class ViewName implements Rule {
 	public static final String SUGGESTION = "Each view should have a name ending with _view";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "view"};
+	public static final String[] LINKS = {};
 	
 	private static final String SUFFIX = "_view";
 
@@ -22,7 +23,7 @@ public class ViewName implements Rule {
 		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v);
 			String[] dataToDisplay = {v.getSchemaName(), v.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(v, dataToDisplay, isSuccess));
 		}
 
 		return ruleReport;
@@ -42,5 +43,13 @@ public class ViewName implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }

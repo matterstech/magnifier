@@ -17,6 +17,7 @@ public class FunctionHasComment implements Rule {
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "function"};
+	public static final String[] LINKS = {};
 
 	public FunctionHasComment() {  }
 	
@@ -26,7 +27,7 @@ public class FunctionHasComment implements Rule {
 		for(Function f : database.getFunctions()) {
 			Boolean isSuccess = assertion(f, database.getComments());
 			String[] dataToDisplay = {f.getSchemaName(), f.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(f, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -50,5 +51,13 @@ public class FunctionHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }

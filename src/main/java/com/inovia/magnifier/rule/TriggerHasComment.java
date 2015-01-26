@@ -16,6 +16,7 @@ public class TriggerHasComment implements Rule {
 	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "trigger"};
+	public static final String[] LINKS = {};
 
 	public TriggerHasComment() { }
 
@@ -25,7 +26,7 @@ public class TriggerHasComment implements Rule {
 		for(Trigger t : database.getTriggers()) {
 			Boolean isSuccess = assertion(t, database.getComments());
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(t, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -47,5 +48,13 @@ public class TriggerHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }

@@ -16,6 +16,7 @@ public class ViewHasComment implements Rule {
 	public static final String SUGGESTION = "Each view should have a comment explaining what it does";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "view"};
+	public static final String[] LINKS = {};
 
 	public ViewHasComment() { }
 
@@ -25,7 +26,7 @@ public class ViewHasComment implements Rule {
 		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v, database.getComments());
 			String[] dataToDisplay = {v.getSchemaName(), v.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(v, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -47,5 +48,13 @@ public class ViewHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
 	}
 }
