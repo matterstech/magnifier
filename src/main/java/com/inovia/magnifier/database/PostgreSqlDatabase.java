@@ -455,8 +455,7 @@ public class PostgreSqlDatabase implements Database {
 	 * Retrieve/load the tables from the database
 	 */
 	private void loadTables() {
-		String query = "select distinct"
-				+ "   tc.table_schema    as local_schema,"
+		String query = "select distinct tc.table_schema    as local_schema,"
 				+ "   tc.table_name      as local_table,"
 				+ "   kcu.column_name    as local_column,"
 				+ "   tc.constraint_type as key_type,"

@@ -13,19 +13,22 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class TriggerHasComment implements Rule {
 	public static final String RULE_NAME = "TriggerHasComment";
-	public static final String SUGGESTION = "Each trigger should have a comment explaining what it contains";
 	public static final Float DEBT = 0.15F;
+	public static final String SUGGESTION = "Each trigger should have a comment";
 	public static final String[] FORMAT = {"schema", "trigger"};
+	public static final String[] LINKS = {};
+	
+	private RuleReport ruleReport = null;
 
 	public TriggerHasComment() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Trigger t : database.getTriggers()) {
 			Boolean isSuccess = assertion(t, database.getComments());
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(t, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -47,5 +50,22 @@ public class TriggerHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		Trigger trigger = (Trigger) object;
+		return "COMMENT ON TRIGGER " + trigger.getName() + " IS 'your comment';";
 	}
 }

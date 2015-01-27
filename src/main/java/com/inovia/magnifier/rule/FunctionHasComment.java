@@ -14,19 +14,22 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class FunctionHasComment implements Rule {
 	public static final String RULE_NAME = "FunctionHasComment";
-	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
 	public static final Float DEBT = 0.15F;
+	public static final String SUGGESTION = "Each function should have a comment";
 	public static final String[] FORMAT = {"schema", "function"};
+	public static final String[] LINKS = {"function"};
+	
+	private RuleReport ruleReport = null;
 
 	public FunctionHasComment() {  }
 	
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Function f : database.getFunctions()) {
 			Boolean isSuccess = assertion(f, database.getComments());
 			String[] dataToDisplay = {f.getSchemaName(), f.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(f, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -50,5 +53,22 @@ public class FunctionHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		Function function = (Function) object;
+		return "COMMENT ON FUNCTION " + function.getName() + " IS 'your comment';";
 	}
 }

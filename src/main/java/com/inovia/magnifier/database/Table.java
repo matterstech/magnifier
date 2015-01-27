@@ -49,4 +49,27 @@ public class Table {
 	public List<ForeignKey> getForeignKeys() {
 		return foreignKeys;
 	}
+	
+	public String getDetails() {
+		String html = ""
+				+ "<table class=\"table-description\">"
+				+ "  <thead>"
+				+ "    <tr><th>" + getName() + "</th></tr>"
+				+ "  </thead>"
+				+ "  <tbody>";
+		for(String pk : getPrimaryKey()) {
+			html = html
+					+ "    <tr><td class=\"primary-key\">" + pk + "</td></tr>";
+		}
+		for(ForeignKey fk : getForeignKeys()) {
+			html = html
+					+ "    <tr><td class=\"foreign-key\">" + fk.getColumnName() + "</td></tr>";
+		}
+		
+		html = html
+				+ "  </tbody>"
+				+ "</table>";
+		
+		return html;
+	}
 }

@@ -13,19 +13,22 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class ViewHasComment implements Rule {
 	public static final String RULE_NAME = "ViewHasComment";
-	public static final String SUGGESTION = "Each view should have a comment explaining what it does";
 	public static final Float DEBT = 0.15F;
+	public static final String SUGGESTION = "Each view should have a comment";
 	public static final String[] FORMAT = {"schema", "view"};
+	public static final String[] LINKS = {"view"};
+	
+	private RuleReport ruleReport = null;
 
 	public ViewHasComment() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v, database.getComments());
 			String[] dataToDisplay = {v.getSchemaName(), v.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(v, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -47,5 +50,22 @@ public class ViewHasComment implements Rule {
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		View view = (View) object;
+		return "COMMENT ON VIEW " + view.getName() + " IS 'your comment';";
 	}
 }

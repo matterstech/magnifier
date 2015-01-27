@@ -35,4 +35,31 @@ public class Function {
 	public void addParameter(FunctionParameter parameter) {
 		parameters.add(parameter);
 	}
+	
+	public String getDetails() {
+		String html = ""
+				+ "<div class=\"function-description\">";
+		if(getParameters().size() == 0) {
+			html = html
+					+ getName() + "( )";
+		} else {
+			html = html
+					+ getName() + "(";
+			
+			for(Integer i = 0 ; i < getParameters().size()-1 ; i++) {
+				FunctionParameter p = getParameters().get(i);
+				
+				html = html
+						+ p.getName() + " " + p.getMode() + ", ";
+			}
+			FunctionParameter lastParameter = getParameters().get(getParameters().size()-1);
+			html = html
+					+ lastParameter.getName() + " " + lastParameter.getMode()
+					+ ")";
+		}
+		html = html
+				+ "</div>";
+		
+		return html;
+	}
 }

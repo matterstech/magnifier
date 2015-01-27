@@ -13,19 +13,22 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class TableHasComment implements Rule {
 	public static final String RULE_NAME = "TableHasComment";
-	public static final String SUGGESTION = "Each table should have a comment explaining what it contains";
 	public static final Float DEBT = 0.15F;
+	public static final String SUGGESTION = "Each table should have a comment";
 	public static final String[] FORMAT = {"schema", "table"};
+	public static final String[] LINKS = {"table"};
+	
+	private RuleReport ruleReport = null;
 
 	public TableHasComment() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Table t : database.getTables()) {
 			Boolean isSuccess = assertion(t, database.getComments());
 			String[] dataToDisplay = {t.getSchemaName(), t.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry((Object) t, dataToDisplay, isSuccess));
 		}
 		
 		return ruleReport;
@@ -44,8 +47,25 @@ public class TableHasComment implements Rule {
 	public String[] getRuleReportFormat() {
 		return FORMAT;
 	}
+	
+	public String[] getLinks() {
+		return LINKS;
+	}
 
 	public String getName() {
 		return RULE_NAME;
+	}
+	
+	public String getSuggestion() {
+		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		Table table = (Table) object;
+		return "COMMENT ON TABLE " + table.getName() + " IS 'your comment';";
 	}
 }
