@@ -13,6 +13,7 @@ public interface Rule {
 	 * @return a report about the execution of the rule on the database
 	 */
 	public RuleReport run(Database database);
+	public Boolean hasSuggestions();
 	public String[] getRuleReportFormat();
 	public String getName();
 }

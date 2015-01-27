@@ -19,29 +19,31 @@ public class FunctionHasComment implements Rule {
 	public static final String[] FORMAT = {"schema", "function"};
 
 	public FunctionHasComment() {  }
+
+	public Boolean hasSuggestions() { return false; }
 	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Function f : database.getFunctions()) {
-			Boolean isSuccess = assertion(f, database.getComments());
+			RuleResult result = assertion(f, database.getComments());
 			String[] dataToDisplay = {f.getSchemaName(), f.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(Function function, List<Comment> comments) {
+	private RuleResult assertion(Function function, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getEntityType().equals(Comment.FUNCTION_TYPE)
 					&& c.getSchemaName().equals(function.getSchemaName())
 					&& c.getEntityName().equals(function.getName())) {
-				return true;
+				return new RuleResult(true, null);
 			}
 		}
 		
-		return false;
+		return new RuleResult(false, null);
 	}
 	
 	public String[] getRuleReportFormat() {

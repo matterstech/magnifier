@@ -18,24 +18,27 @@ public class FunctionParameterName implements Rule {
 
 	public FunctionParameterName() { }
 
+	public Boolean hasSuggestions() { return false; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(Function f : database.getFunctions()) {
 			for(FunctionParameter p : f.getParameters()) {
-				Boolean isSuccess = assertion(p);
+				RuleResult result = assertion(p);
 				String[] dataToDisplay = {f.getSchemaName(), f.getName(), p.getName() == null ? "<noname>" : p.getName(), p.getMode()};
-				ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+				ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 			}
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(FunctionParameter p) {
-		return p.getName() != null
-				&& !p.getName().isEmpty()
-				&& p.getName().endsWith("_" + p.getMode().toLowerCase());
+	private RuleResult assertion(FunctionParameter p) {
+		Boolean isSuccess = p.getName() != null
+						&& !p.getName().isEmpty()
+						&& p.getName().endsWith("_" + p.getMode().toLowerCase());
+		return new RuleResult(isSuccess, null);
 	}
 	
 	public String[] getRuleReportFormat() {

@@ -19,26 +19,28 @@ public class ViewHasComment implements Rule {
 
 	public ViewHasComment() { }
 
+	public Boolean hasSuggestions() { return false; }
+	
 	public RuleReport run(Database database) {
 		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 		
 		for(View v : database.getViews()) {
-			Boolean isSuccess = assertion(v, database.getComments());
+			RuleResult result = assertion(v, database.getComments());
 			String[] dataToDisplay = {v.getSchemaName(), v.getName()};
-			ruleReport.addEntry(new ReportEntry(dataToDisplay, isSuccess));
+			ruleReport.addEntry(new ReportEntry(dataToDisplay, result));
 		}
 		
 		return ruleReport;
 	}
 	
-	private Boolean assertion(View view, List<Comment> comments) {
+	private RuleResult assertion(View view, List<Comment> comments) {
 		for(Comment c : comments) {
 			if(c.getSchemaName().equals(view.getSchemaName()) && c.getEntityName().equals(view.getName())) {
-				return true;
+				return new RuleResult(true, null);
 			}
 		}
 		
-		return false;
+		return new RuleResult(false, null);
 	}
 	
 	public String[] getRuleReportFormat() {

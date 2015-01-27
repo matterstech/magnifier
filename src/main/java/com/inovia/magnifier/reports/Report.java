@@ -165,7 +165,10 @@ public class Report {
 					for(String column : rr.getColumns()) {
 						html = html + "<th>" + column + "</th>";
 					}
-
+					if(rr.getRule().hasSuggestions()) {
+						html = html
+								+ "          <th>suggestions</th>";
+					}
 					html = html
 							+ "        </tr>"
 							+ "      </thead>";
@@ -182,6 +185,12 @@ public class Report {
 								html = html
 										+ "<td>" + data + "</td>";
 							}
+							
+							if(rr.getRule().hasSuggestions()) {
+								html = html
+										+ "  <td>" + (e.getDetails() != null ? e.getDetails() : "") + "</td>";
+							}
+							
 							html = html
 									+ "</tr>";
 						}
