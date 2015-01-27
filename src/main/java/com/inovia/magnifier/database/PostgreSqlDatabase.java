@@ -208,6 +208,7 @@ public class PostgreSqlDatabase implements Database {
 				+ " AND r.specific_schema = r.specific_schema"
 				+ " WHERE routine_schema"
 				+ " NOT IN ('pg_catalog', 'information_schema')"
+				+ " AND routine_body = 'SQL'"
 				+ " ORDER BY r.routine_schema ASC, r.routine_name ASC, p.parameter_name ASC";
 
 		Statement statement = null;
