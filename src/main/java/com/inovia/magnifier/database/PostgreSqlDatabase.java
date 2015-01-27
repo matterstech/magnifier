@@ -46,7 +46,7 @@ public class PostgreSqlDatabase implements Database {
 	 * @param user         The username used to connect to the database
 	 * @param password     The password used to connect to the database
 	 */
-	public Boolean connect(String driverFile, String host, String port, String user, String password) {
+	public Boolean connect(String driverFile, String host, String port, String user, String password, String connectionUrl) {
 		if(connection == null) {
 			try {
 				URL url = new URL("jar:file:" + driverFile + "!/");
@@ -57,7 +57,9 @@ public class PostgreSqlDatabase implements Database {
 				Driver d = (Driver) Class.forName(classname, true, urlcl).newInstance();
 				DriverManager.registerDriver((Driver) new DriverShim(d));
 
-				connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, user, password);
+				connection = DriverManager.getConnection(connectionUrl, user, password);
+				
+				System.out.println();
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
 				return false;
@@ -143,8 +145,21 @@ public class PostgreSqlDatabase implements Database {
 				+ " event_object_table  AS table_name,"
 				+ " event_manipulation as action,"
 				+ " action_timing as timing"
-				+ " FROM information_schema.triggers";
-
+				+ " FROM ("
+				+ "   SELECT current_database()::information_schema.sql_identifier AS trigger_catalog, n.nspname::information_schema.sql_identifier AS trigger_schema, t.tgname::information_schema.sql_identifier AS trigger_name, em.text::information_schema.character_data AS event_manipulation, current_database()::information_schema.sql_identifier AS event_object_catalog, n.nspname::information_schema.sql_identifier AS event_object_schema, c.relname::information_schema.sql_identifier AS event_object_table, NULL::integer::information_schema.cardinal_number AS action_order," 
+				+ "     (SELECT rm.m[1] AS m FROM regexp_matches(pg_get_triggerdef(t.oid), '.{35,} WHEN \\((.+)\\) EXECUTE PROCEDURE'::text) rm(m) LIMIT 1)::information_schema.character_data AS action_condition, \"substring\"(pg_get_triggerdef(t.oid), \"position\"(\"substring\"(pg_get_triggerdef(t.oid), 48), 'EXECUTE PROCEDURE'::text) + 47)::information_schema.character_data AS action_statement,"
+				+ "   CASE t.tgtype::integer & 1"
+				+ "     WHEN 1 THEN 'ROW'::text"
+				+ "       ELSE 'STATEMENT'::text"
+				+ "     END::information_schema.character_data AS action_orientation," 
+				+ "     CASE t.tgtype::integer & 66"
+				+ "       WHEN 2 THEN 'BEFORE'::text"
+				+ "       WHEN 64 THEN 'INSTEAD OF'::text"
+				+ "       ELSE 'AFTER'::text"
+				+ "     END::information_schema.character_data AS action_timing, NULL::character varying::information_schema.sql_identifier AS action_reference_old_table, NULL::character varying::information_schema.sql_identifier AS action_reference_new_table, NULL::character varying::information_schema.sql_identifier AS action_reference_old_row, NULL::character varying::information_schema.sql_identifier AS action_reference_new_row, NULL::timestamp with time zone::information_schema.time_stamp AS created"
+				+ "   FROM pg_namespace n, pg_class c, pg_trigger t, ( VALUES (4,'INSERT'::text), (8,'DELETE'::text), (16,'UPDATE'::text)) em(num, text)"
+				+ "   WHERE n.oid = c.relnamespace AND c.oid = t.tgrelid AND (t.tgtype::integer & em.num) <> 0 AND NOT t.tgisinternal AND NOT pg_is_other_temp_schema(n.oid)"
+				+ " ) as useless;";
 		Statement statement = null;
 		ResultSet results = null;
 		try {
@@ -448,12 +463,50 @@ public class PostgreSqlDatabase implements Database {
 				+ "   ccu.table_name     as foreign_table,"
 				+ "   ccu.column_name    as foreign_column"
 				+ " from information_schema.key_column_usage kcu"
-				+ " join information_schema.table_constraints tc"
+				+ " join ("
+				+ "   SELECT current_database()::information_schema.sql_identifier AS constraint_catalog, nc.nspname::information_schema.sql_identifier AS constraint_schema, c.conname::information_schema.sql_identifier AS constraint_name, current_database()::information_schema.sql_identifier AS table_catalog, nr.nspname::information_schema.sql_identifier AS table_schema, r.relname::information_schema.sql_identifier AS table_name,"
+				+ "                CASE c.contype"
+				+ "                    WHEN 'c'::\"char\" THEN 'CHECK'::text"
+				+ "                    WHEN 'f'::\"char\" THEN 'FOREIGN KEY'::text"
+				+ "                    WHEN 'p'::\"char\" THEN 'PRIMARY KEY'::text"
+				+ "                    WHEN 'u'::\"char\" THEN 'UNIQUE'::text"
+				+ "                    ELSE NULL::text"
+				+ "                END::information_schema.character_data AS constraint_type," 
+				+ "                CASE"
+				+ "                    WHEN c.condeferrable THEN 'YES'::text"
+				+ "                    ELSE 'NO'::text"
+				+ "                END::information_schema.yes_or_no AS is_deferrable," 
+				+ "                CASE"
+				+ "                    WHEN c.condeferred THEN 'YES'::text"
+				+ "                    ELSE 'NO'::text"
+				+ "                END::information_schema.yes_or_no AS initially_deferred"
+				+ "           FROM pg_namespace nc, pg_namespace nr, pg_constraint c, pg_class r"
+				+ "          WHERE nc.oid = c.connamespace AND nr.oid = r.relnamespace AND c.conrelid = r.oid AND (c.contype <> ALL (ARRAY['t'::\"char\", 'x'::\"char\"])) AND r.relkind = 'r'::\"char\" AND NOT pg_is_other_temp_schema(nr.oid)"
+				+ " UNION ALL" 
+				+ "         SELECT current_database()::information_schema.sql_identifier AS constraint_catalog, nr.nspname::information_schema.sql_identifier AS constraint_schema, (((((nr.oid::text || '_'::text) || r.oid::text) || '_'::text) || a.attnum::text) || '_not_null'::text)::information_schema.sql_identifier AS constraint_name, current_database()::information_schema.sql_identifier AS table_catalog, nr.nspname::information_schema.sql_identifier AS table_schema, r.relname::information_schema.sql_identifier AS table_name, 'CHECK'::character varying::information_schema.character_data AS constraint_type, 'NO'::character varying::information_schema.yes_or_no AS is_deferrable, 'NO'::character varying::information_schema.yes_or_no AS initially_deferred"
+				+ "           FROM pg_namespace nr, pg_class r, pg_attribute a"
+				+ "          WHERE nr.oid = r.relnamespace AND r.oid = a.attrelid AND a.attnotnull AND a.attnum > 0 AND NOT a.attisdropped AND r.relkind = 'r'::\"char\" AND NOT pg_is_other_temp_schema(nr.oid)"
+				+ " ) tc"
 				+ "      on kcu.constraint_schema = tc.constraint_schema"
 				+ "     and kcu.constraint_name = tc.constraint_name"
-				+ " join information_schema.constraint_column_usage ccu"
-				+ "      on tc.constraint_schema = ccu.constraint_schema"
-				+ "     and tc.constraint_name = ccu.constraint_name"
+				+ " join ("
+				+ "   SELECT current_database()::information_schema.sql_identifier AS table_catalog, x.tblschema::information_schema.sql_identifier AS table_schema, x.tblname::information_schema.sql_identifier AS table_name, x.colname::information_schema.sql_identifier AS column_name, current_database()::information_schema.sql_identifier AS constraint_catalog, x.cstrschema::information_schema.sql_identifier AS constraint_schema, x.cstrname::information_schema.sql_identifier AS constraint_name"
+				+ "   FROM ("
+				+ "       SELECT DISTINCT nr.nspname, r.relname, r.relowner, a.attname, nc.nspname, c.conname"
+				+ "       FROM pg_namespace nr, pg_class r, pg_attribute a, pg_depend d, pg_namespace nc, pg_constraint c"
+				+ "       WHERE nr.oid = r.relnamespace AND r.oid = a.attrelid AND d.refclassid = 'pg_class'::regclass::oid AND d.refobjid = r.oid AND d.refobjsubid = a.attnum AND d.classid = 'pg_constraint'::regclass::oid AND d.objid = c.oid AND c.connamespace = nc.oid AND c.contype = 'c'::\"char\" AND r.relkind = 'r'::\"char\" AND NOT a.attisdropped"
+				+ "     UNION ALL"
+				+ "       SELECT nr.nspname, r.relname, r.relowner, a.attname, nc.nspname, c.conname"
+				+ "       FROM pg_namespace nr, pg_class r, pg_attribute a, pg_namespace nc, pg_constraint c"
+				+ "       WHERE nr.oid = r.relnamespace AND r.oid = a.attrelid AND nc.oid = c.connamespace AND"
+				+ "       CASE"
+				+ "         WHEN c.contype = 'f'::\"char\" THEN r.oid = c.confrelid AND (a.attnum = ANY (c.confkey))"
+				+ "         ELSE r.oid = c.conrelid AND (a.attnum = ANY (c.conkey))"
+				+ "       END"
+				+ "       AND NOT a.attisdropped AND (c.contype = ANY (ARRAY['p'::\"char\", 'u'::\"char\", 'f'::\"char\"])) AND r.relkind = 'r'::\"char\") x(tblschema, tblname, tblowner, colname, cstrschema, cstrname)"
+				+ "   ) ccu"
+				+ "   on tc.constraint_schema = ccu.constraint_schema"
+				+ "   and tc.constraint_name = ccu.constraint_name"
 				+ " where constraint_type in ('FOREIGN KEY', 'PRIMARY KEY')"
 				+ " order by"
 				+ "   local_schema asc,"

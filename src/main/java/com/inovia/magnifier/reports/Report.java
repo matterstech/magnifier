@@ -1,5 +1,7 @@
 package com.inovia.magnifier.reports;
 
+import com.inovia.magnifier.*;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,6 +17,8 @@ public class Report {
 	private final static Integer MINUTES_PER_HOUR        = 60;
 	private final static Integer SECONDS_PER_MINUTE      = 60;
 	private final static Integer MILLISECONDS_PER_SECOND = 1000;
+	private final static String  DEFAULT_DIRECTORY = "magnifier_report/";
+	private final static String  DEFAULT_REPORT = "index.html";
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
@@ -46,9 +50,22 @@ public class Report {
 			}
 		});
 
+		String rootDirectory = reportFilePath + DEFAULT_DIRECTORY;
+		String reportToWrite = rootDirectory + DEFAULT_REPORT;
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(reportFilePath, ENCODING);
+			File f = new File(DEFAULT_DIRECTORY);
+			if(f.exists()) { // It exists and ... 
+				if(!f.isDirectory()) { // ... it's a file
+					System.out.println("A file already exists with name \"" + DEFAULT_DIRECTORY + "\"");
+				}
+			} else { // the directory doesn't exist so we create it
+				f.mkdir();
+				System.err.println("created...");
+			}
+
+			f = new File(reportToWrite);
+			writer = new PrintWriter(f, ENCODING);
 
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -61,70 +78,7 @@ public class Report {
 			String html = "";
 			html = html + "<html>"
 					+ "  <head>"
-					+ "    <style>"
-					+ "      body {"
-					+ "        font-family: sans-serif;"
-					+ "      }"
-					+ "      h1, h4 {"
-					+ "        text-align: center;"
-					+ "      }"
-					+ "      table.rule-table {"
-					+ "        width: 98%;"
-					+ "        text-align: left;"
-					+ "        border: 1px #CCC solid;"
-					+ "        padding: 1px;"
-					+ "        margin: auto;"
-					+ "        border-spacing: 0;"
-					+ "      }"
-					+ "      table.rule-table tr.rule-header td,"
-					+ "      table.rule-table th {"
-					+ "        border-bottom: 1px solid #CCC;"
-					+ "        padding: 10px 10px 0px 0;"
-					+ "      }"
-					+ "      table.rule-table th {"
-					+ "        background-color: rgb(179, 203, 255);"
-					+ "        color: rgb(0, 36, 116);"
-					+ "      }"
-					+ "      table.rule-entries {"
-					+ "        width: 100%;"
-					+ "      }"
-					+ "      table.rule-entries th {"
-					+ "        padding: 3px;"
-					+ "        text-align: left;"
-					+ "        background-color: white;"
-					+ "        color: rgb(0, 36, 116);"
-					+ "      }"
-					+ "      table td {"
-					+ "        color: rgb(35, 50, 83)"
-					+ "      }"
-					+ "      .good-metric {"
-					+ "        color: green;"
-					+ "      }"
-					+ "      .bad-metric {"
-					+ "        color: red;"
-					+ "      }"
-					+ "      .normal-metric {"
-					+ "        color: orange;"
-					+ "      }"
-					+ "      .metric {"
-					+ "        font-weight: bold;"
-					+ "      }"
-					+ "      .fold-button {"
-					+ "        background-color: white;"
-					+ "        -moz-border-radius: 10px;"
-					+ "        -webkit-border-radius: 10px;"
-					+ "        border-radius: 10px;"
-					+ "      }"
-					+ "      .description {"
-					+ "        font-style: italic;"
-					+ "      }"
-					+ "      .debt {"
-					+ "        text-align: right;"
-					+ "      }"
-					+ "      .debt-header {"
-					+ "        text-align: right;"
-					+ "      }"
-					+ "    </style>"
+					+ "    <link rel=\"stylesheet\" type=\"text/css\" href=\"./stylesheets/index.css\">"
 					+ "  </head>"
 					+ "  <body>"
 					+ "    <h1>Magnifier Report on \"" + databaseName + "\"</h1>"
@@ -145,7 +99,7 @@ public class Report {
 			for(RuleReport rr : ruleReports) {
 				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRule().getName() + "-plus\">";
 				if(rr.getScore() < 100F) {
-					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\"> +/- </button></td>";
+					html = html + "<td><img title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\" src=\"./images/minus_plus.ico\"></button></td>";
 				} else {
 					html = html + "<td></td>";
 				}
@@ -197,23 +151,44 @@ public class Report {
 			}
 			html = html + "      </tbody>"
 					+ "    </table>"
-					+ "    <script>"
-					+ "      var t = document.getElementsByClassName('fold-button');"
-					+ "      for(var i = t.length-1 ; i >= 0 ; i--) {"
-					+ "        t[i].addEventListener('click', function(e) {"
-					+ "          element_style = document.getElementById(e.target.id + '-table').style;"
-					+ "          if(element_style.display != 'none') {"
-					+ "            element_style.display = 'none'"
-					+ "          } else if(element_style.display == 'none') {"
-					+ "            element_style.display = ''"
-					+ "          }"
-					+ "        });"
-					+ "      }"
-					+ "    </script>"
 					+ "  </body>"
+					+ "  <script type=\"text/javascript\" src=\"./scripts/index.js\"></script>"
 					+ "<html>";
 
 			writer.println(html);
+
+			try {
+				File images = new File(rootDirectory + "images");
+				File stylesheets = new File(rootDirectory + "stylesheets");
+				File scripts = new File(rootDirectory + "scripts");
+				if(images.exists()) {
+					if(!images.isDirectory()) {
+						System.err.println("Couldn't load assets (1): " + rootDirectory); 
+					}
+				} else {
+					images.mkdir();
+				}
+				if(stylesheets.exists()) {
+					if(!stylesheets.isDirectory()) {
+						System.err.println("Couldn't load assets (1): " + rootDirectory); 
+					}
+				} else {
+					stylesheets.mkdir();
+				}
+				if(scripts.exists()) {
+					if(!scripts.isDirectory()) {
+						System.err.println("Couldn't load assets (1): " + rootDirectory); 
+					}
+				} else {
+					scripts.mkdir();
+				}
+				Magnifier.exportResource("/images/minus_plus.ico",       rootDirectory + "images/minus_plus.ico");
+				Magnifier.exportResource("/stylesheets/index.css", rootDirectory + "stylesheets/index.css");
+				Magnifier.exportResource("/scripts/index.js",      rootDirectory + "scripts/index.js");
+			} catch (Exception e) {
+				System.err.println("Couldn't load assets in (2): " + rootDirectory); 
+				e.printStackTrace();
+			}
 		} catch (FileNotFoundException e) {
 			System.err.println("File couldn't be found: " + reportFilePath);
 		} catch (UnsupportedEncodingException e) {

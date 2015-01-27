@@ -1,0 +1,80 @@
+body {
+  font-family: sans-serif;
+}
+
+h1, h4 {
+  text-align: center;
+}
+
+table.rule-table {
+  width: 98%;
+  text-align: left;
+  border: 1px #CCC solid;
+  padding: 1px;
+  margin: auto;
+  border-spacing: 0;
+}
+
+table.rule-table tr.rule-header td,
+table.rule-table th {
+  border-bottom: 1px solid #CCC;
+  padding: 10px 10px 0px 0;
+}
+
+table.rule-table th {
+  background-color: rgb(179, 203, 255);
+  color: rgb(0, 36, 116);
+}
+
+table.rule-entries {
+  width: 100%;
+}
+
+table.rule-entries th {
+  padding: 3px;
+  text-align: left;
+  background-color: white;
+  color: rgb(0, 36, 116);
+}
+
+table td {
+  color: rgb(35, 50, 83)
+}
+
+.good-metric {
+  color: green;
+}
+
+.bad-metric {
+  color: red;
+}
+
+.normal-metric {
+  color: orange;
+}
+
+.metric {
+  font-weight: bold;
+}
+
+.fold-button {
+  background-color: white;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+
+  height: 18px;
+  width: auto;
+}
+
+.description {
+  font-style: italic;
+}
+
+.debt {
+  text-align: right;
+}
+
+.debt-header {
+  text-align: right;
+}

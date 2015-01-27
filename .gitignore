@@ -30,3 +30,4 @@ target/
 
 # TwGit
 .twgit_features_subject
+/magnifier.ini
