@@ -14,7 +14,7 @@ import com.inovia.magnifier.reports.RuleReport;
 public class TableHasComment implements Rule {
 	public static final String RULE_NAME = "TableHasComment";
 	public static final String SUGGESTION = "Each table should have a comment explaining what it contains";
-	public static final Float DEBT = 1F;
+	public static final Float DEBT = 0.15F;
 	public static final String[] FORMAT = {"schema", "table"};
 
 	public TableHasComment() { }

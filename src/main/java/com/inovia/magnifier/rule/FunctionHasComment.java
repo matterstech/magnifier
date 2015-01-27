@@ -15,7 +15,7 @@ import com.inovia.magnifier.reports.RuleReport;
 public class FunctionHasComment implements Rule {
 	public static final String RULE_NAME = "FunctionHasComment";
 	public static final String SUGGESTION = "Each function should have a comment explaining what it does";
-	public static final Float DEBT = 1F;
+	public static final Float DEBT = 0.15F;
 	public static final String[] FORMAT = {"schema", "function"};
 
 	public FunctionHasComment() {  }
