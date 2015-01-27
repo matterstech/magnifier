@@ -7,10 +7,12 @@ package com.inovia.magnifier.reports;
 public class ReportEntry {
 	private String[] dataToDisplay;
 	private Boolean isSuccess;
+	private Object object;
 	
-	public ReportEntry(String[] dataToDisplay, Boolean isSuccess) {
+	public ReportEntry(Object object, String[] dataToDisplay, Boolean isSuccess) {
 		this.dataToDisplay = dataToDisplay.clone();
 		this.isSuccess = isSuccess;
+		this.object = object;
 	}
 	
 	public Boolean isSuccess() {
@@ -19,5 +21,9 @@ public class ReportEntry {
 
 	public String[] getDataToDisplay() {
 		return dataToDisplay;
+	}
+	
+	public Object getObject() {
+		return object;
 	}
 }

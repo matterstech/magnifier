@@ -1,5 +1,9 @@
 package com.inovia.magnifier.reports;
 
+import static org.mockito.Mockito.mock;
+
+import com.inovia.magnifier.database.Table;
+
 import junit.framework.*;
 
 public class ReportEntryTest extends TestCase {
@@ -12,11 +16,13 @@ public class ReportEntryTest extends TestCase {
     }
 	
 	public void testConstructorAndGetters() {
+		Table mockTable = mock(Table.class);
+		
 		String[] dataToDisplay = {"fake", "oki"};
-		ReportEntry goodEntry = new ReportEntry(dataToDisplay,  true);
+		ReportEntry goodEntry = new ReportEntry(mockTable, dataToDisplay,  true);
 		assertTrue(goodEntry.isSuccess());
 		
-		ReportEntry badEntry  = new ReportEntry(dataToDisplay, false);
+		ReportEntry badEntry  = new ReportEntry(mockTable, dataToDisplay, false);
 		assertFalse(badEntry.isSuccess());
 	}
 }

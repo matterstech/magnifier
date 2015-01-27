@@ -1,5 +1,9 @@
 package com.inovia.magnifier.reports;
 
+import com.inovia.magnifier.*;
+import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.rule.Rule;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -15,6 +19,8 @@ public class Report {
 	private final static Integer MINUTES_PER_HOUR        = 60;
 	private final static Integer SECONDS_PER_MINUTE      = 60;
 	private final static Integer MILLISECONDS_PER_SECOND = 1000;
+	private final static String  DEFAULT_DIRECTORY = "magnifier_report/";
+	private final static String  DEFAULT_REPORT = "index.html";
 
 	private String databaseName;
 	private List<RuleReport> ruleReports;
@@ -45,11 +51,11 @@ public class Report {
 				return 1;
 			}
 		});
-
+		
+		Map<String, List<Object[]>> detailPages = new HashMap<String, List<Object[]>>();
+		
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(reportFilePath, ENCODING);
-
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 			Long timeDiff = endTime.getTime() - startTime.getTime();
@@ -61,70 +67,7 @@ public class Report {
 			String html = "";
 			html = html + "<html>"
 					+ "  <head>"
-					+ "    <style>"
-					+ "      body {"
-					+ "        font-family: sans-serif;"
-					+ "      }"
-					+ "      h1, h4 {"
-					+ "        text-align: center;"
-					+ "      }"
-					+ "      table.rule-table {"
-					+ "        width: 98%;"
-					+ "        text-align: left;"
-					+ "        border: 1px #CCC solid;"
-					+ "        padding: 1px;"
-					+ "        margin: auto;"
-					+ "        border-spacing: 0;"
-					+ "      }"
-					+ "      table.rule-table tr.rule-header td,"
-					+ "      table.rule-table th {"
-					+ "        border-bottom: 1px solid #CCC;"
-					+ "        padding: 10px 10px 0px 0;"
-					+ "      }"
-					+ "      table.rule-table th {"
-					+ "        background-color: rgb(179, 203, 255);"
-					+ "        color: rgb(0, 36, 116);"
-					+ "      }"
-					+ "      table.rule-entries {"
-					+ "        width: 100%;"
-					+ "      }"
-					+ "      table.rule-entries th {"
-					+ "        padding: 3px;"
-					+ "        text-align: left;"
-					+ "        background-color: white;"
-					+ "        color: rgb(0, 36, 116);"
-					+ "      }"
-					+ "      table td {"
-					+ "        color: rgb(35, 50, 83)"
-					+ "      }"
-					+ "      .good-metric {"
-					+ "        color: green;"
-					+ "      }"
-					+ "      .bad-metric {"
-					+ "        color: red;"
-					+ "      }"
-					+ "      .normal-metric {"
-					+ "        color: orange;"
-					+ "      }"
-					+ "      .metric {"
-					+ "        font-weight: bold;"
-					+ "      }"
-					+ "      .fold-button {"
-					+ "        background-color: white;"
-					+ "        -moz-border-radius: 10px;"
-					+ "        -webkit-border-radius: 10px;"
-					+ "        border-radius: 10px;"
-					+ "      }"
-					+ "      .description {"
-					+ "        font-style: italic;"
-					+ "      }"
-					+ "      .debt {"
-					+ "        text-align: right;"
-					+ "      }"
-					+ "      .debt-header {"
-					+ "        text-align: right;"
-					+ "      }"
-					+ "    </style>"
+					+ "    <link rel=\"stylesheet\" type=\"text/css\" href=\"./stylesheets/index.css\">"
 					+ "  </head>"
 					+ "  <body>"
 					+ "    <h1>Magnifier Report on \"" + databaseName + "\"</h1>"
@@ -145,7 +88,7 @@ public class Report {
 			for(RuleReport rr : ruleReports) {
 				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRule().getName() + "-plus\">";
 				if(rr.getScore() < 100F) {
-					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\"> +/- </button></td>";
+					html = html + "<td><img title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\" src=\"./images/minus_plus.ico\"></button></td>";
 				} else {
 					html = html + "<td></td>";
 				}
@@ -178,9 +121,34 @@ public class Report {
 						if(!e.isSuccess()) {
 							html = html
 									+ "<tr>";
+							Integer i = 0;
 							for(String data : e.getDataToDisplay()) {
-								html = html
-										+ "<td>" + data + "</td>";
+								if(Arrays.asList(rr.getRule().getLinks()).contains(rr.getColumns()[i])) {
+									html = html
+											+ "<td><a href=\"./details/" + data + ".html\">" + data + "</a></td>";
+									
+									Object[] problem = new Object[2];
+									problem[0] = rr.getRule();  // the rule that checked the object
+									problem[1] = e.getObject(); // the database object that was checked
+									
+									if(detailPages.containsKey(data)) { // already in the collection
+										List<Object[]> list = detailPages.get(data);
+										list.add(problem);
+										
+										detailPages.put(data, list);
+									} else {
+										List<Object[]> list = new ArrayList<Object[]>();
+										list.add(problem);
+										
+										detailPages.put(data, list);
+									}
+									
+								} else {
+									html = html
+											+ "<td>" + data + "</td>";
+								}
+								
+								i++;
 							}
 							html = html
 									+ "</tr>";
@@ -197,23 +165,56 @@ public class Report {
 			}
 			html = html + "      </tbody>"
 					+ "    </table>"
-					+ "    <script>"
-					+ "      var t = document.getElementsByClassName('fold-button');"
-					+ "      for(var i = t.length-1 ; i >= 0 ; i--) {"
-					+ "        t[i].addEventListener('click', function(e) {"
-					+ "          element_style = document.getElementById(e.target.id + '-table').style;"
-					+ "          if(element_style.display != 'none') {"
-					+ "            element_style.display = 'none'"
-					+ "          } else if(element_style.display == 'none') {"
-					+ "            element_style.display = ''"
-					+ "          }"
-					+ "        });"
-					+ "      }"
-					+ "    </script>"
 					+ "  </body>"
+					+ "  <script type=\"text/javascript\" src=\"./scripts/index.js\"></script>"
 					+ "<html>";
 
+			String rootDirectory = reportFilePath + DEFAULT_DIRECTORY; // /users_choice/magnifier_report
+			String indexFile = rootDirectory + DEFAULT_REPORT;         // /users_choice/magnifier_report/index.html
+			
+			File f = new File(rootDirectory);
+			if(!f.exists()) { f.mkdirs(); }
+			if(!f.isDirectory()) { System.err.println("A file already exists with name \"" + rootDirectory + "\""); }
+
+			f = new File(indexFile);
+			writer = new PrintWriter(f, ENCODING);
 			writer.println(html);
+
+			try {
+				File images = new File(rootDirectory + "images");
+				File stylesheets = new File(rootDirectory + "stylesheets");
+				File scripts = new File(rootDirectory + "scripts");
+				File details = new File(rootDirectory + "details");
+				
+				if(!images.exists()) { images.mkdir(); }
+				if(!images.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!stylesheets.exists()) { stylesheets.mkdir(); }
+				if(!stylesheets.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!scripts.exists()) { scripts.mkdir(); }
+				if(!scripts.isDirectory()) { System.err.println("Couldn't load assets: " + rootDirectory); }
+				
+				if(!details.exists()) { details.mkdir(); }
+				if(!details.isDirectory()) { System.err.println("Couldn't load details: " + rootDirectory); }
+				
+				Magnifier.exportResource("/images/minus_plus.ico", rootDirectory + "images/minus_plus.ico");
+				Magnifier.exportResource("/stylesheets/index.css", rootDirectory + "stylesheets/index.css");
+				Magnifier.exportResource("/scripts/index.js",      rootDirectory + "scripts/index.js");
+				
+				for(String key : detailPages.keySet()) {
+					String detailsDirectory = rootDirectory + "details/";
+					File detailFile = new File(detailsDirectory + key + ".html");
+					PrintWriter detailWriter = new PrintWriter(detailFile, ENCODING);
+					
+					generateDetails(detailWriter, detailPages.get(key));
+					
+					detailWriter.close();
+				}
+			} catch (Exception e) {
+				System.err.println("Couldn't load assets in (2): " + rootDirectory); 
+				e.printStackTrace();
+			}
 		} catch (FileNotFoundException e) {
 			System.err.println("File couldn't be found: " + reportFilePath);
 		} catch (UnsupportedEncodingException e) {
@@ -224,11 +225,137 @@ public class Report {
 			}
 		}
 	}
+	
+	private void generateDetails(Writer writer, List<Object[]> problems) throws IOException {
+		if(problems.size() == 0) { return; }
+		
+		String objectName = "";
+		Object object = problems.get(0)[1];
+		Class<? extends Object> c = object.getClass();
+		
+		if(c == Table.class) {
+			objectName = ((Table) object).getName();
+		} else if(c == Index.class) {
+			objectName = ((Index) object).getTableName();
+		} else if(c == Index.class) {
+			objectName = ((ForeignKey) object).getTable().getName();
+		} else if(c == View.class) {
+			objectName = ((View) object).getName();
+		} else if(c == Trigger.class) {
+			objectName = ((Trigger) object).getName();
+		} else if(c == Function.class) {
+			objectName = ((Function) object).getName();
+		}
+		
+		String html = ""
+				+ "<html>"
+				+ "  <head>"
+				+ "    <link rel=\"stylesheet\" type=\"text/css\" href=\"../stylesheets/index.css\">"
+				+ "  </head>"
+				+ "  <body>"
+				+ "    <h1>" + objectName + "</h1>"
+				+ "      <div>";
+		if(c == Table.class) {
+			html = html
+					+ ((Table) object).getDetails();
+		} else if(c == Function.class) {
+			html = html
+					+ ((Function) object).getDetails();
+		}
+		html = html
+				+ "      </div>"
+				+ "    <table>"
+				+ "      <thead>"
+				+ "        <tr><th>Rule</th><th>Suggestion</th><th>Solution</th></tr>"
+				+ "      </thead>"
+				+ "      <tbody>";
+		
+		for(Object[] problem : problems) {
+			Rule rule = (Rule) problem[0];
+			object = problem[1];
+			
+			if(object.getClass() == Table.class) {
+				html = html + getTableRow(rule, (Table) object);
+			} else if(object.getClass() == View.class) { 
+				html = html + getViewRow(rule, (View) object);
+			} else if(object.getClass() == Trigger.class) {
+				html = html + getTriggerRow(rule, (Trigger) object);
+			} else if(object.getClass() == Function.class) {
+				html = html + getFunctionRow(rule, (Function) object);
+			} else if(object.getClass() == Index.class) {
+				html = html + getIndexRow(rule, (Index) object);
+			} else if(object.getClass() == ForeignKey.class) {
+				html = html + getForeignKeyRow(rule, (ForeignKey) object);
+			}
+		}
+		
+		html = html
+				+ "      </tbody>"
+				+ "    </table>"
+				+ "  </body>"
+				+ "</html>";
+		
+		writer.write(html);
+	}
+	
+	private String getTableRow(Rule rule, Table table) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(table) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getViewRow(Rule rule, View view) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(view) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getTriggerRow(Rule rule, Trigger trigger) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(trigger) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getFunctionRow(Rule rule, Function function) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(function) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getIndexRow(Rule rule, Index index) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(index) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getForeignKeyRow(Rule rule, ForeignKey fk) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(fk) + "</td>"
+				+ "</tr>";
+	}
 
 	/**
 	 * add a rule report to the report
 	 * 
-	 * @param ruleReport 
+	 * @param ruleReport
 	 */
 	public void addRuleReport(RuleReport ruleReport) {
 		ruleReports.add(ruleReport);
