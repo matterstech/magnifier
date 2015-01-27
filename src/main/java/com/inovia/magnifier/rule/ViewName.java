@@ -14,11 +14,13 @@ public class ViewName implements Rule {
 	public static final String[] LINKS = {"view"};
 	
 	private static final String SUFFIX = "_view";
+	
+	private RuleReport ruleReport = null;
 
 	public ViewName() { }
 	
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(View v : database.getViews()) {
 			Boolean isSuccess = assertion(v);
@@ -51,5 +53,15 @@ public class ViewName implements Rule {
 	
 	public String getSuggestion() {
 		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		View view = (View) object;
+		
+		return "ALTER VIEW " + view.getName() + " RENAME TO " + view.getName() + SUFFIX + ";";
 	}
 }

@@ -14,11 +14,13 @@ public class TriggerName implements Rule {
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "trigger", "timing", "action"};
 	public static final String[] LINKS = {"table"};
+	
+	private RuleReport ruleReport = null;
 
 	public TriggerName() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Trigger t : database.getTriggers()) {
 			Boolean isSuccess = assertion(t);
@@ -47,5 +49,13 @@ public class TriggerName implements Rule {
 	
 	public String getSuggestion() {
 		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		return "";
 	}
 }

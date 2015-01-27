@@ -17,4 +17,6 @@ public interface Rule {
 	public String getName();
 	public String[] getLinks();
 	public String getSuggestion();
+	public RuleReport getRuleReport();
+	public String getSolution(Object object);
 }

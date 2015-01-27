@@ -12,21 +12,23 @@ import com.inovia.magnifier.reports.RuleReport;
  */
 public class ForeignKeyName implements Rule {
 	public static final String RULE_NAME = "ForeignKeyName";
-	public static final String SUGGESTION = "Each foreign key should have name representing the table and column it references";
+	public static final String SUGGESTION = "Each foreign key should refer to the foreign column";
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "column", "referenced schema", "referenced table", "referenced column"};
 	public static final String[] LINKS = {"table"};
 	
+	private RuleReport ruleReport = null;
+	
 	public ForeignKeyName() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Table t : database.getTables()) {
 			for(ForeignKey fk : t.getForeignKeys()) {
 				Boolean isSuccess = assertion(fk);
 				String[] dataToDisplay = {t.getSchemaName(), t.getName(), fk.getColumnName(), fk.getForeignSchemaName(), fk.getForeignTableName(), fk.getForeignColumnName()};
-				ruleReport.addEntry(new ReportEntry(t, dataToDisplay, isSuccess));
+				ruleReport.addEntry(new ReportEntry(fk, dataToDisplay, isSuccess));
 			}
 		}
 
@@ -57,5 +59,17 @@ public class ForeignKeyName implements Rule {
 	
 	public String getSuggestion() {
 		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		ForeignKey fk = (ForeignKey) object;
+		return "ALTER TABLE "
+				+ fk.getTable().getName()
+				+ " RENAME " + fk.getColumnName() +
+				" TO " + fk.getColumnName() + "_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName() + ";";
 	}
 }

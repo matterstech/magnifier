@@ -235,7 +235,11 @@ public class Report {
 		
 		if(c == Table.class) {
 			objectName = ((Table) object).getName();
-		} else if(c == View.class) { 
+		} else if(c == Index.class) {
+			objectName = ((Index) object).getTableName();
+		} else if(c == Index.class) {
+			objectName = ((ForeignKey) object).getTable().getName();
+		} else if(c == View.class) {
 			objectName = ((View) object).getName();
 		} else if(c == Trigger.class) {
 			objectName = ((Trigger) object).getName();
@@ -262,21 +266,26 @@ public class Report {
 				+ "      </div>"
 				+ "    <table>"
 				+ "      <thead>"
-				+ "        <tr><th>Rule</th><th>Suggestion</th><th>Problem</th></tr>"
+				+ "        <tr><th>Rule</th><th>Suggestion</th><th>Solution</th></tr>"
 				+ "      </thead>"
 				+ "      <tbody>";
 		
 		for(Object[] problem : problems) {
 			Rule rule = (Rule) problem[0];
+			object = problem[1];
 			
 			if(object.getClass() == Table.class) {
-				html = html + getTableRow(rule);
+				html = html + getTableRow(rule, (Table) object);
 			} else if(object.getClass() == View.class) { 
-				html = html + getViewRow(rule);
+				html = html + getViewRow(rule, (View) object);
 			} else if(object.getClass() == Trigger.class) {
-				html = html + getTriggerRow(rule);
+				html = html + getTriggerRow(rule, (Trigger) object);
 			} else if(object.getClass() == Function.class) {
-				html = html + getFunctionRow(rule);
+				html = html + getFunctionRow(rule, (Function) object);
+			} else if(object.getClass() == Index.class) {
+				html = html + getIndexRow(rule, (Index) object);
+			} else if(object.getClass() == ForeignKey.class) {
+				html = html + getForeignKeyRow(rule, (ForeignKey) object);
 			}
 		}
 		
@@ -289,41 +298,57 @@ public class Report {
 		writer.write(html);
 	}
 	
-	private String getTableRow(Rule rule) {
+	private String getTableRow(Rule rule, Table table) {
 		return ""
 				+ "<tr>"
 				+ "  <td>" + rule.getName() + "</td>"
 				+ "  <td>" + rule.getSuggestion() + "</td>"
-				
-				+ "  <td>" + "no idea" + "</td>"
-				
+				+ "  <td>" + rule.getSolution(table) + "</td>"
 				+ "</tr>";
 	}
 	
-	private String getViewRow(Rule rule) {
+	private String getViewRow(Rule rule, View view) {
 		return ""
 				+ "<tr>"
 				+ "  <td>" + rule.getName() + "</td>"
 				+ "  <td>" + rule.getSuggestion() + "</td>"
-				+ "  <td>" + "no idea" + "</td>"
+				+ "  <td>" + rule.getSolution(view) + "</td>"
 				+ "</tr>";
 	}
 	
-	private String getTriggerRow(Rule rule) {
+	private String getTriggerRow(Rule rule, Trigger trigger) {
 		return ""
 				+ "<tr>"
 				+ "  <td>" + rule.getName() + "</td>"
 				+ "  <td>" + rule.getSuggestion() + "</td>"
-				+ "  <td>" + "no idea" + "</td>"
+				+ "  <td>" + rule.getSolution(trigger) + "</td>"
 				+ "</tr>";
 	}
 	
-	private String getFunctionRow(Rule rule) {
+	private String getFunctionRow(Rule rule, Function function) {
 		return ""
 				+ "<tr>"
 				+ "  <td>" + rule.getName() + "</td>"
 				+ "  <td>" + rule.getSuggestion() + "</td>"
-				+ "  <td>" + "no idea" + "</td>"
+				+ "  <td>" + rule.getSolution(function) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getIndexRow(Rule rule, Index index) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(index) + "</td>"
+				+ "</tr>";
+	}
+	
+	private String getForeignKeyRow(Rule rule, ForeignKey fk) {
+		return ""
+				+ "<tr>"
+				+ "  <td>" + rule.getName() + "</td>"
+				+ "  <td>" + rule.getSuggestion() + "</td>"
+				+ "  <td>" + rule.getSolution(fk) + "</td>"
 				+ "</tr>";
 	}
 

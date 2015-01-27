@@ -15,11 +15,18 @@ public class IndexName implements Rule {
 	public static final Float DEBT = 1F;
 	public static final String[] FORMAT = {"schema", "table", "index"};
 	public static final String[] LINKS = {"table"};
+	public static final String[] SUFFIXES = {
+		"_idx",  // Inovia convention
+		"_pkey", // Postgres Convention
+		"_key"   // Postgres Convention
+	};
+	
+	private RuleReport ruleReport = null;
 
 	public IndexName() { }
 
 	public RuleReport run(Database database) {
-		RuleReport ruleReport = new RuleReport(this, SUGGESTION, DEBT);
+		ruleReport = new RuleReport(this, SUGGESTION, DEBT);
 
 		for(Index i : database.getIndexes()) {
 			Boolean isSuccess = assertion(i);
@@ -30,14 +37,13 @@ public class IndexName implements Rule {
 		return ruleReport;
 	}
 
-	private Boolean assertion(Index i) {
-		if(i.getName().endsWith("_idx")) {
-			// Inovia convention
-			return true;
-		} else if(i.getName().endsWith("_pkey") || i.getName().endsWith("_key")) {
-			// Postgres Convention
-			return true;
+	private Boolean assertion(Index index) {
+		for(Integer i = 0 ; i < SUFFIXES.length ; i++) {
+			if(index.getName().endsWith(SUFFIXES[i])) {
+				return true;
+			}
 		}
+		
 		return false;
 	}
 	
@@ -55,5 +61,18 @@ public class IndexName implements Rule {
 	
 	public String getSuggestion() {
 		return SUGGESTION;
+	}
+	
+	public RuleReport getRuleReport() {
+		return ruleReport;
+	}
+
+	public String getSolution(Object object) {
+		Index index = (Index) object;
+		if(SUFFIXES.length > 0) {
+			return "ALTER INDEX " + index.getName() + " RENAME TO " + index.getName() + SUFFIXES[0] + ";";
+		} else {
+			return "";
+		}
 	}
 }
