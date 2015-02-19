@@ -32,25 +32,32 @@ Magnifier is ready to be executed
 
 ## Usage
 
+Type "java -jar magnifier.jar --help" to display the following message
+
 	Usage: OptionsTip
-	-d <arg>    The database name
-	-dp <arg>   The JDBC driver package
-	-h <arg>    The database host, default is localhost
-	-o <arg>    The report output path/name, default is ./report.html
-	-p <arg>    The database listening port, default is the specified DBMS default port
-	-pw <arg>   The password
-	-t <arg>    DBMS
-	-u <arg>    The username
+	--help            Display the current message
+	
+	--dbms     <arg>  DBMS
+	--driver   <arg>  The JDBC driver package
+	
+	--host     <arg>  The database host, default is localhost
+	--port     <arg>  The database listening port, default is the specified DBMS default port
+	--database <arg>  The database name
+	
+	--user     <arg>  The username
+	--password <arg>  The password
+	
+	--output   <arg>  The report output path/name, default is ./report.html
 
 ## Examples
 
-Analyze the local "magnifier__dev" postgresql database with username "john" and password "john_password"
+Analyze the local "magnifier_dev" postgresql database with username "john" and password "john_password"
 
-	java -jar magnifier.jar -t postgresql -dp ./jdbc_pgsql.jar -d magnifier_dev -u john -pw john__password
+	java -jar magnifier.jar --dbms postgresql --driver ./jdbc_pgsql.jar --database magnifier_dev --user john --password john__password
 
 Analyze the distant "magnifier__dev" postgresql database, listening on port 5432, with username "john" and password "john_password"
 
-	java -jar magnifier.jar -h 192.168.0.15 -p 5432 -t postgresql -dp ./jdbc_pgsql.jar -d my__database -u john -pw john_password -o report.html
+	java -jar magnifier.jar --host 192.168.0.15 --port 5432 --dbms postgresql --driver ./jdbc_pgsql.jar --database my__database --user john --password john_password -output report.html
 
 ## Analysis
 	Rule                  | Checkings                                                    | Example
