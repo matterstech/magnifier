@@ -13,6 +13,11 @@ public class ViewName implements Rule {
 	public static final String[] FORMAT = {"schema", "view"};
 	public static final String[] LINKS = {"view"};
 	
+	public static final String[] EXAMPLE = {
+		"\"only_managers\" is not a compliant name for a view",
+		"\"user_view\" is compliant because it ends with \"_wiew\""
+	};
+	
 	private static final String SUFFIX = "_view";
 	
 	private RuleReport ruleReport = null;
@@ -63,5 +68,9 @@ public class ViewName implements Rule {
 		View view = (View) object;
 		
 		return "ALTER VIEW " + view.getName() + " RENAME TO " + view.getName() + SUFFIX + ";";
+	}
+	
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

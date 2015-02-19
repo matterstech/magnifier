@@ -20,6 +20,11 @@ public class IndexName implements Rule {
 	private RuleReport ruleReport = null;
 
 	private static final String SUFFIX_SEPARATOR = "_";
+	public static final String[] EXAMPLE = {
+		"an index name should end with _idx",
+		"\"my_index\" is not valid",
+		"\"user_id_idx\" is valid"
+	};
 	
 	public IndexName() { }
 
@@ -72,5 +77,9 @@ public class IndexName implements Rule {
 		} else {
 			return "";
 		}
+	}
+	
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

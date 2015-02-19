@@ -18,6 +18,12 @@ public class FunctionParameterName implements Rule {
 	public static final String[] LINKS = {"function"};
 	
 	private RuleReport ruleReport = null;
+	public static final String[] EXAMPLE = {
+		"the following function is not valid:",
+		"CREATE FUNCTION dup(in a, in b, out c) ...",
+		"the parameters should contain IN or OUT like this:",
+		"CREATE FUNCTION dup(in a_IN, in b_IN, out c_OUT) ..."
+	};
 
 	public FunctionParameterName() { }
 
@@ -63,5 +69,9 @@ public class FunctionParameterName implements Rule {
 
 	public String getSolution(Object object) {
 		return "";
+	}
+
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

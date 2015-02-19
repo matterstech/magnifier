@@ -108,7 +108,29 @@ public class Report {
 							+ "<tr id=\"" + rr.getRule().getName() + "-plus\">"
 							+ "  <td colspan=\"5\">"
 							+ "    <table id=\"" + rr.getRule().getName() + "-table\" class=\"rule-entries\" style=\"display: none;\">"
-							+ "        <thead>"
+							+ "        <thead>";
+					
+					if(rr.getRule().getExample() != null) {
+						html = html
+								+ "          <tr>"
+								+ "            <th colspan=\"5\">Example</th>"
+								+ "          </tr>"
+								+ "          <tr>"
+								+ "            <td colspan=\"5\">"
+								+ "              <ul class=\"example\">";
+						
+						for(String exampleRow : rr.getRule().getExample()) {
+							html = html
+									+ "  <li>" + exampleRow + "<li>";
+						}
+						
+						html = html
+								+ "    </ul>"
+								+ "  </td>"
+								+ "</tr>";
+					}
+							
+					html = html
 							+ "          <tr>";
 
 					for(String column : rr.getColumns()) {

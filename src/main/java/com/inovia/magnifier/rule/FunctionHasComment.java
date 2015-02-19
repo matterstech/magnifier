@@ -71,4 +71,8 @@ public class FunctionHasComment implements Rule {
 		Function function = (Function) object;
 		return "COMMENT ON FUNCTION " + function.getName() + " IS 'your comment';";
 	}
+
+	public String[] getExample() {
+		return null;
+	}
 }

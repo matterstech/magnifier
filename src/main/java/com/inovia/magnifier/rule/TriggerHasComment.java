@@ -68,4 +68,8 @@ public class TriggerHasComment implements Rule {
 		Trigger trigger = (Trigger) object;
 		return "COMMENT ON TRIGGER " + trigger.getName() + " IS 'your comment';";
 	}
+	
+	public String[] getExample() {
+		return null;
+	}
 }

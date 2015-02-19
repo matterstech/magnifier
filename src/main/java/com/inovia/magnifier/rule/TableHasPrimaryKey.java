@@ -58,4 +58,8 @@ public class TableHasPrimaryKey implements Rule {
 	public String getSolution(Object object) {
 		return "";
 	}
+	
+	public String[] getExample() {
+		return null;
+	}
 }

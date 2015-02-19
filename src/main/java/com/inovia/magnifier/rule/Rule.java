@@ -19,4 +19,5 @@ public interface Rule {
 	public String getSuggestion();
 	public RuleReport getRuleReport();
 	public String getSolution(Object object);
+	public String[] getExample();
 }

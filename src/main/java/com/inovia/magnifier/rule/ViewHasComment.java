@@ -68,4 +68,8 @@ public class ViewHasComment implements Rule {
 		View view = (View) object;
 		return "COMMENT ON VIEW " + view.getName() + " IS 'your comment';";
 	}
+	
+	public String[] getExample() {
+		return null;
+	}
 }

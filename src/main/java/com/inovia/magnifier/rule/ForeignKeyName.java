@@ -18,6 +18,12 @@ public class ForeignKeyName implements Rule {
 	public static final String[] LINKS = {"table"};
 	
 	private RuleReport ruleReport = null;
+	public static final String[] EXAMPLE = {
+		"a \"user\" has many \"posts\"",
+		"a \"post\" belongs to a \"user\"",
+		"the table user has a primary key called \"uid\"",
+		"the foreign key in the table post should be \"user_uid\""
+	};
 	
 	public ForeignKeyName() { }
 
@@ -71,5 +77,9 @@ public class ForeignKeyName implements Rule {
 				+ fk.getTable().getName()
 				+ " RENAME " + fk.getColumnName() +
 				" TO " + fk.getColumnName() + "_" + fk.getForeignTableName() + "_" + fk.getForeignColumnName() + ";";
+	}
+
+	public String[] getExample() {
+		return EXAMPLE;
 	}
 }

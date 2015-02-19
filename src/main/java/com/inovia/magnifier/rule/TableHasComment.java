@@ -68,4 +68,8 @@ public class TableHasComment implements Rule {
 		Table table = (Table) object;
 		return "COMMENT ON TABLE " + table.getName() + " IS 'your comment';";
 	}
+	
+	public String[] getExample() {
+		return null;
+	}
 }
