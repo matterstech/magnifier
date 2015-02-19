@@ -40,6 +40,12 @@ public class Report {
 	public void generateHtml(String reportFilePath, Date startTime, Date endTime) {
 		Collections.sort(ruleReports, new Comparator<RuleReport>() {
 			public int compare(RuleReport r1, RuleReport r2) {
+				if(r1.getEntries().size() == 0) {
+					return 1;
+				} else if(r2.getEntries().size() == 0) {
+					return -1;
+				}
+				
 				if(r1.getScore() <= r2.getScore()) {
 					if(r1.getDebt() >= r2.getDebt()) {
 						return -1;
@@ -87,17 +93,17 @@ public class Report {
 
 			for(RuleReport rr : ruleReports) {
 				html = html + "<tr class=\"rule-header\" id=\"" + rr.getRule().getName() + "-plus\">";
-				if(rr.getScore() < 100F) {
-					html = html + "<td><img title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\" src=\"./images/minus_plus.ico\"></button></td>";
+				if(rr.getEntries().size() > 0 && rr.getScore() < 100F) {
+					html = html + "<td><button title=\"fold/unfold\" class=\"fold-button\" id=\"" + rr.getRule().getName() + "\"> +/- </button></td>";
 				} else {
 					html = html + "<td></td>";
 				}
-				html = html + "  <td title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\" class=\"metric " + (rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + rr.getScore().intValue() + "%</td>"
+				html = html + "  <td " + ( rr.getScore() == null ? "" : "title=\"" + rr.getScore().intValue() + "% of " + rr.getEntries().size() + " entities\"" ) + " class=\"metric " + (rr.getScore() == null || rr.getScore().intValue() == 100 ? "good-metric" : rr.getScore().intValue() == 0 ? "bad-metric" : "normal-metric") + "\">" + (rr.getScore() == null ? "N/A" : rr.getScore().intValue() + "%" ) + "</td>"
 						+ "  <td class=\"debt\" title=\"" + rr.getDebt() + " hours to correct (< " + (new Float(rr.getDebt() / 7).intValue() + 1) + " days)\">" + (rr.getDebt() != 0.0 ? rr.getDebt() : "") + "</td>"
 						+ "  <td>" + rr.getRule().getName() + "</td>"
 						+ "  <td class=\"description\">" + rr.getSuggestion() + "</td>"
 						+ "</tr>";
-				if(rr.getScore() < 100F) {
+				if(rr.getEntries().size() > 0 && rr.getScore() < 100F) {
 					html = html
 							+ "<tr id=\"" + rr.getRule().getName() + "-plus\">"
 							+ "  <td colspan=\"5\">"
