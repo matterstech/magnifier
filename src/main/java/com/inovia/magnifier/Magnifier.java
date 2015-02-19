@@ -2,8 +2,9 @@ package com.inovia.magnifier;
 
 import java.io.*;
 
-import com.inovia.magnifier.rule.*;
 import com.inovia.magnifier.database.*;
+import com.inovia.magnifier.reports.Report;
+import com.inovia.magnifier.rule.*;
 
 /**
  * The Magnifier class contains Magnifier's main method.
@@ -35,8 +36,11 @@ public class Magnifier {
 		database.load();
 
 		Ruleset inoviaRuleset = new InoviaRuleset(database);
-		inoviaRuleset.run();
-		inoviaRuleset.generateHtml(cfg.getReportPath());
+		Report report = inoviaRuleset.run();
+		
+		report.generateHtml(cfg.getReportPath());
+		
+		report.printSummary();
 
 		// Closing the database session
 		database.disconnect();
