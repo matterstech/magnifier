@@ -13,22 +13,22 @@ import org.ini4j.Wini;
 public class Configuration {
 	private static final String DEFAULT_REPORT_PATH = "./";
 	private static final String DEFAULT_HOST = "localhost";
-
-	private static final String PARAM_HELP     = "help";
-	private static final String PARAM_HOST     = "host";
-	private static final String PARAM_PORT     = "port";
-	private static final String PARAM_DBMS     = "dbms";
-	private static final String PARAM_DRIVER   = "driver";
-	private static final String PARAM_DATABASE = "database";
-	private static final String PARAM_USER     = "user";
-	private static final String PARAM_PASSWORD = "password";
-	private static final String PARAM_REPORT_PATH   = "output";
 	
 	private static final String SECTION_CREDENTIALS = "credentials";
 	private static final String SECTION_DATABASE = "database";
 	private static final String SECTION_MISC = "misc";
 	
 	static final String DEFAULT_INI = "./magnifier.ini";
+	
+	private static final String PARAM_HELP           = "help";
+	private static final String PARAM_HOST           = "host";
+	private static final String PARAM_PORT           = "port";
+	private static final String PARAM_DBMS           = "dbms";
+	private static final String PARAM_DRIVER         = "driver";
+	private static final String PARAM_DATABASE       = "database";
+	private static final String PARAM_USER           = "user";
+	private static final String PARAM_PASSWORD       = "password";
+	private static final String PARAM_OUTPUT         = "output";
 
 	private String host = DEFAULT_HOST;
 	private String port;
@@ -50,15 +50,15 @@ public class Configuration {
 		this.options = new Options();
 
 		// We describe the parameters Magnifier can be provided
-		options.addOption(PARAM_HELP,     false, "print this message"); // False means: no need value after the option
-		options.addOption(PARAM_HOST,     true, "The database host, default is localhost");
-		options.addOption(PARAM_PORT,     true, "The database listening port, default is the specified DBMS default port");
-		options.addOption(PARAM_DBMS,     true, "The database type");
-		options.addOption(PARAM_DRIVER,   true, "The JDBC driver package");
-		options.addOption(PARAM_DATABASE, true, "The database name");
-		options.addOption(PARAM_USER,     true, "The username");
-		options.addOption(PARAM_PASSWORD, true, "The password");
-		options.addOption(PARAM_REPORT_PATH,   true, "The report output path/name, default is ./report.html");
+		options.addOption(null, PARAM_HELP,     false, "print this message");
+		options.addOption(null, PARAM_HOST,     true, "The database host, default is localhost");
+		options.addOption(null, PARAM_PORT,     true, "The database listening port, default is the specified DBMS default port");
+		options.addOption(null, PARAM_DBMS,     true, "The database type");
+		options.addOption(null, PARAM_DRIVER,   true, "The JDBC driver package");
+		options.addOption(null, PARAM_DATABASE, true, "The database name");
+		options.addOption(null, PARAM_USER,     true, "The username");
+		options.addOption(null, PARAM_PASSWORD, true, "The password");
+		options.addOption(null, PARAM_OUTPUT,   true, "The report output path/name, default is ./report.html");
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Configuration {
 			String tmpDatabaseName = params.getOptionValue(PARAM_DATABASE);
 			String tmpUser         = params.getOptionValue(PARAM_USER);
 			String tmpPassword     = params.getOptionValue(PARAM_PASSWORD);
-			String tmpReportPath   = params.getOptionValue(PARAM_REPORT_PATH);
+			String tmpReportPath   = params.getOptionValue(PARAM_OUTPUT);
 			
 			this.isHelp = params.hasOption(PARAM_HELP);
 			
@@ -113,7 +113,7 @@ public class Configuration {
 		if(null == getDatabaseName()) { System.out.println(PARAM_DATABASE); }
 		if(null == getUser()) { System.out.println(PARAM_USER); }
 		if(null == getPassword()) { System.out.println(PARAM_PASSWORD); }
-		if(null == getReportPath()) { System.out.println(PARAM_REPORT_PATH); }
+		if(null == getReportPath()) { System.out.println(PARAM_OUTPUT); }
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class Configuration {
 			String tmpDatabaseName = ini.get(SECTION_DATABASE, PARAM_DATABASE, String.class);
 			String tmpDatabaseType = ini.get(SECTION_DATABASE, PARAM_DBMS, String.class);
 			String tmpDriverFile   = ini.get(SECTION_DATABASE, PARAM_DRIVER, String.class);
-			String tmpReportPath   = ini.get(SECTION_MISC, PARAM_REPORT_PATH, String.class);
+			String tmpReportPath   = ini.get(SECTION_MISC, PARAM_OUTPUT, String.class);
 			
 			if(tmpUser != null) { this.user = tmpUser; }
 			if(tmpPassword != null) { this.password = tmpPassword; }
